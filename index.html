@@ -469,20 +469,50 @@
         </span>
       </div>
 
-      <!-- Search Box -->
-      <div class="bg-surface-container-lowest p-5 rounded-2xl border border-surface-container shadow-sm flex flex-col gap-3">
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary text-[22px]">manage_search</span>
-          <h3 class="font-headline font-bold text-base text-on-surface">報名紀錄查詢</h3>
+      <!-- Search Box (雙重身分核驗 + 個資去識別化) -->
+      <div class="bg-surface-container-lowest p-5 rounded-2xl border border-surface-container shadow-sm flex flex-col gap-3.5">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-[24px]">verified_user</span>
+            <h3 class="font-headline font-bold text-base text-on-surface">選手與志工報名安全查詢</h3>
+          </div>
+          <span class="text-[11px] font-bold text-primary bg-primary/10 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+            <span class="material-symbols-outlined text-[14px]">lock</span>
+            雙重身分核驗・去識別化保護
+          </span>
         </div>
-        <p class="text-xs text-on-surface-variant">
-          請輸入隊伍名稱、隊長姓名或手機號碼，即可查詢已登記的報名資料與產生數位檢錄證。
+        <p class="text-xs text-on-surface-variant leading-relaxed">
+          為落實個人資料保護與參賽檢錄安全，需同時輸入報名登記之<strong>【姓名】</strong>與<strong>【聯絡電話號碼】</strong>進行身分核對；查詢結果已進行<strong>去識別化（遮罩）</strong>保護處理。
         </p>
-        <div class="flex gap-2">
-          <input type="text" id="inquiry-keyword" placeholder="輸入報名者姓名 / 手機 / 隊伍名稱" class="flex-1 text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent">
-          <button onclick="searchRegistration()" class="px-5 py-2.5 rounded-xl bg-primary text-white font-bold text-xs shrink-0 active:scale-95 transition-all flex items-center gap-1">
-            <span class="material-symbols-outlined text-[16px]">search</span>
-            查詢
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          <div>
+            <label class="block text-xs font-bold text-on-surface mb-1">
+              報名者 / 選手 / 學生姓名 <span class="text-rose-600 font-extrabold">*</span>
+            </label>
+            <div class="relative">
+              <input type="text" id="inquiry-name" placeholder="請輸入真實姓名 (例：陳俊宏)" onkeydown="if(event.key==='Enter') searchRegistration()" class="w-full text-sm rounded-xl border border-surface-container-highest bg-surface-container-low px-3.5 py-2.5 pl-9 focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest focus:border-transparent outline-none transition-all">
+              <span class="material-symbols-outlined absolute left-2.5 top-2.5 text-outline text-[18px]">person</span>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-on-surface mb-1">
+              登記之聯絡電話號碼 <span class="text-rose-600 font-extrabold">*</span>
+            </label>
+            <div class="relative">
+              <input type="tel" id="inquiry-phone" placeholder="請輸入手機或電話 (例：0933888710)" onkeydown="if(event.key==='Enter') searchRegistration()" class="w-full text-sm rounded-xl border border-surface-container-highest bg-surface-container-low px-3.5 py-2.5 pl-9 focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest focus:border-transparent outline-none transition-all">
+              <span class="material-symbols-outlined absolute left-2.5 top-2.5 text-outline text-[18px]">phone_android</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 pt-1.5">
+          <button type="button" onclick="clearInquiryForm()" class="px-4 py-2.5 rounded-xl border border-surface-container-highest text-on-surface-variant hover:bg-surface-container text-xs font-bold transition-all">
+            清除重填
+          </button>
+          <button type="button" onclick="searchRegistration()" class="flex-1 py-2.5 rounded-xl bg-primary text-white font-bold text-xs shadow-md shadow-primary/25 hover:bg-primary/90 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">search</span>
+            驗證身分並查詢資料
           </button>
         </div>
       </div>
@@ -734,94 +764,271 @@
       setTimeout(() => bubble.remove(), 1200);
     }
 
-    // ---------- Render Inquiry Results ----------
-    function searchRegistration() {
-      const kw = (document.getElementById('inquiry-keyword').value || '').trim().toLowerCase();
-      renderInquiryResults(kw);
+    // ---------- 去識別化輔助函式 (De-identification) ----------
+    // 姓名去識別化：2字「王○」、3字「陳○宏」、4字以上「歐○○為」
+    function maskName(name) {
+      if (!name) return '';
+      const s = String(name).trim();
+      if (s.length <= 1) return s;
+      if (s.length === 2) {
+        return s[0] + '○';
+      }
+      if (s.length === 3) {
+        return s[0] + '○' + s[2];
+      }
+      const first = s.slice(0, 1);
+      const last = s.slice(-1);
+      const middle = '○'.repeat(s.length - 2);
+      return first + middle + last;
     }
 
-    function renderInquiryResults(keyword = '') {
-      const container = document.getElementById('inquiry-results-container');
-      const filtered = keyword
-        ? registrations.filter(r => 
-            (r.teamName && r.teamName.toLowerCase().includes(keyword)) ||
-            (r.leaderName && r.leaderName.toLowerCase().includes(keyword)) ||
-            (r.phone && r.phone.includes(keyword)) ||
-            (r.id && r.id.toLowerCase().includes(keyword))
-          )
-        : registrations;
+    // 電話號碼去識別化：遮罩中間3~4碼，例如「0933-***-710」或「0933***710」
+    function maskPhone(phone) {
+      if (!phone) return '';
+      const s = String(phone).trim();
+      if (/^\d{4}-\d{3}-\d{3,4}$/.test(s)) {
+        const parts = s.split('-');
+        return `${parts[0]}-***-${parts[2]}`;
+      }
+      const digits = s.replace(/\D/g, '');
+      if (digits.length >= 9) {
+        const start = digits.slice(0, 4);
+        const end = digits.slice(-3);
+        return `${start}***${end}`;
+      }
+      if (digits.length >= 7) {
+        return digits.slice(0, 3) + '***' + digits.slice(-2);
+      }
+      return s;
+    }
 
-      if (filtered.length === 0) {
+    // Email去識別化
+    function maskEmail(email) {
+      if (!email || !email.includes('@')) return '';
+      const [user, domain] = email.split('@');
+      if (user.length <= 2) return user[0] + '*@' + domain;
+      return user[0] + '***' + user.slice(-1) + '@' + domain;
+    }
+
+    // 隊伍名稱含人名去識別化
+    function maskTeamName(teamName) {
+      if (!teamName) return '';
+      let res = teamName.replace(/(志工隊・)(.+)/, (_, prefix, n) => prefix + maskName(n));
+      res = res.replace(/(親子組・)([^&]+)&(.+)/, (_, prefix, p1, p2) => prefix + maskName(p1.trim()) + ' & ' + maskName(p2.trim()));
+      return res;
+    }
+
+    // 跑者名單字串去識別化
+    function maskRunnersList(runners) {
+      if (!runners) return '';
+      if (Array.isArray(runners)) {
+        return runners.map(r => maskName(r)).join('、');
+      }
+      return String(runners).split(/[、,，\n]+/).map(r => maskName(r.trim())).join('、');
+    }
+
+    // ---------- 報名查詢與雙重身分核驗 ----------
+    function clearInquiryForm() {
+      const nameInput = document.getElementById('inquiry-name');
+      const phoneInput = document.getElementById('inquiry-phone');
+      if (nameInput) nameInput.value = '';
+      if (phoneInput) phoneInput.value = '';
+      renderInquiryResults('', '');
+    }
+
+    function searchRegistration() {
+      const nameInput = (document.getElementById('inquiry-name')?.value || '').trim();
+      const phoneInput = (document.getElementById('inquiry-phone')?.value || '').trim();
+
+      if (!nameInput || !phoneInput) {
+        alert('【安全驗證提示】\n請同時輸入【姓名】與【聯絡電話號碼】，才能進行身分核對查詢！');
+        if (!nameInput) document.getElementById('inquiry-name')?.focus();
+        else document.getElementById('inquiry-phone')?.focus();
+        return;
+      }
+
+      // 同步最新本地與試算表資料庫
+      try {
+        registrations = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS) || '[]');
+      } catch (e) {}
+
+      renderInquiryResults(nameInput, phoneInput);
+    }
+
+    function renderInquiryResults(queryName = '', queryPhone = '') {
+      const container = document.getElementById('inquiry-results-container');
+      if (!container) return;
+
+      // 1. 若未輸入完整的姓名與電話，顯示預設安全指引畫面（保護隱私，不顯示任何資料）
+      if (!queryName || !queryPhone) {
         container.innerHTML = `
-          <div class="p-8 text-center bg-surface-container-lowest rounded-2xl border border-surface-container flex flex-col items-center gap-2">
-            <span class="material-symbols-outlined text-4xl text-on-surface-variant/50">search_off</span>
-            <p class="font-bold text-sm text-on-surface">查無報名資料</p>
-            <p class="text-xs text-on-surface-variant">請確認輸入之姓名、手機號碼或隊伍名稱是否完全相符。</p>
+          <div class="p-8 text-center bg-surface-container-lowest rounded-2xl border border-surface-container shadow-sm flex flex-col items-center gap-3">
+            <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1">
+              <span class="material-symbols-outlined text-[32px]">shield_person</span>
+            </div>
+            <h4 class="font-bold text-base text-on-surface">請輸入姓名與電話驗證查詢</h4>
+            <p class="text-xs text-on-surface-variant max-w-md leading-relaxed">
+              為保障全體參賽選手與家長個人資料隱私，本系統落實<strong>個資去識別化與身分核驗</strong>。<br>
+              請於上方輸入報名時登記之【報名者真實姓名】與【聯絡電話號碼】驗證身分，核對成功後將即刻產製您的專屬大會數位通關憑證。
+            </p>
+            <div class="mt-2 text-[11px] text-on-surface-variant/80 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px] text-emerald-600">verified</span>
+              <span>身分雙重核驗・敏感個資全自動遮罩防護</span>
+            </div>
           </div>
         `;
         return;
       }
 
-      container.innerHTML = filtered.map(r => `
-        <div class="relative w-full rounded-2xl overflow-hidden shadow-md bg-surface-container-lowest border border-surface-container p-5 flex flex-col gap-3">
-          <div class="flex items-center justify-between border-b border-surface-container pb-2">
-            <div class="flex items-center gap-2">
-              <span class="w-8 h-8 rounded-full ${r.type === 'relay' ? 'bg-primary/10 text-primary' : r.type === 'family' ? 'bg-tertiary/10 text-tertiary' : 'bg-secondary/10 text-secondary'} flex items-center justify-center font-bold">
-                <span class="material-symbols-outlined text-[18px]">${r.type === 'relay' ? 'sprint' : r.type === 'family' ? 'sports_score' : 'volunteer_activism'}</span>
-              </span>
-              <div>
-                <h4 class="font-bold text-sm text-on-surface">${escapeHtml(r.teamName)}</h4>
-                <span class="text-[11px] text-on-surface-variant">${r.typeName}・${escapeHtml(r.category)}</span>
-              </div>
-            </div>
-            <span class="font-mono text-xs font-bold px-2.5 py-1 rounded-full bg-surface-container text-on-surface">
-              ${r.id}
-            </span>
-          </div>
+      // 2. 雙重身分核驗比對 (姓名與電話兩者皆必須符合)
+      let cleanQPhone = queryPhone.replace(/\D/g, '');
+      if (cleanQPhone.startsWith('9') && cleanQPhone.length === 9) {
+        cleanQPhone = '0' + cleanQPhone;
+      }
+      const cleanQName = queryName.toLowerCase();
 
-          <div class="grid grid-cols-2 gap-2 text-xs">
-            <div>
-              <span class="text-on-surface-variant block">聯絡代表</span>
-              <span class="font-bold text-on-surface">${escapeHtml(r.leaderName)}</span>
-            </div>
-            <div>
-              <span class="text-on-surface-variant block">聯絡電話</span>
-              <span class="font-bold text-on-surface">${escapeHtml(r.phone)}</span>
-            </div>
-            <div>
-              <span class="text-on-surface-variant block">${r.type === 'relay' ? '選手人數' : r.type === 'family' ? '參加場次' : '志工時段'}</span>
-              <span class="font-bold text-on-surface">${r.type === 'relay' ? '20 人正選 + 候補' : r.type === 'family' ? escapeHtml(r.session || '上午場') : escapeHtml(r.shift || '全天班')}</span>
-            </div>
-            <div>
-              <span class="text-on-surface-variant block">報名狀態</span>
-              <span class="inline-flex items-center gap-1 font-bold text-emerald-600">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> 報名成功
-              </span>
-            </div>
-          </div>
+      const filtered = registrations.filter(r => {
+        // (A) 電話比對：檢查 phone, contactPhone, phoneSelf, phoneParent
+        const phoneList = [r.phone, r.contactPhone, r.phoneSelf, r.phoneParent]
+          .filter(Boolean)
+          .map(p => {
+            let cp = String(p).replace(/\D/g, '');
+            if (cp.startsWith('9') && cp.length === 9) cp = '0' + cp;
+            return cp;
+          });
+        const isPhoneMatched = phoneList.some(cp => 
+          cp === cleanQPhone || 
+          (cp.length >= 7 && cleanQPhone.length >= 7 && (cp.endsWith(cleanQPhone.slice(-7)) || cleanQPhone.endsWith(cp.slice(-7))))
+        );
 
-          <!-- Digital Badge QR Code Simulation -->
-          <div class="mt-2 p-3 rounded-xl bg-surface-container-low border border-surface-container flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <div class="w-12 h-12 bg-white p-1 rounded-lg border border-surface-container flex items-center justify-center shadow-inner">
-                <span class="material-symbols-outlined text-3xl text-on-surface">qr_code_2</span>
-              </div>
-              <div class="flex flex-col">
-                <span class="font-bold text-xs text-on-surface">大會數位通關憑證</span>
-                <span class="text-[10px] text-on-surface-variant">檢錄時向裁判出示本條碼</span>
-              </div>
+        // (B) 姓名比對：檢查 leaderName, captainName, name, studentName, parentName, 以及跑者名冊
+        const nameList = [r.leaderName, r.captainName, r.name, r.studentName, r.parentName]
+          .filter(Boolean)
+          .map(n => String(n).trim().toLowerCase());
+
+        if (typeof r.runners === 'string') {
+          r.runners.split(/[、,，\n]+/).forEach(rn => {
+            const clean = rn.trim().toLowerCase();
+            if (clean) nameList.push(clean);
+          });
+        } else if (Array.isArray(r.runners)) {
+          r.runners.forEach(rn => {
+            const clean = String(rn).trim().toLowerCase();
+            if (clean) nameList.push(clean);
+          });
+        }
+
+        const isNameMatched = nameList.some(n => 
+          n === cleanQName || n.includes(cleanQName) || cleanQName.includes(n)
+        );
+
+        return isPhoneMatched && isNameMatched;
+      });
+
+      // 3. 查無符合資料
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center bg-surface-container-lowest rounded-2xl border border-surface-container shadow-sm flex flex-col items-center gap-3">
+            <div class="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center text-rose-600 mb-0.5">
+              <span class="material-symbols-outlined text-[30px]">person_search</span>
             </div>
-            <button onclick="downloadPassSim('${r.id}')" class="px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 text-xs font-bold active:scale-95 transition-all flex items-center gap-1">
-              <span class="material-symbols-outlined text-[16px]">download</span>
-              存證
-            </button>
+            <h4 class="font-bold text-base text-on-surface">查無相符的報名紀錄</h4>
+            <p class="text-xs text-on-surface-variant max-w-md leading-relaxed">
+              系統查無同時符合姓名「<strong class="text-on-surface">${escapeHtml(queryName)}</strong>」與電話「<strong class="text-on-surface">${escapeHtml(queryPhone)}</strong>」的報名資料。<br>
+              請再次核對輸入資訊是否與表單登記時完全一致。
+            </p>
+            <div class="mt-2 p-3 rounded-xl bg-surface-container-low border border-surface-container text-left text-xs text-on-surface-variant space-y-1 w-full max-w-md">
+              <p class="font-bold text-on-surface flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px] text-primary">help</span>
+                若有疑問或需協助查詢：
+              </p>
+              <p>承辦窗口：大庄國小學務處體育組</p>
+              <p>洽詢電話：03-5384035 分機 607</p>
+              <p>承辦信箱：stud03@ttps.hc.edu.tw</p>
+            </div>
           </div>
+        `;
+        return;
+      }
+
+      // 4. 核驗成功：渲染去識別化卡片
+      container.innerHTML = `
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-bold text-emerald-700 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[18px]">verified</span>
+            身分核驗成功！找到 ${filtered.length} 筆相符報名資料（已完成去識別化遮罩保護）
+          </span>
         </div>
-      `).join('');
-    }
+      ` + filtered.map(r => {
+        const maskedLeader = maskName(r.leaderName || r.name || r.studentName);
+        const maskedPhone = maskPhone(r.phone || r.phoneSelf || r.phoneParent);
+        const maskedTeam = maskTeamName(r.teamName || '報名隊伍');
+        const roleOrCategory = r.category || r.roles || (r.type === 'volunteer' ? '校慶服務志工' : '校慶競賽項目');
 
-    function downloadPassSim(id) {
-      alert(`已將【${id}】數位通行證憑證資訊儲存至您的裝置剪貼簿與相簿快取！`);
+        return `
+          <div class="relative w-full rounded-2xl overflow-hidden shadow-md bg-surface-container-lowest border border-surface-container p-5 flex flex-col gap-3.5">
+            <div class="flex items-center justify-between border-b border-surface-container pb-3">
+              <div class="flex items-center gap-2.5">
+                <span class="w-9 h-9 rounded-full ${r.type === 'relay' ? 'bg-primary/10 text-primary' : r.type === 'family' ? 'bg-tertiary/10 text-tertiary' : 'bg-secondary/10 text-secondary'} flex items-center justify-center font-bold">
+                  <span class="material-symbols-outlined text-[20px]">${r.type === 'relay' ? 'sprint' : r.type === 'family' ? 'sports_score' : 'volunteer_activism'}</span>
+                </span>
+                <div>
+                  <h4 class="font-bold text-sm text-on-surface">${escapeHtml(maskedTeam)}</h4>
+                  <span class="text-[11px] text-on-surface-variant font-medium">${escapeHtml(r.typeName || '')}・${escapeHtml(roleOrCategory)}</span>
+                </div>
+              </div>
+              <span class="font-mono text-xs font-bold px-2.5 py-1 rounded-full bg-surface-container text-on-surface border border-surface-container-highest">
+                ${r.id}
+              </span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5 text-xs">
+              <div class="p-2.5 rounded-xl bg-surface-container-low border border-surface-container/60">
+                <span class="text-on-surface-variant text-[11px] block">報名代表 / 選手</span>
+                <span class="font-bold text-on-surface text-sm">${escapeHtml(maskedLeader)}</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-surface-container-low border border-surface-container/60">
+                <span class="text-on-surface-variant text-[11px] block">聯絡電話 (去識別化)</span>
+                <span class="font-bold text-on-surface text-sm font-mono">${escapeHtml(maskedPhone)}</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-surface-container-low border border-surface-container/60">
+                <span class="text-on-surface-variant text-[11px] block">${r.type === 'relay' ? '隊伍編制' : r.type === 'family' ? '參加場次' : '服務時數'}</span>
+                <span class="font-bold text-on-surface">${r.type === 'relay' ? '20 人正選 + 候補' : r.type === 'family' ? escapeHtml(r.session || '上午場次') : '4 小時服務學習'}</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-surface-container-low border border-surface-container/60">
+                <span class="text-on-surface-variant text-[11px] block">報名狀態</span>
+                <span class="inline-flex items-center gap-1 font-bold text-emerald-700">
+                  <span class="w-2 h-2 rounded-full bg-emerald-600"></span> ${escapeHtml(r.status || '報名成功 (審核中)')}
+                </span>
+              </div>
+            </div>
+
+            ${r.runners ? `
+              <div class="p-2.5 rounded-xl bg-surface-container-low border border-surface-container/60 text-xs">
+                <span class="text-on-surface-variant text-[11px] block mb-1">跑者名冊 (去識別化)：</span>
+                <p class="font-medium text-on-surface leading-relaxed">${escapeHtml(maskRunnersList(r.runners))}</p>
+              </div>
+            ` : ''}
+
+            <!-- Digital Badge QR Code -->
+            <div class="mt-1 p-3 rounded-xl bg-surface-container-low border border-surface-container flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-white p-1 rounded-lg border border-surface-container flex items-center justify-center shadow-sm">
+                  <span class="material-symbols-outlined text-3xl text-on-surface">qr_code_2</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="font-bold text-xs text-on-surface">大會數位通關憑證</span>
+                  <span class="text-[10px] text-on-surface-variant">檢錄報到時向大會人員出示本代碼</span>
+                </div>
+              </div>
+              <button onclick="downloadPassSim('${r.id}')" class="px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary/90 text-xs font-bold active:scale-95 transition-all flex items-center gap-1 shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">download</span>
+                存證
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     // ---------- Utility Helpers ----------
