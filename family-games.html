@@ -3,7 +3,6 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
-  <meta content="mobile_tab" name="shell-type"/>
   <title>圈力衝刺 親子趣味競賽報名 - 大庄國小 115 學年度 71 週年校慶運動會</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,15 +11,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet"/>
   
   <style>
-    @layer base{
-      html,body{width:100vw;margin:0;padding:0;background-color:#faf8ff;}
-      body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent;}
-      .pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}
-      .pt-safe{padding-top:env(safe-area-inset-top,0px);}
-      main>:first-child{margin-top:0!important;}
-      main>:last-child{margin-bottom:0!important;}
+    @layer base {
+      html, body { width: 100vw; margin: 0; padding: 0; background-color: #faf8ff; }
+      body { overscroll-behavior: none; -webkit-tap-highlight-color: transparent; }
+      .pb-safe { padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px); }
+      .pt-safe { padding-top: max(env(safe-area-inset-top, 0px), 12px); }
     }
-    ::-webkit-scrollbar{display:none;}
+    ::-webkit-scrollbar { display: none; }
   </style>
 
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
@@ -142,8 +139,9 @@
           <span class="material-symbols-outlined text-[22px]">notifications</span>
           <span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-secondary-container"></span>
         </button>
-        <a aria-label="報名查詢與個人檔案" class="flex items-center justify-center p-0.5 rounded-full hover:ring-2 hover:ring-primary/20 transition-all" href="index.html#registration-inquiry">
-          <img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDs9ITEHsQmZkQfwQkg6rvJlYwbz-Zhj0giA0b5NTCEG7gBEcbBy3QTPe4aclIW8yqYBVMpvquR0bPifZ21zjoKbW47U4U8uQxcmExmzamOfjOgEaQsAgioSM0fTfj3XoqLQL8IYBv1UjEYdSp1Tq21o8b57rHSzbxPt6lb_wLDDRAzucp7g9Tb1b0puWTUYfy8WOXfdeVzzL4th5eTHSRRUTPaQjVuXov6mfDidIE"/>
+        <a aria-label="報名查詢與數位證" class="relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high active:scale-95 transition-all border border-surface-container-highest" href="index.html#registration-inquiry">
+          <span class="material-symbols-outlined text-primary text-[20px]">badge</span>
+          <span class="text-xs font-bold text-primary hidden sm:inline">報名查詢</span>
         </a>
       </div>
     </div>
@@ -569,44 +567,40 @@
         </div>
       </section>
 
-      <!-- Sticky Bottom Action Floating Island -->
-      <div class="sticky bottom-20 z-40 px-gutter pt-space-xs pb-space-sm bg-gradient-to-t from-surface via-surface/95 to-transparent">
-        <div class="flex items-center gap-space-sm bg-surface-container-lowest/90 backdrop-blur-xl p-2.5 rounded-full shadow-xl max-w-4xl mx-auto border border-surface-container">
-          <div class="flex flex-col pl-3">
-            <span class="font-label-sm text-label-sm text-on-surface-variant">圈力衝刺親子賽</span>
-            <div class="flex items-center gap-1">
-              <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span class="font-label-lg text-label-lg font-bold text-on-surface">11/27 中午12:00 截止</span>
-            </div>
-          </div>
-          <button onclick="scrollToForm()" class="flex-1 h-12 rounded-full bg-tertiary text-white font-label-lg text-label-lg font-bold flex items-center justify-center gap-2 hover:brightness-105 active:scale-95 transition-all shadow-md">
-            <span>填寫線上報名表</span>
-            <span class="material-symbols-outlined text-[18px]">arrow_downward</span>
-          </button>
-        </div>
-      </div>
-
     </div>
   </main>
 
   <!-- ==================== BOTTOM TAB BAR NAVIGATION ==================== -->
-  <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_-2px_12px_rgba(15,23,42,0.05)] border-t border-surface-container">
-    <div class="flex justify-around items-center h-20 px-space-xs max-w-4xl mx-auto">
-      <a class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition-all duration-200" data-path="relay" href="relay.html">
-        <span class="material-symbols-outlined text-[24px]">sprint</span>
-        <span class="font-label-md text-label-md">薪傳接力</span>
+  <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/95 backdrop-blur-xl border-t border-surface-container shadow-[0_-2px_12px_rgba(15,23,42,0.06)]">
+    <div class="max-w-4xl mx-auto flex justify-around items-center h-16 px-2">
+      <!-- Tab 1: 首頁 -->
+      <a href="index.html" class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-primary transition-all">
+        <span class="material-symbols-outlined text-[23px]">home</span>
+        <span class="text-[11px]">大會首頁</span>
       </a>
-      <a aria-current="page" class="flex flex-col items-center justify-center gap-1 w-16 h-14 transition-all duration-200 text-tertiary font-bold" data-path="family-games" href="family-games.html">
-        <span class="material-symbols-outlined text-[24px]">sports_score</span>
-        <span class="font-label-md text-label-md">親子趣味</span>
+
+      <!-- Tab 2: 薪傳接力 -->
+      <a href="relay.html" class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-primary transition-all">
+        <span class="material-symbols-outlined text-[23px]">sprint</span>
+        <span class="text-[11px]">薪傳接力</span>
       </a>
-      <a class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition-all duration-200" data-path="volunteers" href="volunteers.html">
-        <span class="material-symbols-outlined text-[24px]">volunteer_activism</span>
-        <span class="font-label-md text-label-md">熱血志工</span>
+
+      <!-- Tab 3: 親子趣味 (Current) -->
+      <a href="family-games.html" class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-tertiary font-bold transition-all">
+        <span class="material-symbols-outlined text-[23px]">sports_score</span>
+        <span class="text-[11px]">親子趣味</span>
       </a>
-      <a class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition-all duration-200" data-path="dynamic-island" href="dynamic-island.html">
-        <span class="material-symbols-outlined text-[24px]">campaign</span>
-        <span class="font-label-md text-label-md">71動態島</span>
+
+      <!-- Tab 4: 熱血志工 -->
+      <a href="volunteers.html" class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-primary transition-all">
+        <span class="material-symbols-outlined text-[23px]">volunteer_activism</span>
+        <span class="text-[11px]">熱血志工</span>
+      </a>
+
+      <!-- Tab 5: 71動態島 -->
+      <a href="dynamic-island.html" class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-primary transition-all">
+        <span class="material-symbols-outlined text-[23px]">campaign</span>
+        <span class="text-[11px]">71動態島</span>
       </a>
     </div>
   </nav>
@@ -1152,7 +1146,7 @@
         <div class="space-y-2 pt-1">
           <div>
             <label class="block font-bold text-on-surface mb-1">家長姓名：</label>
-            <input type="text" id="edit-val-parent" value="${found.leaderName || found.name || ''}" class="w-full h-9 px-2.5 rounded border border-surface-container-highest bg-surface-container-lowest text-on-surface">
+            <input type="text" id="edit-val-parent" value="${found.parentName || found.leaderName || found.name || ''}" class="w-full h-9 px-2.5 rounded border border-surface-container-highest bg-surface-container-lowest text-on-surface">
           </div>
           <div>
             <label class="block font-bold text-on-surface mb-1">學生姓名：</label>
@@ -1185,6 +1179,7 @@
         allReg = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG)) || [];
         const idx = allReg.findIndex(r => r.id === id);
         if (idx !== -1) {
+          allReg[idx].parentName = newParent;
           allReg[idx].leaderName = newParent;
           allReg[idx].studentName = newStudent;
           allReg[idx].phone = newPhone;
