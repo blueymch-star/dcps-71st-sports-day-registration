@@ -1015,7 +1015,10 @@
 
       const parentName = document.getElementById('parent-name').value.trim();
       const parentEmail = document.getElementById('parent-email').value.trim();
-      const parentPhone = document.getElementById('parent-phone').value.trim();
+      let parentPhone = document.getElementById('parent-phone').value.trim();
+      if (/^9\d{8}$/.test(parentPhone)) {
+        parentPhone = '0' + parentPhone;
+      }
       const studentName = document.getElementById('student-name').value.trim();
       const studentGrade = document.querySelector('input[name="student_grade"]:checked')?.value || '三年級';
       const studentClass = document.getElementById('student-class').value;

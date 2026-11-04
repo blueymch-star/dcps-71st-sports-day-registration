@@ -290,6 +290,15 @@
     let currentTab = 'family'; // default active tab: family or relay
     let cloudData = { family: [], relay: [], volunteer: [] };
 
+    // Phone format helper (確保保留開頭 0)
+    function formatPhone(phone) {
+      if (!phone) return '-';
+      let str = String(phone).trim();
+      if (str.startsWith("'")) str = str.substring(1).trim();
+      if (/^9\d{8}$/.test(str)) str = '0' + str;
+      return str;
+    }
+
     // 1. Password Verification
     function checkAuth() {
       const isAuthed = sessionStorage.getItem(AUTH_SESSION_KEY) === 'true';
@@ -533,7 +542,7 @@
               ${escapeHtml(item.email || '-')}
             </td>
             <td class="py-3.5 px-4 font-mono font-bold text-on-surface">
-              ${escapeHtml(item.phone || '-')}
+              ${escapeHtml(formatPhone(item.phone))}
             </td>
             <td class="py-3.5 px-4 font-bold text-tertiary">
               ${escapeHtml(item.studentName || item.childName || '-')}
@@ -624,7 +633,7 @@
               ${escapeHtml(item.birthYear || '-')}
             </td>
             <td class="py-3.5 px-4 font-mono font-bold text-on-surface">
-              ${escapeHtml(item.phone || '-')}
+              ${escapeHtml(formatPhone(item.phone))}
             </td>
             <td class="py-3.5 px-4 font-mono text-on-surface-variant">
               ${item.gradYear && item.gradYear !== '0' ? `第 ${escapeHtml(item.gradYear)} 屆` : '在校/教職員'}
@@ -699,11 +708,11 @@
               ${escapeHtml(item.schoolClass || '-')}
             </td>
             <td class="py-3.5 px-4 font-mono font-bold text-on-surface">
-              ${escapeHtml(item.phoneSelf || item.phone || '-')}
+              ${escapeHtml(formatPhone(item.phoneSelf || item.phone))}
             </td>
             <td class="py-3.5 px-4 text-xs">
               <span class="text-on-surface-variant">${escapeHtml(item.parentRel || '')} </span>
-              <span class="font-mono">${escapeHtml(item.phoneParent || '-')}</span>
+              <span class="font-mono">${escapeHtml(formatPhone(item.phoneParent))}</span>
             </td>
             <td class="py-3.5 px-4 font-mono text-on-surface-variant">
               ${escapeHtml(item.email || '-')}
@@ -799,7 +808,7 @@
           `"${i.date || ''}"`,
           `"${i.parentName || i.leaderName || ''}"`,
           `"${i.email || ''}"`,
-          `"${i.phone || ''}"`,
+          `"\t${formatPhone(i.phone)}"`,
           `"${i.studentName || i.childName || ''}"`,
           `"${i.studentGrade || ''}"`,
           `"${i.studentClass || ''}"`,
@@ -817,7 +826,7 @@
           `"${i.gender || ''}"`,
           `"${i.email || ''}"`,
           `"${i.birthYear || ''}"`,
-          `"${i.phone || ''}"`,
+          `"\t${formatPhone(i.phone)}"`,
           `"${i.gradYear || ''}"`,
           `"${i.category || ''}"`,
           `"${i.status || ''}"`
@@ -832,9 +841,9 @@
           `"${i.date || ''}"`,
           `"${i.studentName || ''}"`,
           `"${i.schoolClass || ''}"`,
-          `"${i.phoneSelf || i.phone || ''}"`,
+          `"\t${formatPhone(i.phoneSelf || i.phone)}"`,
           `"${i.parentRel || ''}"`,
-          `"${i.phoneParent || ''}"`,
+          `"\t${formatPhone(i.phoneParent)}"`,
           `"${i.email || ''}"`,
           `"${i.isAlumni || ''}"`,
           `"${i.serviceRoles || ''}"`,

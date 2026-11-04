@@ -128,13 +128,15 @@ function doPost(e) {
         regId,
         parentName,
         email,
-        phone,
+        formatPhoneForSheet(phone),
         studentName,
         studentGrade,
         studentClass,
         combinedTitle,
         familyStatus
       ]);
+      var lastRowFam = sheetFamily.getLastRow();
+      sheetFamily.getRange(lastRowFam, 5).setNumberFormat('@');
 
       // 3. 自動發 Email 通知：報名者及寄給管理者 (stud03@ttps.hc.edu.tw)
       var emailNoticeSent = false;
@@ -253,14 +255,17 @@ function doPost(e) {
         volRegId,
         data.studentName || "",
         data.schoolClass || "",
-        data.phoneSelf || data.phone || "",
-        data.phoneParent || "",
+        formatPhoneForSheet(data.phoneSelf || data.phone || ""),
+        formatPhoneForSheet(data.phoneParent || ""),
         data.parentRel || "",
         data.email || "",
         isAlumni,
         data.serviceRoles || "",
         volStatus
       ]);
+      var lastRowVol = sheetVol.getLastRow();
+      sheetVol.getRange(lastRowVol, 5).setNumberFormat('@');
+      sheetVol.getRange(lastRowVol, 6).setNumberFormat('@');
 
       return ContentService.createTextOutput(JSON.stringify({
         result: "success",
@@ -345,10 +350,12 @@ function doPost(e) {
       gender,
       emailRelay,
       birthYear,
-      phoneRelay,
+      formatPhoneForSheet(phoneRelay),
       gradYear,
       status
     ]);
+    var lastRowRelay = sheetRelay.getLastRow();
+    sheetRelay.getRange(lastRowRelay, 8).setNumberFormat('@');
 
     // 3. 自動發 Email 通知：報名者及寄給管理者 (stud03@ttps.hc.edu.tw)
     var emailNoticeSent = false;
@@ -446,6 +453,7 @@ function doPost(e) {
 
 function doGet(e) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
+  fixExistingPhones(ss);
   var params = e ? e.parameter || {} : {};
   var action = params.action || "";
 
@@ -566,7 +574,7 @@ function getAllRegistrations(ss) {
         gender: String(r[4]),
         email: String(r[5]),
         birthYear: String(r[6]),
-        phone: String(r[7]),
+        phone: cleanPhoneVal(r[7]),
         gradYear: String(r[8]),
         status: String(r[9])
       });
@@ -584,7 +592,7 @@ function getAllRegistrations(ss) {
         id: String(f[1]),
         parentName: String(f[2]),
         email: String(f[3]),
-        phone: String(f[4]),
+        phone: cleanPhoneVal(f[4]),
         studentName: String(f[5]),
         studentGrade: String(f[6]),
         studentClass: String(f[7]),
@@ -605,8 +613,8 @@ function getAllRegistrations(ss) {
         id: String(v[1]),
         studentName: String(v[2]),
         schoolClass: String(v[3]),
-        phoneSelf: String(v[4]),
-        phoneParent: String(v[5]),
+        phoneSelf: cleanPhoneVal(v[4]),
+        phoneParent: cleanPhoneVal(v[5]),
         parentRel: String(v[6]),
         email: String(v[7]),
         isAlumni: String(v[8]),
@@ -625,6 +633,107 @@ function formatDateVal(val) {
     return Utilities.formatDate(val, "Asia/Taipei", "yyyy/MM/dd HH:mm:ss");
   }
   return String(val);
+}
+
+// 輔助函式：確保電話號碼寫入 Google 試算表時保留開頭 0
+function formatPhoneForSheet(val) {
+  if (val === null || val === undefined) return "";
+  var str = String(val).trim();
+  if (!str) return "";
+  // 若為 9 碼電話（如 912345678），補上開頭 0
+  if (/^9\d{8}$/.test(str)) {
+    str = "0" + str;
+  }
+  // 在 Google 試算表中，單引號開頭 ' 表示強制為文字格式，試算表會完整保留開頭 0 且在介面上不顯示單引號
+  if (str.charAt(0) !== "'") {
+    return "'" + str;
+  }
+  return str;
+}
+
+// 輔助函式：從試算表讀取電話號碼時，移除多餘單引號並補齊開頭 0
+function cleanPhoneVal(val) {
+  if (val === null || val === undefined) return "";
+  var str = String(val).trim();
+  if (str.charAt(0) === "'") {
+    str = str.substring(1).trim();
+  }
+  if (/^9\d{8}$/.test(str)) {
+    str = "0" + str;
+  }
+  return str;
+}
+
+// 輔助函式：自動修復 Google 試算表中既有遺失開頭 0 的電話欄位，並將格式設為純文字
+function fixExistingPhones(ss) {
+  try {
+    // 1. 親子賽 (Col 5)
+    var sFamily = ss.getSheetByName("親子趣味競賽名冊");
+    if (sFamily && sFamily.getLastRow() > 1) {
+      var numRows = sFamily.getLastRow() - 1;
+      var range = sFamily.getRange(2, 5, numRows, 1);
+      range.setNumberFormat('@');
+      var vals = range.getValues();
+      var changed = false;
+      for (var i = 0; i < vals.length; i++) {
+        var p = String(vals[i][0]).trim();
+        if (/^9\d{8}$/.test(p)) {
+          vals[i][0] = "'" + "0" + p;
+          changed = true;
+        } else if (p && p.charAt(0) !== "'") {
+          vals[i][0] = "'" + p;
+          changed = true;
+        }
+      }
+      if (changed) range.setValues(vals);
+    }
+
+    // 2. 接力賽 (Col 8)
+    var sRelay = ss.getSheetByName("大隊接力報名名冊");
+    if (sRelay && sRelay.getLastRow() > 1) {
+      var numRowsR = sRelay.getLastRow() - 1;
+      var rangeR = sRelay.getRange(2, 8, numRowsR, 1);
+      rangeR.setNumberFormat('@');
+      var valsR = rangeR.getValues();
+      var changedR = false;
+      for (var j = 0; j < valsR.length; j++) {
+        var pR = String(valsR[j][0]).trim();
+        if (/^9\d{8}$/.test(pR)) {
+          valsR[j][0] = "'" + "0" + pR;
+          changedR = true;
+        } else if (pR && pR.charAt(0) !== "'") {
+          valsR[j][0] = "'" + pR;
+          changedR = true;
+        }
+      }
+      if (changedR) rangeR.setValues(valsR);
+    }
+
+    // 3. 志工 (Col 5, 6)
+    var sVol = ss.getSheetByName("校慶服務志工名冊");
+    if (sVol && sVol.getLastRow() > 1) {
+      var numRowsV = sVol.getLastRow() - 1;
+      var rangeV = sVol.getRange(2, 5, numRowsV, 2);
+      rangeV.setNumberFormat('@');
+      var valsV = rangeV.getValues();
+      var changedV = false;
+      for (var k = 0; k < valsV.length; k++) {
+        for (var c = 0; c < 2; c++) {
+          var pV = String(valsV[k][c]).trim();
+          if (/^9\d{8}$/.test(pV)) {
+            valsV[k][c] = "'" + "0" + pV;
+            changedV = true;
+          } else if (pV && pV.charAt(0) !== "'") {
+            valsV[k][c] = "'" + pV;
+            changedV = true;
+          }
+        }
+      }
+      if (changedV) rangeV.setValues(valsV);
+    }
+  } catch (err) {
+    Logger.log("fixExistingPhones error: " + err);
+  }
 }
 
 // 輔助函式：供管理者在 Apps Script 編輯器點擊執行，完成「首次寄信權限授權」

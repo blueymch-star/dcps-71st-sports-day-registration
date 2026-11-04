@@ -885,7 +885,10 @@
       const gender = document.querySelector('input[name="gender"]:checked')?.value || '男';
       const email = document.getElementById('field-email').value.trim();
       const birthYear = document.getElementById('field-birth-year').value;
-      const phone = document.getElementById('field-phone').value.trim();
+      let phone = document.getElementById('field-phone').value.trim();
+      if (/^9\d{8}$/.test(phone)) {
+        phone = '0' + phone;
+      }
       const gradYear = document.getElementById('field-grad-year').value.trim() || '0';
       const category = currentSelectedDivision || document.getElementById('field-selected-division')?.value || '校友組';
 

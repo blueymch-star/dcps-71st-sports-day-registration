@@ -166,8 +166,9 @@
           <span class="material-symbols-outlined text-[22px]">notifications</span>
           <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-secondary-container"></span>
         </button>
-        <a aria-label="報名查詢與個人檔案" class="flex items-center justify-center p-0.5 rounded-full hover:ring-2 hover:ring-primary/20 transition-all" href="index.html#registration-inquiry">
-          <img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDs9ITEHsQmZkQfwQkg6rvJlYwbz-Zhj0giA0b5NTCEG7gBEcbBy3QTPe4aclIW8yqYBVMpvquR0bPifZ21zjoKbW47U4U8uQxcmExmzamOfjOgEaQsAgioSM0fTfj3XoqLQL8IYBv1UjEYdSp1Tq21o8b57rHSzbxPt6lb_wLDDRAzucp7g9Tb1b0puWTUYfy8WOXfdeVzzL4th5eTHSRRUTPaQjVuXov6mfDidIE"/>
+        <a aria-label="報名查詢與數位證" class="relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high active:scale-95 transition-all border border-surface-container-highest" href="index.html#registration-inquiry">
+          <span class="material-symbols-outlined text-primary text-[20px]">badge</span>
+          <span class="text-xs font-bold text-primary hidden sm:inline">報名查詢</span>
         </a>
       </div>
     </div>
@@ -188,7 +189,7 @@
               <div class="flex flex-col min-w-0">
                 <div class="flex items-center gap-space-xs flex-wrap">
                   <span class="font-headline-sm text-headline-sm text-on-surface truncate font-bold">志工甄選開放中</span>
-                  <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-error-container text-error font-bold tracking-wide" id="quota-badge-volunteers">限定 20 人，剩餘 6 名</span>
+                  <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold tracking-wide" id="quota-badge-volunteers">限定 20 人，剩餘 20 名</span>
                 </div>
                 <span class="font-body-sm text-body-sm text-on-surface-variant truncate">甄選錄取順序：1. 畢業校友優先 2. 表單報名順序</span>
               </div>
@@ -202,11 +203,11 @@
           <!-- Real-time Quota Progress Bar (依確實人數動態演算) -->
           <div class="pt-2 border-t border-surface-container flex flex-col gap-1.5">
             <div class="flex items-center justify-between text-xs">
-              <span class="font-bold text-on-surface" id="quota-progress-label">志工招募進度：14 / 20 人 (70%)</span>
-              <span class="font-bold text-secondary" id="quota-progress-remain">剩餘 6 名即額滿</span>
+              <span class="font-bold text-on-surface" id="quota-progress-label">志工招募進度：0 / 20 人 (0%)</span>
+              <span class="font-bold text-secondary" id="quota-progress-remain">剩餘 20 名即額滿</span>
             </div>
             <div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden">
-              <div class="bg-gradient-to-r from-secondary-container via-amber-500 to-primary h-full transition-all duration-500" id="quota-progress-bar" style="width: 70%;"></div>
+              <div class="bg-gradient-to-r from-secondary-container via-amber-500 to-primary h-full transition-all duration-500" id="quota-progress-bar" style="width: 0%;"></div>
             </div>
           </div>
         </div>
@@ -294,14 +295,14 @@
           <div class="grid grid-cols-1 gap-space-sm" id="service-group-options">
             <!-- Role 1: 場地器材組 -->
             <label class="group relative flex items-start gap-space-md p-space-md rounded-xl bg-surface-container-lowest shadow-sm cursor-pointer transition-all hover:shadow-md border border-transparent has-[:checked]:border-primary/40 has-[:checked]:bg-primary/5">
-              <input checked class="peer sr-only service-role-input" name="service_content" type="checkbox" value="場地器材組"/>
+              <input class="peer sr-only service-role-input" name="service_content" type="checkbox" value="場地器材組"/>
               <div class="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center text-on-primary-fixed flex-shrink-0 group-hover:scale-105 transition-transform">
                 <span class="material-symbols-outlined text-[26px]">inventory_2</span>
               </div>
               <div class="flex-1 min-w-0">
                 <div class="flex items-center justify-between">
                   <span class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors font-bold">場地器材組</span>
-                  <div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center transition-all check-badge">
+                  <div class="w-6 h-6 rounded-full bg-surface-container text-surface-container flex items-center justify-center transition-all check-badge">
                     <span class="material-symbols-outlined text-[16px]">check</span>
                   </div>
                 </div>
@@ -317,14 +318,14 @@
 
             <!-- Role 2: 秩序維護組 -->
             <label class="group relative flex items-start gap-space-md p-space-md rounded-xl bg-surface-container-lowest shadow-sm cursor-pointer transition-all hover:shadow-md border border-transparent has-[:checked]:border-primary/40 has-[:checked]:bg-primary/5">
-              <input checked class="peer sr-only service-role-input" name="service_content" type="checkbox" value="秩序維護組"/>
+              <input class="peer sr-only service-role-input" name="service_content" type="checkbox" value="秩序維護組"/>
               <div class="w-12 h-12 rounded-xl bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed flex-shrink-0 group-hover:scale-105 transition-transform">
                 <span class="material-symbols-outlined text-[26px]">shield</span>
               </div>
               <div class="flex-1 min-w-0">
                 <div class="flex items-center justify-between">
                   <span class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors font-bold">秩序維護組</span>
-                  <div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center transition-all check-badge">
+                  <div class="w-6 h-6 rounded-full bg-surface-container text-surface-container flex items-center justify-center transition-all check-badge">
                     <span class="material-symbols-outlined text-[16px]">check</span>
                   </div>
                 </div>
@@ -421,14 +422,14 @@
               <div>
                 <label class="font-label-md text-label-md text-on-surface mb-1 block font-semibold">學生姓名 <span class="text-error font-bold">*</span></label>
                 <div class="relative">
-                  <input id="vol-student-name" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="請輸入學生真實姓名" required type="text" value="陳俊宏"/>
+                  <input id="vol-student-name" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="請輸入學生真實姓名" required type="text" value=""/>
                   <span class="material-symbols-outlined absolute right-3.5 top-3.5 text-outline text-[22px]">badge</span>
                 </div>
               </div>
               <div>
                 <label class="font-label-md text-label-md text-on-surface mb-1 block font-semibold">現就讀學校 / 班級 <span class="text-error font-bold">*</span></label>
                 <div class="relative">
-                  <input id="vol-school-class" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="例：香山高中 / 一年二班" required type="text" value="香山高中 / 一年二班"/>
+                  <input id="vol-school-class" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="例：香山高中 / 一年二班" required type="text" value=""/>
                   <span class="material-symbols-outlined absolute right-3.5 top-3.5 text-outline text-[22px]">apartment</span>
                 </div>
               </div>
@@ -438,14 +439,14 @@
                 <div>
                   <label class="font-label-md text-label-md text-on-surface mb-1 block font-semibold">聯絡電話 / 手機 1 (自己) <span class="text-error font-bold">*</span></label>
                   <div class="relative">
-                    <input id="vol-phone-self" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="例：0912-345-678" required type="tel" value="0933-888-710"/>
+                    <input id="vol-phone-self" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="例：0912-345-678" required type="tel" value=""/>
                     <span class="material-symbols-outlined absolute right-3.5 top-3.5 text-outline text-[22px]">smartphone</span>
                   </div>
                 </div>
                 <div>
                   <label class="font-label-md text-label-md text-on-surface mb-1 block font-semibold">聯絡電話 / 手機 2 (家長) <span class="text-error font-bold">*</span></label>
                   <div class="relative">
-                    <input id="vol-phone-parent" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="例：0911-223-344" required type="tel" value="0911-223-344"/>
+                    <input id="vol-phone-parent" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="例：0911-223-344" required type="tel" value=""/>
                     <span class="material-symbols-outlined absolute right-3.5 top-3.5 text-outline text-[22px]">contact_phone</span>
                   </div>
                 </div>
@@ -455,7 +456,7 @@
               <div>
                 <label class="font-label-md text-label-md text-on-surface mb-1 block font-semibold">家長姓名 / 關係 <span class="text-error font-bold">*</span></label>
                 <div class="relative">
-                  <input id="vol-parent-rel" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="例：陳美玲 / 母親" required type="text" value="王秀琴 / 母親"/>
+                  <input id="vol-parent-rel" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="例：陳美玲 / 母親" required type="text" value=""/>
                   <span class="material-symbols-outlined absolute right-3.5 top-3.5 text-outline text-[22px]">family_restroom</span>
                 </div>
               </div>
@@ -467,7 +468,7 @@
                   <span class="font-label-sm text-label-sm text-outline">錄取通知寄送與工作聯繫</span>
                 </div>
                 <div class="relative">
-                  <input id="vol-email" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="請輸入電子郵件信箱" required type="email" value="running_chen71@gmail.com"/>
+                  <input id="vol-email" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="請輸入電子郵件信箱" required type="email" value=""/>
                   <span class="material-symbols-outlined absolute right-3.5 top-3.5 text-outline text-[22px]">mail</span>
                 </div>
               </div>
@@ -476,7 +477,7 @@
             <!-- Current Count & Footer Link (完全參照 BeClass 原貌與動作設計) -->
             <div class="pt-3 border-t border-surface-container flex flex-col gap-2 text-xs">
               <div class="flex items-center justify-between text-on-surface-variant flex-wrap gap-2">
-                <span class="text-primary font-bold text-sm" id="current-registered-text">※目前報名數：14 人 (限定 20 人)</span>
+                <span class="text-primary font-bold text-sm" id="current-registered-text">※目前報名數：0 人 (限定 20 人)</span>
                 <div class="flex items-center gap-1.5 text-primary font-bold text-sm">
                   <a href="index.html#registration-inquiry" class="hover:underline flex items-center gap-0.5">
                     <span class="text-emerald-700">[✓查詢]</span>
@@ -498,10 +499,6 @@
                 <div class="flex items-center gap-2">
                   <button type="button" onclick="openDemoFill()" class="text-[11px] text-on-surface-variant hover:text-primary underline">
                     [一鍵示範填寫資料]
-                  </button>
-                  <span class="text-on-surface-variant/30">・</span>
-                  <button type="button" onclick="resetVolunteerMockList()" class="text-[11px] text-amber-700 underline" title="重設志工名冊資料庫">
-                    [重設 14 人名冊]
                   </button>
                 </div>
               </div>
@@ -564,7 +561,7 @@
           
           <button id="submit-volunteer-btn" type="submit" class="w-full py-4 px-space-lg rounded-full bg-primary hover:bg-primary-container active:scale-[0.98] text-on-primary font-headline-sm text-headline-sm tracking-wide shadow-lg shadow-primary/25 flex items-center justify-center gap-space-sm transition-all duration-200 font-bold">
             <span class="material-symbols-outlined text-[24px]">check_circle</span>
-            <span id="submit-btn-text">立即送出志工報名表 (同步寫入 GAS 試算表)</span>
+            <span id="submit-btn-text">立即送出志工報名表</span>
             <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
           </button>
           
@@ -579,23 +576,36 @@
   </main>
 
   <!-- ==================== BOTTOM TAB BAR NAVIGATION ==================== -->
-  <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_-2px_12px_rgba(15,23,42,0.05)] border-t border-surface-container">
-    <div class="flex justify-around items-center h-20 px-space-xs max-w-4xl mx-auto">
-      <a class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition-all duration-200" data-path="relay" href="relay.html">
-        <span class="material-symbols-outlined text-[24px]">sprint</span>
-        <span class="font-label-md text-label-md">薪傳接力</span>
+  <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/95 backdrop-blur-xl border-t border-surface-container shadow-[0_-2px_12px_rgba(15,23,42,0.06)]">
+    <div class="max-w-4xl mx-auto flex justify-around items-center h-16 px-2">
+      <!-- Tab 1: 首頁 -->
+      <a href="index.html" class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-primary transition-all">
+        <span class="material-symbols-outlined text-[23px]">home</span>
+        <span class="text-[11px]">大會首頁</span>
       </a>
-      <a class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition-all duration-200" data-path="family-games" href="family-games.html">
-        <span class="material-symbols-outlined text-[24px]">sports_score</span>
-        <span class="font-label-md text-label-md">親子趣味</span>
+
+      <!-- Tab 2: 薪傳接力 -->
+      <a href="relay.html" class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-primary transition-all">
+        <span class="material-symbols-outlined text-[23px]">sprint</span>
+        <span class="text-[11px]">薪傳接力</span>
       </a>
-      <a aria-current="page" class="flex flex-col items-center justify-center gap-1 w-16 h-14 transition-all duration-200 text-primary font-bold" data-path="volunteers" href="volunteers.html">
-        <span class="material-symbols-outlined text-[24px]">volunteer_activism</span>
-        <span class="font-label-md text-label-md">熱血志工</span>
+
+      <!-- Tab 3: 親子趣味 -->
+      <a href="family-games.html" class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-primary transition-all">
+        <span class="material-symbols-outlined text-[23px]">sports_score</span>
+        <span class="text-[11px]">親子趣味</span>
       </a>
-      <a class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition-all duration-200" data-path="dynamic-island" href="dynamic-island.html">
-        <span class="material-symbols-outlined text-[24px]">campaign</span>
-        <span class="font-label-md text-label-md">71動態島</span>
+
+      <!-- Tab 4: 熱血志工 (Current) -->
+      <a href="volunteers.html" class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-primary font-bold transition-all">
+        <span class="material-symbols-outlined text-[23px]">volunteer_activism</span>
+        <span class="text-[11px]">熱血志工</span>
+      </a>
+
+      <!-- Tab 5: 71動態島 -->
+      <a href="dynamic-island.html" class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-primary transition-all">
+        <span class="material-symbols-outlined text-[23px]">campaign</span>
+        <span class="text-[11px]">71動態島</span>
       </a>
     </div>
   </nav>
@@ -659,6 +669,87 @@
         </button>
         <button onclick="toggleModal('modal-success')" class="px-4 py-2.5 rounded-xl bg-surface-container-high text-on-surface text-xs font-bold">
           完成關閉
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: 重複報名提示方塊 -->
+  <div id="modal-duplicate-notice" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-amber-300 overflow-hidden flex flex-col">
+      <div class="p-5 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-center flex flex-col items-center gap-1.5 shrink-0">
+        <span class="material-symbols-outlined text-5xl">warning</span>
+        <h3 class="text-xl font-bold font-headline">重複報名提示</h3>
+        <p class="text-xs text-amber-100">姓名相同・請勿重複送出</p>
+      </div>
+
+      <div class="p-5 flex flex-col gap-3.5 text-xs text-on-surface">
+        <div class="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-950 flex flex-col gap-2">
+          <p class="font-bold text-sm flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-600 text-[20px]">person_alert</span>
+            <span><strong id="duplicate-player-name" class="text-rose-600 font-extrabold text-base"></strong>已重複報名！</span>
+          </p>
+          <p class="leading-relaxed text-amber-900" id="duplicate-notice-msg">
+            名冊中已存在相同志工姓名的報名資料<span id="duplicate-reg-id-wrap" class="hidden">（報名代碼：<span id="duplicate-reg-id" class="font-mono font-bold text-amber-950"></span>）</span>。為確保服務人力調配與公平甄選，請勿重複送出報名。
+          </p>
+        </div>
+
+        <div class="space-y-1.5 bg-surface-container-low p-3.5 rounded-xl border border-surface-container">
+          <div class="font-bold text-on-surface flex items-center gap-1">
+            <span class="material-symbols-outlined text-[16px] text-primary">edit_note</span>
+            若需更正原報名資料：
+          </div>
+          <p class="text-on-surface-variant leading-relaxed">
+            請點選表單下方【✓編修】功能輸入手機或 Email 進行資料修正，若有其它問題請洽活動承辦人員。
+          </p>
+          <div class="pt-2 border-t border-surface-container/60 text-[11px] text-on-surface-variant space-y-0.5">
+            <p>承辦單位：大庄國小學務處體育組</p>
+            <p>聯絡電話：03-5384035 分機 607</p>
+            <p>承辦信箱：stud03@ttps.hc.edu.tw</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3.5 bg-surface-container flex gap-2 justify-end shrink-0">
+        <button onclick="toggleModal('modal-duplicate-notice')" class="px-5 py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-md hover:bg-primary/95">
+          我知道了
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: 停止報名/報名截止提示方塊 -->
+  <div id="modal-closed-notice" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-rose-300 overflow-hidden flex flex-col">
+      <div class="p-6 bg-gradient-to-r from-rose-600 to-red-700 text-white text-center flex flex-col items-center gap-1.5 shrink-0">
+        <span class="material-symbols-outlined text-5xl">event_busy</span>
+        <h3 class="text-2xl font-black font-headline tracking-wide">報名截止</h3>
+        <p class="text-xs text-rose-100">大庄71校慶熱血服務志工甄選</p>
+      </div>
+
+      <div class="p-6 flex flex-col gap-4 text-center text-xs">
+        <div class="p-4 rounded-xl bg-rose-50 border border-rose-200 flex flex-col items-center gap-2">
+          <p class="text-base font-extrabold text-rose-900 leading-relaxed tracking-wide">
+            報名截止<br>
+            若有其它問題請洽活動承辦人員
+          </p>
+        </div>
+
+        <div class="space-y-1.5 bg-surface-container-low p-3.5 rounded-xl border border-surface-container text-left text-on-surface-variant">
+          <div class="font-bold text-on-surface flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px] text-primary">contacts</span>
+            活動承辦單位洽詢窗口：
+          </div>
+          <p>承辦單位：新竹市大庄國小 學務處體育組</p>
+          <p>聯絡電話：03-5384035 分機 607</p>
+          <p>承辦信箱：stud03@ttps.hc.edu.tw</p>
+          <p>服務時間：週一至週五 08:00 - 16:30</p>
+        </div>
+      </div>
+
+      <div class="p-3.5 bg-surface-container flex gap-2 justify-end shrink-0">
+        <button onclick="toggleModal('modal-closed-notice')" class="px-5 py-2.5 rounded-xl bg-surface-container-high text-on-surface text-xs font-bold hover:bg-surface-container-highest">
+          關閉
         </button>
       </div>
     </div>
@@ -818,60 +909,31 @@
       }
     }
 
-    // ---------- 志工資料庫限額與名冊設定 (限定 20 人，預設 14 人名冊) ----------
+    // ---------- 志工資料庫限額與名冊設定 ----------
     const MAX_VOLUNTEER_QUOTA = 20;
 
-    const DEFAULT_14_VOLUNTEERS = [
-      { id: 'DC71-VOL-1001', type: 'volunteer', typeName: '校慶熱血服務志工', name: '張育瑋', leaderName: '張育瑋', schoolClass: '香山高中 / 二年三班', phone: '0912-111-222', phoneParent: '0911-000-111', parentRel: '張國豪 / 父親', email: 'yw.chang@example.com', isAlumni: '是，為大庄國小校友', roles: '場地器材組', status: '優先錄取 (校友組)', date: '2026-11-01 09:30' },
-      { id: 'DC71-VOL-1002', type: 'volunteer', typeName: '校慶熱血服務志工', name: '李佳穎', leaderName: '李佳穎', schoolClass: '新竹女中 / 一年五班', phone: '0921-222-333', phoneParent: '0922-111-222', parentRel: '陳淑芬 / 母親', email: 'chiaying.lee@example.com', isAlumni: '是，為大庄國小校友', roles: '秩序維護組', status: '優先錄取 (校友組)', date: '2026-11-01 10:15' },
-      { id: 'DC71-VOL-1003', type: 'volunteer', typeName: '校慶熱血服務志工', name: '王志銘', leaderName: '王志銘', schoolClass: '新竹高中 / 二年一班', phone: '0932-333-444', phoneParent: '0933-222-333', parentRel: '王大同 / 父親', email: 'cm.wang@example.com', isAlumni: '是，為大庄國小校友', roles: '場地器材組', status: '優先錄取 (校友組)', date: '2026-11-01 11:00' },
-      { id: 'DC71-VOL-1004', type: 'volunteer', typeName: '校慶熱血服務志工', name: '陳雅筑', leaderName: '陳雅筑', schoolClass: '成德高中 / 一年二班', phone: '0955-444-555', phoneParent: '0955-333-444', parentRel: '林碧玉 / 母親', email: 'yachu.chen@example.com', isAlumni: '是，為大庄國小校友', roles: '愛護環境組', status: '優先錄取 (校友組)', date: '2026-11-01 14:20' },
-      { id: 'DC71-VOL-1005', type: 'volunteer', typeName: '校慶熱血服務志工', name: '劉子豪', leaderName: '劉子豪', schoolClass: '香山高中 / 三年一班', phone: '0918-555-666', phoneParent: '0918-444-555', parentRel: '劉金龍 / 父親', email: 'tzuhau.liu@example.com', isAlumni: '是，為大庄國小校友', roles: '秩序維護組', status: '優先錄取 (校友組)', date: '2026-11-02 08:45' },
-      { id: 'DC71-VOL-1006', type: 'volunteer', typeName: '校慶熱血服務志工', name: '黃冠宇', leaderName: '黃冠宇', schoolClass: '新竹高工 / 二年四班', phone: '0963-666-777', phoneParent: '0963-555-666', parentRel: '黃明輝 / 父親', email: 'kuanyu.huang@example.com', isAlumni: '是，為大庄國小校友', roles: '場地器材組', status: '優先錄取 (校友組)', date: '2026-11-02 09:50' },
-      { id: 'DC71-VOL-1007', type: 'volunteer', typeName: '校慶熱血服務志工', name: '吳佩萱', leaderName: '吳佩萱', schoolClass: '新竹家商 / 一年六班', phone: '0972-777-888', phoneParent: '0972-666-777', parentRel: '徐美珍 / 母親', email: 'peihsuan.wu@example.com', isAlumni: '是，為大庄國小校友', roles: '愛護環境組', status: '優先錄取 (校友組)', date: '2026-11-02 11:30' },
-      { id: 'DC71-VOL-1008', type: 'volunteer', typeName: '校慶熱血服務志工', name: '蔡政翰', leaderName: '蔡政翰', schoolClass: '香山高中 / 一年四班', phone: '0981-888-999', phoneParent: '0981-777-888', parentRel: '蔡宗哲 / 父親', email: 'chenghan.tsai@example.com', isAlumni: '是，為大庄國小校友', roles: '以上皆可，隨校方安排', status: '優先錄取 (校友組)', date: '2026-11-02 13:10' },
-      { id: 'DC71-VOL-1009', type: 'volunteer', typeName: '校慶熱血服務志工', name: '鄭巧雲', leaderName: '鄭巧雲', schoolClass: '竹北高中 / 二年二班', phone: '0926-999-000', phoneParent: '0926-888-999', parentRel: '鄭勝雄 / 父親', email: 'chiaoyun.cheng@example.com', isAlumni: '是，為大庄國小校友', roles: '秩序維護組', status: '優先錄取 (校友組)', date: '2026-11-03 10:00' },
-      { id: 'DC71-VOL-1010', type: 'volunteer', typeName: '校慶熱血服務志工', name: '謝承恩', leaderName: '謝承恩', schoolClass: '新竹高中 / 一年三班', phone: '0937-123-789', phoneParent: '0937-000-111', parentRel: '謝世榮 / 父親', email: 'chengen.hsieh@example.com', isAlumni: '是，為大庄國小校友', roles: '場地器材組', status: '優先錄取 (校友組)', date: '2026-11-03 11:40' },
-      { id: 'DC71-VOL-1011', type: 'volunteer', typeName: '校慶熱血服務志工', name: '許文心', leaderName: '許文心', schoolClass: '新竹女中 / 二年四班', phone: '0952-234-890', phoneParent: '0952-111-222', parentRel: '許清泉 / 父親', email: 'wenhsin.hsu@example.com', isAlumni: '是，為大庄國小校友', roles: '愛護環境組', status: '優先錄取 (校友組)', date: '2026-11-03 15:20' },
-      { id: 'DC71-VOL-1012', type: 'volunteer', typeName: '校慶熱血服務志工', name: '周柏宇', leaderName: '周柏宇', schoolClass: '香山高中 / 二年二班', phone: '0968-345-901', phoneParent: '0968-222-333', parentRel: '黃秋蓮 / 母親', email: 'poyu.chou@example.com', isAlumni: '否，非校友', roles: '場地器材組', status: '志工甄選中', date: '2026-11-03 16:50' },
-      { id: 'DC71-VOL-1013', type: 'volunteer', typeName: '校慶熱血服務志工', name: '楊雅婷', leaderName: '楊雅婷', schoolClass: '光復高中 / 一年一班', phone: '0975-456-012', phoneParent: '0975-333-444', parentRel: '楊文斌 / 父親', email: 'yating.yang@example.com', isAlumni: '否，非校友', roles: '秩序維護組', status: '志工甄選中', date: '2026-11-04 09:10' },
-      { id: 'DC71-VOL-1014', type: 'volunteer', typeName: '校慶熱血服務志工', name: '趙子敬', leaderName: '趙子敬', schoolClass: '成德高中 / 二年五班', phone: '0988-567-123', phoneParent: '0988-444-555', parentRel: '趙友誠 / 父親', email: 'tzuching.chao@example.com', isAlumni: '否，非校友', roles: '以上皆可，隨校方安排', status: '志工甄選中', date: '2026-11-04 10:30' }
-    ];
-
-    // 確保資料庫中已有初始的志工名冊 (如尚未有志工資料則寫入預設14筆)
-    function ensureVolunteerDataSeeded() {
-      let all = [];
+    // 清理舊有的測試志工假資料
+    function cleanupVolunteerMockData() {
       try {
-        all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG)) || [];
+        let all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG)) || [];
+        const originalLen = all.length;
+        // 過濾掉初始舊有的 14 筆假測試名冊 (DC71-VOL-1001 ~ 1014)
+        all = all.filter(r => !(r.id && r.id.startsWith('DC71-VOL-10') && parseInt(r.id.split('DC71-VOL-')[1]) <= 1014));
+        if (all.length !== originalLen) {
+          localStorage.setItem(STORAGE_KEY_ALL_REG, JSON.stringify(all));
+        }
       } catch(e) {}
-      const hasVolunteers = all.some(r => r.type === 'volunteer' || (r.typeName && r.typeName.includes('志工')));
-      if (!hasVolunteers) {
-        all = [...DEFAULT_14_VOLUNTEERS, ...all];
-        localStorage.setItem(STORAGE_KEY_ALL_REG, JSON.stringify(all));
-      }
     }
 
     // 取得資料庫中實際的志工名冊列表
     function getVolunteerRegistrations() {
-      ensureVolunteerDataSeeded();
       let all = [];
       try {
         all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG)) || [];
       } catch(e) {}
-      return all.filter(r => r.type === 'volunteer' || (r.typeName && r.typeName.includes('志工')));
-    }
-
-    // 測試管理輔助：重設為標準 14 人志工名冊
-    function resetVolunteerMockList() {
-      let all = [];
-      try {
-        all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG)) || [];
-      } catch(e) {}
-      all = all.filter(r => r.type !== 'volunteer' && !(r.typeName && r.typeName.includes('志工')));
-      all = [...DEFAULT_14_VOLUNTEERS, ...all];
-      localStorage.setItem(STORAGE_KEY_ALL_REG, JSON.stringify(all));
-      updateVolunteerCountUI();
-      alert('已成功將志工資料庫還原為 14 人名冊 (限定 20 人，剩餘 6 名)！');
+      return all.filter(r => (r.type === 'volunteer' || (r.typeName && r.typeName.includes('志工'))) &&
+        !(r.id && r.id.startsWith('DC71-VOL-10') && parseInt(r.id.split('DC71-VOL-')[1]) <= 1014)
+      );
     }
 
     // Dynamic Volunteer Count (嚴格依照資料庫確實人數呈現剩餘人數與報名數)
@@ -889,7 +951,7 @@
           quotaBadge.className = 'font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-error text-white font-bold tracking-wide';
         } else {
           quotaBadge.textContent = `限定 20 人，剩餘 ${remaining} 名`;
-          quotaBadge.className = 'font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-error-container text-error font-bold tracking-wide';
+          quotaBadge.className = 'font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold tracking-wide';
         }
       }
 
@@ -920,7 +982,7 @@
         if (currentCount >= MAX_VOLUNTEER_QUOTA) {
           submitText.textContent = '立即登記候補志工名額 (滿額排隊遞補)';
         } else {
-          submitText.textContent = '立即送出志工報名表 (同步寫入 GAS 試算表)';
+          submitText.textContent = '立即送出志工報名表';
         }
       }
     }
@@ -942,11 +1004,43 @@
 
       const studentName = document.getElementById('vol-student-name').value.trim();
       const schoolClass = document.getElementById('vol-school-class').value.trim();
-      const phoneSelf = document.getElementById('vol-phone-self').value.trim();
-      const phoneParent = document.getElementById('vol-phone-parent').value.trim();
+      let phoneSelf = document.getElementById('vol-phone-self').value.trim();
+      if (/^9\d{8}$/.test(phoneSelf)) phoneSelf = '0' + phoneSelf;
+      let phoneParent = document.getElementById('vol-phone-parent').value.trim();
+      if (/^9\d{8}$/.test(phoneParent)) phoneParent = '0' + phoneParent;
       const parentRel = document.getElementById('vol-parent-rel').value.trim();
       const email = document.getElementById('vol-email').value.trim();
       const isAlumni = document.querySelector('input[name="is_alumni"]:checked')?.value || '是，為大庄國小校友';
+
+      if (!studentName || !schoolClass || !phoneSelf || !phoneParent || !parentRel || !email) {
+        alert('請填寫所有必填欄位！');
+        return;
+      }
+
+      // 1. 重複報名審查機制 (名字相同請跳出重複報名的字樣)
+      let allExisting = [];
+      try {
+        allExisting = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG)) || [];
+      } catch (e) {}
+
+      const existingMatch = allExisting.find(r => 
+        (r.type === 'volunteer' || (r.typeName && r.typeName.includes('志工'))) &&
+        ((r.name && r.name.trim().toLowerCase() === studentName.toLowerCase()) ||
+         (r.studentName && r.studentName.trim().toLowerCase() === studentName.toLowerCase()) ||
+         (r.leaderName && r.leaderName.trim().toLowerCase() === studentName.toLowerCase()))
+      );
+
+      if (existingMatch) {
+        document.getElementById('duplicate-player-name').textContent = studentName;
+        if (existingMatch.id) {
+          document.getElementById('duplicate-reg-id').textContent = existingMatch.id;
+          document.getElementById('duplicate-reg-id-wrap').classList.remove('hidden');
+        } else {
+          document.getElementById('duplicate-reg-id-wrap').classList.add('hidden');
+        }
+        toggleModal('modal-duplicate-notice');
+        return;
+      }
 
       const selectedRoles = [];
       document.querySelectorAll('input[name="service_content"]:checked').forEach(cb => {
@@ -990,7 +1084,6 @@
 
       // Save to localStorage
       try {
-        ensureVolunteerDataSeeded();
         let all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG)) || [];
         const currentVolList = all.filter(r => r.type === 'volunteer' || (r.typeName && r.typeName.includes('志工')));
         const isWaitlist = currentVolList.length >= MAX_VOLUNTEER_QUOTA;
@@ -1020,13 +1113,22 @@
         localStorage.setItem(STORAGE_KEY_ALL_REG, JSON.stringify(all));
 
         // Confetti celebration
-        confetti({ particleCount: 90, spread: 90, origin: { y: 0.55 } });
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 90, spread: 90, origin: { y: 0.55 } });
+        }
       } catch(err) {}
 
       submitBtn.disabled = false;
-      submitText.textContent = '立即送出志工報名表 (同步寫入 GAS 試算表)';
+      submitText.textContent = '立即送出志工報名表';
 
       updateVolunteerCountUI();
+
+      // 清空表單欄位為初始空白狀態
+      document.getElementById('volunteer-form').reset();
+      document.querySelectorAll('.check-badge').forEach(b => {
+        b.classList.add('bg-surface-container', 'text-surface-container');
+        b.classList.remove('bg-primary', 'text-on-primary');
+      });
 
       // Show success modal
       showSuccessModal({
@@ -1074,11 +1176,36 @@
             </span>
           </div>
         </div>
-        <p class="text-center text-[11px] text-on-surface-variant">
-          學務處將進行資格審核並寄發錄取通知信，校慶當日憑報名代碼報到領取背心。
-        </p>
+        <div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/30 text-[11px] text-on-surface space-y-1">
+          <p class="font-bold text-primary">※ 報名後續叮嚀與通知：</p>
+          <p>1. 審核錄取後，將於校慶前一週於本報名網站公告並發送 Email 錄取通知。</p>
+          <p>2. 當日請準時於 08:30 至學務處報到並著球鞋與方便活動衣褲，全程參與核發 4 小時服務學習時數。</p>
+          <p class="text-on-surface-variant pt-1 border-t border-surface-container">承辦窗口：大庄國小學務處體育組 (03)5384035 分機 607</p>
+        </div>
       `;
       toggleModal('modal-success');
+    }
+
+    // 背景同步試算表最新志工資料
+    async function syncLatestVolunteerRegistrations() {
+      try {
+        const fetchUrl = currentGasUrl + (currentGasUrl.includes('?') ? '&' : '?') + 'action=getRegistrations';
+        const res = await fetch(fetchUrl);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            let all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG)) || [];
+            const otherRegs = all.filter(r => r.type !== 'volunteer' && (!r.typeName || !r.typeName.includes('志工')));
+            const remoteVolunteers = data.filter(r => r.type === 'volunteer' || (r.typeName && r.typeName.includes('志工')));
+            if (remoteVolunteers.length > 0) {
+              localStorage.setItem(STORAGE_KEY_ALL_REG, JSON.stringify([...otherRegs, ...remoteVolunteers]));
+              updateVolunteerCountUI();
+            }
+          }
+        }
+      } catch(e) {
+        console.log('Background volunteer sync silent fallback:', e);
+      }
     }
 
     // ---------- [✓編修] & [✓取消] Handlers (對齊 BeClass 系統功能) ----------
@@ -1210,8 +1337,9 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      ensureVolunteerDataSeeded();
+      cleanupVolunteerMockData();
       updateVolunteerCountUI();
+      syncLatestVolunteerRegistrations();
     });
   </script>
 </body>
