@@ -170,6 +170,8 @@ function doPost(e) {
         if (email && email.indexOf("@") !== -1) {
           MailApp.sendEmail({
             to: email,
+            name: "大庄國小71校慶籌備委員會 (學務處體育組)",
+            replyTo: adminEmail,
             subject: famSubject,
             body: famEmailBody
           });
@@ -178,6 +180,8 @@ function doPost(e) {
         // 寄給管理者
         MailApp.sendEmail({
           to: adminEmail,
+          name: "大庄國小71校慶報名系統",
+          replyTo: adminEmail,
           subject: "[管理者副本通知] 親子趣味賽新報名：" + studentName + " ＆ " + parentName + " (" + regId + ")",
           body: "【大庄國小 71 週年校慶 - 親子趣味競賽新報名通知】\n\n" +
                 "有新組別完成線上登記，摘要如下：\n" +
@@ -385,6 +389,8 @@ function doPost(e) {
       if (emailRelay && emailRelay.indexOf("@") !== -1) {
         MailApp.sendEmail({
           to: emailRelay,
+          name: "大庄國小71校慶籌備委員會 (學務處體育組)",
+          replyTo: adminEmail,
           subject: mailSubject,
           body: emailBody
         });
@@ -393,6 +399,8 @@ function doPost(e) {
       // 發送給管理者
       MailApp.sendEmail({
         to: adminEmail,
+        name: "大庄國小71校慶報名系統",
+        replyTo: adminEmail,
         subject: "[管理者副本通知] 接力賽新報名：" + name + " (" + category + " / " + relayRegId + ")",
         body: "【大庄國小 71 週年校慶 - 接力賽線上報名即時通知】\n\n" +
               "有新選手完成線上登記，摘要如下：\n" +
@@ -624,6 +632,8 @@ function testSendEmail() {
   var target = "stud03@ttps.hc.edu.tw";
   MailApp.sendEmail({
     to: target,
+    name: "大庄國小71校慶籌備委員會 (學務處體育組)",
+    replyTo: target,
     subject: "【測試信件】71校慶運動會報名系統 - 寄信功能授權成功",
     body: "恭喜您！這封信代表您的 Google 帳號已成功授權 Apps Script 呼叫 MailApp.sendEmail 寄信功能。\n\n" +
           "往後只要有選手在網站上完成接力賽或親子賽報名，系統就會自動寄發確認信給報名者並抄送至此信箱！"
