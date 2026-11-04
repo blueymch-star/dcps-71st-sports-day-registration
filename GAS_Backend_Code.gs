@@ -618,3 +618,15 @@ function formatDateVal(val) {
   }
   return String(val);
 }
+
+// 輔助函式：供管理者在 Apps Script 編輯器點擊執行，完成「首次寄信權限授權」
+function testSendEmail() {
+  var target = "stud03@ttps.hc.edu.tw";
+  MailApp.sendEmail({
+    to: target,
+    subject: "【測試信件】71校慶運動會報名系統 - 寄信功能授權成功",
+    body: "恭喜您！這封信代表您的 Google 帳號已成功授權 Apps Script 呼叫 MailApp.sendEmail 寄信功能。\n\n" +
+          "往後只要有選手在網站上完成接力賽或親子賽報名，系統就會自動寄發確認信給報名者並抄送至此信箱！"
+  });
+  Logger.log("測試信件已成功發送至: " + target);
+}
