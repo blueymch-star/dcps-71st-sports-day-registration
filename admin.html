@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="h-full">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+  <title>第71屆大庄校慶運動會 - 報名名冊檢視與管理後台</title>
+
+  <!-- Google Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+
+  <!-- Tailwind CSS with custom config -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "tertiary-fixed-dim": "#4edea3",
+            "surface": "#faf8ff",
+            "primary-container": "#1d4ed8",
+            "surface-container-highest": "#dae2fd",
+            "surface-container-high": "#e2e7ff",
+            "surface-container-low": "#f2f3ff",
+            "tertiary-fixed": "#6ffbbe",
+            "on-surface": "#131b2e",
+            "surface-container-lowest": "#ffffff",
+            "tertiary": "#004f35",
+            "primary": "#0037b0",
+            "secondary": "#9d4300",
+            "secondary-container": "#fd761a",
+            "surface-container": "#eaedff",
+            "on-surface-variant": "#434655"
+          },
+          fontFamily: {
+            "sans": ["'Noto Sans TC'", "'Plus Jakarta Sans'", "sans-serif"],
+            "headline": ["'Space Grotesk'", "'Noto Sans TC'", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      min-height: 100vh;
+      font-family: 'Noto Sans TC', 'Plus Jakarta Sans', sans-serif;
+    }
+    .pb-safe { padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px); }
+    .pt-safe { padding-top: max(env(safe-area-inset-top, 0px), 12px); }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    .tab-active {
+      border-bottom: 3px solid #0037b0;
+      color: #0037b0;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body class="bg-[#f4f6fb] text-on-surface flex flex-col min-h-screen">
+
+  <!-- ==================== PASSWORD GATE OVERLAY ==================== -->
+  <div id="auth-gate-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+    <div class="bg-surface-container-lowest w-full max-w-sm rounded-3xl shadow-2xl border border-surface-container overflow-hidden p-6 flex flex-col gap-5 text-center">
+      <div class="w-16 h-16 rounded-2xl bg-secondary-container/10 border border-secondary-container/20 mx-auto flex items-center justify-center text-secondary-container shadow-inner">
+        <span class="material-symbols-outlined text-[36px]">lock</span>
+      </div>
+      
+      <div class="flex flex-col gap-1">
+        <h2 class="font-headline font-bold text-xl text-on-surface">大會後台管理登入</h2>
+        <p class="text-xs text-on-surface-variant leading-relaxed">請輸入 6 位數大會管理授權密碼以進入後台控管系統</p>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <div class="relative">
+          <input type="password" id="gate-password-input" maxlength="20" placeholder="請輸入管理密碼" 
+                 class="w-full text-center tracking-[0.3em] font-mono text-lg py-3 px-4 rounded-xl border border-surface-container-highest bg-surface-container-low focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                 onkeydown="if(event.key==='Enter') verifyGatePassword()"/>
+        </div>
+        <p id="gate-error-msg" class="text-xs text-red-600 font-bold hidden flex items-center justify-center gap-1">
+          <span class="material-symbols-outlined text-[14px]">error</span>
+          <span>密碼錯誤，請重新輸入！</span>
+        </p>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <button onclick="verifyGatePassword()" class="w-full py-3 rounded-xl bg-primary text-white font-bold text-sm shadow-md hover:bg-primary/90 active:scale-95 transition-all flex items-center justify-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px]">verified_user</span>
+          <span>驗證登入</span>
+        </button>
+        <a href="index.html" class="w-full py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container text-xs font-semibold transition-all">
+          返回前台首頁
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="admin-toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2.5 rounded-2xl shadow-xl text-xs font-bold transition-all duration-300 flex items-center gap-2">
+    <span class="material-symbols-outlined text-[18px]" id="toast-icon">info</span>
+    <span id="toast-msg">提示訊息</span>
+  </div>
+
+  <!-- ==================== TOP ADMIN HEADER ==================== -->
+  <header class="sticky top-0 w-full z-40 pt-safe bg-surface-container-lowest/95 backdrop-blur-xl border-b border-surface-container shadow-sm">
+    <div class="h-16 px-4 max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center justify-center w-9 h-9 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface transition-all" title="返回前台首頁">
+          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+        </a>
+        <div class="flex items-center gap-2">
+          <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-secondary text-white font-headline font-bold text-sm shadow-sm">
+            71
+          </span>
+          <div class="flex flex-col">
+            <div class="flex items-center gap-2">
+              <span class="font-headline font-bold text-base text-on-surface">大會報名名冊管理端</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">
+                ● 雲端資料庫已連線
+              </span>
+            </div>
+            <span class="text-[11px] text-on-surface-variant font-medium">第71屆大庄校慶運動會籌備會</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center gap-2">
+        <a href="https://docs.google.com/spreadsheets/d/1YEfrsFcoD2DMbzaYmAn8WQeiFs91XaxSG4I2lS7iv3U/edit" target="_blank" rel="noopener noreferrer" 
+           class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-all" title="開啟完整 Google 試算表">
+          <span class="material-symbols-outlined text-[17px]">table_chart</span>
+          <span class="hidden md:inline">Google 試算表</span>
+        </a>
+        <button onclick="logoutAdmin()" class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-surface-container-highest hover:bg-red-50 text-red-600 text-xs font-bold transition-all" title="登出後台">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+          <span class="hidden sm:inline">登出</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN ADMIN BODY ==================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-6">
+
+    <!-- Top Management HUD: Sync, Clear Test Data & Export -->
+    <div class="bg-surface-container-lowest rounded-2xl p-4 sm:p-5 border border-surface-container shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+          <span class="material-symbols-outlined text-[26px]">database</span>
+        </div>
+        <div class="flex flex-col">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 class="font-headline font-bold text-base text-on-surface">報名名冊檢視與管理</h1>
+            <span class="text-[11px] px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-mono">
+              GAS Web App
+            </span>
+          </div>
+          <p class="text-xs text-on-surface-variant mt-0.5">
+            在此檢視各項目詳細報名欄位。支援單筆即時刪除（同步自 Google 試算表清除）及一鍵清空測試名單。
+          </p>
+        </div>
+      </div>
+
+      <!-- Action toolbar -->
+      <div class="flex items-center gap-2 flex-wrap w-full lg:w-auto justify-end">
+        <!-- Fetch from Google Sheet -->
+        <button onclick="fetchFromGoogleSheet()" id="btn-sync-cloud" class="flex items-center gap-1 px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-sm hover:bg-primary/90 active:scale-95 transition-all">
+          <span class="material-symbols-outlined text-[16px]" id="sync-icon">cloud_sync</span>
+          <span>從 Google 試算表同步</span>
+        </button>
+
+        <!-- Clear Test List -->
+        <button onclick="confirmClearAllTestData()" class="flex items-center gap-1 px-3 py-2 rounded-xl border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold active:scale-95 transition-all" title="清空全部測試名單">
+          <span class="material-symbols-outlined text-[16px]">delete_sweep</span>
+          <span>清除測試名單</span>
+        </button>
+
+        <!-- Export CSV -->
+        <button onclick="exportCSV()" class="flex items-center gap-1 px-3 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-xs font-bold text-on-surface transition-all">
+          <span class="material-symbols-outlined text-[16px]">file_download</span>
+          <span>匯出 CSV</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Live KPI Summary -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+      <div onclick="switchProjectTab('family')" class="cursor-pointer bg-surface-container-lowest rounded-2xl p-4 border border-surface-container hover:border-tertiary shadow-sm transition-all flex items-center justify-between">
+        <div>
+          <span class="text-xs text-on-surface-variant font-bold flex items-center gap-1">
+            <span class="material-symbols-outlined text-tertiary text-[18px]">sports_score</span>
+            圈力衝刺親子賽
+          </span>
+          <div class="flex items-baseline gap-1.5 mt-1">
+            <span class="font-headline font-extrabold text-2xl text-tertiary" id="kpi-family">0</span>
+            <span class="text-xs text-on-surface-variant">/ 22 組</span>
+          </div>
+        </div>
+        <span class="material-symbols-outlined text-surface-container-high text-3xl">arrow_forward</span>
+      </div>
+
+      <div onclick="switchProjectTab('relay')" class="cursor-pointer bg-surface-container-lowest rounded-2xl p-4 border border-surface-container hover:border-primary shadow-sm transition-all flex items-center justify-between">
+        <div>
+          <span class="text-xs text-on-surface-variant font-bold flex items-center gap-1">
+            <span class="material-symbols-outlined text-primary text-[18px]">sprint</span>
+            薪傳大隊接力
+          </span>
+          <div class="flex items-baseline gap-1.5 mt-1">
+            <span class="font-headline font-extrabold text-2xl text-primary" id="kpi-relay">0</span>
+            <span class="text-xs text-on-surface-variant">人已登記</span>
+          </div>
+        </div>
+        <span class="material-symbols-outlined text-surface-container-high text-3xl">arrow_forward</span>
+      </div>
+
+      <div onclick="switchProjectTab('volunteer')" class="cursor-pointer bg-surface-container-lowest rounded-2xl p-4 border border-surface-container hover:border-secondary shadow-sm transition-all flex items-center justify-between">
+        <div>
+          <span class="text-xs text-on-surface-variant font-bold flex items-center gap-1">
+            <span class="material-symbols-outlined text-secondary text-[18px]">volunteer_activism</span>
+            熱血服務志工
+          </span>
+          <div class="flex items-baseline gap-1.5 mt-1">
+            <span class="font-headline font-extrabold text-2xl text-secondary" id="kpi-vol">0</span>
+            <span class="text-xs text-on-surface-variant">/ 20 人</span>
+          </div>
+        </div>
+        <span class="material-symbols-outlined text-surface-container-high text-3xl">arrow_forward</span>
+      </div>
+    </div>
+
+    <!-- Project Tabs Switcher -->
+    <div class="bg-surface-container-lowest rounded-2xl border border-surface-container shadow-sm overflow-hidden flex flex-col">
+      <div class="flex items-center border-b border-surface-container bg-surface-container-low/40 px-3 overflow-x-auto">
+        <button id="tab-btn-family" onclick="switchProjectTab('family')" 
+                class="px-5 py-3.5 text-xs font-bold text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-1.5 whitespace-nowrap">
+          <span class="material-symbols-outlined text-[17px]">sports_score</span>
+          <span>圈力衝刺親子趣味競賽</span>
+          <span class="ml-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px]" id="tab-badge-family">0</span>
+        </button>
+
+        <button id="tab-btn-relay" onclick="switchProjectTab('relay')" 
+                class="px-5 py-3.5 text-xs font-bold text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-1.5 whitespace-nowrap">
+          <span class="material-symbols-outlined text-[17px]">sprint</span>
+          <span>薪傳大隊接力賽</span>
+          <span class="ml-1 px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[10px]" id="tab-badge-relay">0</span>
+        </button>
+
+        <button id="tab-btn-volunteer" onclick="switchProjectTab('volunteer')" 
+                class="px-5 py-3.5 text-xs font-bold text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-1.5 whitespace-nowrap">
+          <span class="material-symbols-outlined text-[17px]">volunteer_activism</span>
+          <span>校慶熱血服務志工</span>
+          <span class="ml-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px]" id="tab-badge-volunteer">0</span>
+        </button>
+      </div>
+
+      <!-- Specific Columns Table Container -->
+      <div class="overflow-x-auto min-h-[300px]">
+        <table class="w-full text-left text-xs whitespace-nowrap">
+          <thead id="project-table-header" class="bg-surface-container-low text-on-surface font-bold border-b border-surface-container">
+            <!-- Dynamically populated based on active tab -->
+          </thead>
+          <tbody id="project-table-body" class="divide-y divide-surface-container text-on-surface">
+            <!-- Dynamically populated based on active tab -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="p-4 bg-surface-container-low/50 border-t border-surface-container flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-on-surface-variant">
+        <span class="flex items-center gap-1">
+          <span class="material-symbols-outlined text-[16px] text-primary">info</span>
+          點擊任一列的「刪除鍵」時，系統將呼叫 Google Apps Script 同步刪除試算表資料列。
+        </span>
+        <span id="current-tab-summary" class="font-bold">共 0 筆</span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ==================== LOGIC ==================== -->
+  <script>
+    const ADMIN_PASSWORD = '183618';
+    const AUTH_SESSION_KEY = 'dachuang_71_admin_auth';
+    const STORAGE_KEY_REGISTRATIONS = 'dachuang_71_registrations';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbzl7zf48nxLH2_BPzEL0T48NNR8EI0SO_ROErJ0cDszftJphDOJ1lG-OTfrsxERv-h57A/exec';
+
+    let currentTab = 'family'; // default active tab: family or relay
+    let cloudData = { family: [], relay: [], volunteer: [] };
+
+    // 1. Password Verification
+    function checkAuth() {
+      const isAuthed = sessionStorage.getItem(AUTH_SESSION_KEY) === 'true';
+      const modal = document.getElementById('auth-gate-modal');
+      if (isAuthed) {
+        modal.classList.add('hidden');
+        initDashboard();
+      } else {
+        modal.classList.remove('hidden');
+        document.getElementById('gate-password-input').focus();
+      }
+    }
+
+    function verifyGatePassword() {
+      const input = document.getElementById('gate-password-input');
+      const err = document.getElementById('gate-error-msg');
+      if (input.value === ADMIN_PASSWORD) {
+        sessionStorage.setItem(AUTH_SESSION_KEY, 'true');
+        err.classList.add('hidden');
+        document.getElementById('auth-gate-modal').classList.add('hidden');
+        initDashboard();
+      } else {
+        err.classList.remove('hidden');
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    function logoutAdmin() {
+      sessionStorage.removeItem(AUTH_SESSION_KEY);
+      window.location.href = 'index.html';
+    }
+
+    // Toast helper
+    function showToast(msg, isSuccess = true) {
+      const toast = document.getElementById('admin-toast');
+      const toastMsg = document.getElementById('toast-msg');
+      const toastIcon = document.getElementById('toast-icon');
+      toastMsg.textContent = msg;
+      toast.className = `fixed top-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-2.5 rounded-2xl shadow-xl text-xs font-bold text-white transition-all duration-300 ${isSuccess ? 'bg-emerald-600' : 'bg-red-600'}`;
+      toastIcon.textContent = isSuccess ? 'check_circle' : 'error';
+      toast.classList.remove('hidden');
+      setTimeout(() => { toast.classList.add('hidden'); }, 3500);
+    }
+
+    // 2. Initialize Dashboard
+    function initDashboard() {
+      // 確保清除舊的測試 mock 資料
+      cleanOldMockEntries();
+      switchProjectTab('family');
+      fetchFromGoogleSheet(false);
+    }
+
+    function cleanOldMockEntries() {
+      let list = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS) || '[]');
+      const mockIds = ['DC71-RELAY-101', 'DC71-FAM-205', 'DC71-FAM-1001', 'DC71-FAM-1002', 'DC71-FAM-1003', 'DC71-FAM-1004', 'DC71-FAM-1005', 'DC71-FAM-1006', 'DC71-FAM-1007', 'DC71-FAM-1008', 'DC71-FAM-1009', 'DC71-FAM-1010', 'DC71-FAM-1011', 'DC71-FAM-1012', 'DC71-FAM-1013', 'DC71-FAM-1014'];
+      const filtered = list.filter(item => !mockIds.includes(item.id));
+      if (filtered.length !== list.length) {
+        localStorage.setItem(STORAGE_KEY_REGISTRATIONS, JSON.stringify(filtered));
+      }
+    }
+
+    // 3. Tab Switching
+    function switchProjectTab(tabKey) {
+      currentTab = tabKey;
+
+      ['family', 'relay', 'volunteer'].forEach(key => {
+        const btn = document.getElementById(`tab-btn-${key}`);
+        if (key === tabKey) {
+          btn.className = 'px-5 py-3.5 text-xs font-bold border-b-2 border-primary text-primary transition-all flex items-center gap-1.5 whitespace-nowrap bg-surface-container-lowest';
+        } else {
+          btn.className = 'px-5 py-3.5 text-xs font-bold border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-1.5 whitespace-nowrap';
+        }
+      });
+
+      renderActiveTable();
+    }
+
+    // 4. Fetch list directly from Google Sheets API
+    async function fetchFromGoogleSheet(showToastAlert = true) {
+      const syncIcon = document.getElementById('sync-icon');
+      if (syncIcon) syncIcon.classList.add('animate-spin');
+
+      try {
+        const resp = await fetch(GAS_URL + '?action=getAll', { method: 'GET', mode: 'cors' });
+        if (resp.ok) {
+          const res = await resp.json();
+          if (res && res.data) {
+            cloudData = res.data;
+            mergeCloudDataToLocal(cloudData);
+            if (showToastAlert) showToast('已成功從 Google 試算表同步最新名單！', true);
+          }
+        }
+      } catch (err) {
+        console.warn('雲端名冊同步暫停，改從本地暫存讀取:', err);
+        if (showToastAlert) showToast('雲端名單暫時無法讀取，已載入本地最新資料', false);
+      } finally {
+        if (syncIcon) syncIcon.classList.remove('animate-spin');
+        renderActiveTable();
+      }
+    }
+
+    function mergeCloudDataToLocal(cloud) {
+      const local = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS) || '[]');
+      const localMap = new Map();
+      local.forEach(item => localMap.set(item.id, item));
+
+      // Merge Relay
+      (cloud.relay || []).forEach(r => {
+        localMap.set(r.id, {
+          id: r.id,
+          type: 'relay',
+          typeName: '薪傳大隊接力賽',
+          category: r.category,
+          name: r.name,
+          gender: r.gender,
+          email: r.email,
+          birthYear: r.birthYear,
+          phone: r.phone,
+          gradYear: r.gradYear,
+          status: r.status,
+          date: r.timestamp || new Date().toLocaleString()
+        });
+      });
+
+      // Merge Family
+      (cloud.family || []).forEach(f => {
+        localMap.set(f.id, {
+          id: f.id,
+          type: 'family',
+          typeName: '圈力衝刺 親子趣味競賽',
+          category: `趣味賽・${f.studentGrade || ''}${f.studentClass || ''}`,
+          parentName: f.parentName,
+          email: f.email,
+          phone: f.phone,
+          studentName: f.studentName,
+          studentGrade: f.studentGrade,
+          studentClass: f.studentClass,
+          status: f.status,
+          date: f.timestamp || new Date().toLocaleString()
+        });
+      });
+
+      // Merge Volunteer
+      (cloud.volunteer || []).forEach(v => {
+        localMap.set(v.id, {
+          id: v.id,
+          type: 'volunteer',
+          typeName: '校慶熱血服務志工',
+          studentName: v.studentName,
+          schoolClass: v.schoolClass,
+          phoneSelf: v.phoneSelf,
+          phoneParent: v.phoneParent,
+          parentRel: v.parentRel,
+          email: v.email,
+          isAlumni: v.isAlumni,
+          serviceRoles: v.serviceRoles,
+          status: v.status,
+          date: v.timestamp || new Date().toLocaleString()
+        });
+      });
+
+      const merged = Array.from(localMap.values());
+      localStorage.setItem(STORAGE_KEY_REGISTRATIONS, JSON.stringify(merged));
+    }
+
+    // 5. Render Active Table matching Exact Specified Columns
+    function renderActiveTable() {
+      const list = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS) || '[]');
+      const thead = document.getElementById('project-table-header');
+      const tbody = document.getElementById('project-table-body');
+      const summaryEl = document.getElementById('current-tab-summary');
+
+      // Update KPI Badges
+      const familyList = list.filter(i => i.type === 'family');
+      const relayList = list.filter(i => i.type === 'relay');
+      const volList = list.filter(i => i.type === 'volunteer' || i.type === 'volunteers');
+
+      document.getElementById('kpi-family').textContent = familyList.length;
+      document.getElementById('kpi-relay').textContent = relayList.length;
+      document.getElementById('kpi-vol').textContent = volList.length;
+
+      document.getElementById('tab-badge-family').textContent = familyList.length;
+      document.getElementById('tab-badge-relay').textContent = relayList.length;
+      document.getElementById('tab-badge-volunteer').textContent = volList.length;
+
+      // ==========================================
+      // 1. 親子趣味競賽 (Family Games) 欄位
+      // 編號 | 管理(刪除鍵) | 報名日期時間 | 家長姓名 | Email | 行動電話 | 學生姓名 | 學生年級 | 學生班級
+      // ==========================================
+      if (currentTab === 'family') {
+        summaryEl.textContent = `親子趣味競賽共 ${familyList.length} 組 (上限 20 正選 + 2 候補)`;
+        thead.innerHTML = `
+          <tr>
+            <th class="py-3 px-4">編號</th>
+            <th class="py-3 px-4 text-center">管理</th>
+            <th class="py-3 px-4">報名日期時間</th>
+            <th class="py-3 px-4">家長姓名</th>
+            <th class="py-3 px-4">Email</th>
+            <th class="py-3 px-4">行動電話</th>
+            <th class="py-3 px-4">學生姓名</th>
+            <th class="py-3 px-4">學生年級</th>
+            <th class="py-3 px-4">學生班級</th>
+            <th class="py-3 px-4">錄取狀態</th>
+          </tr>
+        `;
+
+        if (familyList.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="10" class="py-12 text-center text-on-surface-variant">
+                <span class="material-symbols-outlined text-3xl opacity-40">sports_score</span>
+                <p class="font-bold mt-1">目前尚無親子趣味競賽報名資料</p>
+                <p class="text-xs opacity-70">測試名單已清空，可由前台報名頁面進行測試填表。</p>
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = familyList.map((item, idx) => `
+          <tr class="hover:bg-surface-container-low transition-colors">
+            <td class="py-3.5 px-4 font-mono font-bold text-tertiary">
+              ${escapeHtml(item.id || '-')}
+            </td>
+            <td class="py-3.5 px-4 text-center">
+              <button onclick="deleteSingleRegistration('${item.id}', '${escapeHtml(item.parentName || item.leaderName || '')}')" 
+                      class="px-2.5 py-1 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-200 text-xs font-bold transition-all inline-flex items-center gap-1 active:scale-95"
+                      title="自資料庫永久刪除">
+                <span class="material-symbols-outlined text-[15px]">delete</span>
+                <span>刪除</span>
+              </button>
+            </td>
+            <td class="py-3.5 px-4 text-on-surface-variant font-mono">
+              ${escapeHtml(item.date || '-')}
+            </td>
+            <td class="py-3.5 px-4 font-bold text-on-surface">
+              ${escapeHtml(item.parentName || item.leaderName || '-')}
+            </td>
+            <td class="py-3.5 px-4 font-mono text-on-surface-variant">
+              ${escapeHtml(item.email || '-')}
+            </td>
+            <td class="py-3.5 px-4 font-mono font-bold text-on-surface">
+              ${escapeHtml(item.phone || '-')}
+            </td>
+            <td class="py-3.5 px-4 font-bold text-tertiary">
+              ${escapeHtml(item.studentName || item.childName || '-')}
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface font-semibold text-[11px]">
+                ${escapeHtml(item.studentGrade || '-')}
+              </span>
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface font-semibold text-[11px]">
+                ${escapeHtml(item.studentClass || '-')}
+              </span>
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="inline-flex items-center gap-1 font-bold ${String(item.status).includes('候補') ? 'text-amber-700' : 'text-emerald-700'}">
+                <span class="w-1.5 h-1.5 rounded-full ${String(item.status).includes('候補') ? 'bg-amber-500' : 'bg-emerald-600'}"></span>
+                ${escapeHtml(item.status || '正選')}
+              </span>
+            </td>
+          </tr>
+        `).join('');
+        return;
+      }
+
+      // ==========================================
+      // 2. 薪傳大隊接力 (Relay) 欄位
+      // 編號 | 管理(刪除鍵) | 報名日期時間 | 姓名 | 性別 | Email | 出生年次 | 行動電話 | 校友畢業年度 | 報名組別(有設定候補)
+      // ==========================================
+      if (currentTab === 'relay') {
+        summaryEl.textContent = `薪傳大隊接力共 ${relayList.length} 人報名`;
+        thead.innerHTML = `
+          <tr>
+            <th class="py-3 px-4">編號</th>
+            <th class="py-3 px-4 text-center">管理</th>
+            <th class="py-3 px-4">報名日期時間</th>
+            <th class="py-3 px-4">姓名</th>
+            <th class="py-3 px-4">性別</th>
+            <th class="py-3 px-4">Email</th>
+            <th class="py-3 px-4">出生年次</th>
+            <th class="py-3 px-4">行動電話</th>
+            <th class="py-3 px-4">校友畢業年度</th>
+            <th class="py-3 px-4">報名組別 (有設定候補)</th>
+          </tr>
+        `;
+
+        if (relayList.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="10" class="py-12 text-center text-on-surface-variant">
+                <span class="material-symbols-outlined text-3xl opacity-40">sprint</span>
+                <p class="font-bold mt-1">目前尚無大隊接力報名資料</p>
+                <p class="text-xs opacity-70">測試名單已清空，可由大隊接力報名專頁填寫送出。</p>
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = relayList.map((item, idx) => `
+          <tr class="hover:bg-surface-container-low transition-colors">
+            <td class="py-3.5 px-4 font-mono font-bold text-primary">
+              ${escapeHtml(item.id || '-')}
+            </td>
+            <td class="py-3.5 px-4 text-center">
+              <button onclick="deleteSingleRegistration('${item.id}', '${escapeHtml(item.name || item.leaderName || '')}')" 
+                      class="px-2.5 py-1 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-200 text-xs font-bold transition-all inline-flex items-center gap-1 active:scale-95"
+                      title="自資料庫永久刪除">
+                <span class="material-symbols-outlined text-[15px]">delete</span>
+                <span>刪除</span>
+              </button>
+            </td>
+            <td class="py-3.5 px-4 text-on-surface-variant font-mono">
+              ${escapeHtml(item.date || '-')}
+            </td>
+            <td class="py-3.5 px-4 font-bold text-on-surface">
+              ${escapeHtml(item.name || item.leaderName || '-')}
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="px-2 py-0.5 rounded-full ${item.gender === '女' ? 'bg-pink-100 text-pink-700' : 'bg-blue-100 text-blue-700'} font-semibold text-[11px]">
+                ${escapeHtml(item.gender || '男')}
+              </span>
+            </td>
+            <td class="py-3.5 px-4 font-mono text-on-surface-variant">
+              ${escapeHtml(item.email || '-')}
+            </td>
+            <td class="py-3.5 px-4 font-mono">
+              ${escapeHtml(item.birthYear || '-')}
+            </td>
+            <td class="py-3.5 px-4 font-mono font-bold text-on-surface">
+              ${escapeHtml(item.phone || '-')}
+            </td>
+            <td class="py-3.5 px-4 font-mono text-on-surface-variant">
+              ${item.gradYear && item.gradYear !== '0' ? `第 ${escapeHtml(item.gradYear)} 屆` : '在校/教職員'}
+            </td>
+            <td class="py-3.5 px-4">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="font-bold text-on-surface">${escapeHtml(item.category || '校友組')}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${String(item.status).includes('候補') ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
+                  ${escapeHtml(item.status || '正選')}
+                </span>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+        return;
+      }
+
+      // ==========================================
+      // 3. 校慶服務志工 (Volunteers) 欄位
+      // ==========================================
+      if (currentTab === 'volunteer') {
+        summaryEl.textContent = `熱血服務志工共 ${volList.length} 人 (限 20 人，校友優先)`;
+        thead.innerHTML = `
+          <tr>
+            <th class="py-3 px-4">編號</th>
+            <th class="py-3 px-4 text-center">管理</th>
+            <th class="py-3 px-4">報名日期時間</th>
+            <th class="py-3 px-4">學生姓名</th>
+            <th class="py-3 px-4">學校班級</th>
+            <th class="py-3 px-4">學生手機</th>
+            <th class="py-3 px-4">家長聯絡 (姓名/電話)</th>
+            <th class="py-3 px-4">Email</th>
+            <th class="py-3 px-4">是否為校友</th>
+            <th class="py-3 px-4">希望服務組別</th>
+            <th class="py-3 px-4">錄取狀態</th>
+          </tr>
+        `;
+
+        if (volList.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="11" class="py-12 text-center text-on-surface-variant">
+                <span class="material-symbols-outlined text-3xl opacity-40">volunteer_activism</span>
+                <p class="font-bold mt-1">目前尚無服務志工報名資料</p>
+                <p class="text-xs opacity-70">測試名單已清空，可由志工專頁進行填表登記。</p>
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = volList.map((item, idx) => `
+          <tr class="hover:bg-surface-container-low transition-colors">
+            <td class="py-3.5 px-4 font-mono font-bold text-secondary">
+              ${escapeHtml(item.id || '-')}
+            </td>
+            <td class="py-3.5 px-4 text-center">
+              <button onclick="deleteSingleRegistration('${item.id}', '${escapeHtml(item.studentName || '')}')" 
+                      class="px-2.5 py-1 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-200 text-xs font-bold transition-all inline-flex items-center gap-1 active:scale-95"
+                      title="自資料庫永久刪除">
+                <span class="material-symbols-outlined text-[15px]">delete</span>
+                <span>刪除</span>
+              </button>
+            </td>
+            <td class="py-3.5 px-4 text-on-surface-variant font-mono">
+              ${escapeHtml(item.date || '-')}
+            </td>
+            <td class="py-3.5 px-4 font-bold text-on-surface">
+              ${escapeHtml(item.studentName || '-')}
+            </td>
+            <td class="py-3.5 px-4 text-on-surface-variant">
+              ${escapeHtml(item.schoolClass || '-')}
+            </td>
+            <td class="py-3.5 px-4 font-mono font-bold text-on-surface">
+              ${escapeHtml(item.phoneSelf || item.phone || '-')}
+            </td>
+            <td class="py-3.5 px-4 text-xs">
+              <span class="text-on-surface-variant">${escapeHtml(item.parentRel || '')} </span>
+              <span class="font-mono">${escapeHtml(item.phoneParent || '-')}</span>
+            </td>
+            <td class="py-3.5 px-4 font-mono text-on-surface-variant">
+              ${escapeHtml(item.email || '-')}
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="px-2 py-0.5 rounded-full font-bold text-[10px] ${String(item.isAlumni).includes('是') ? 'bg-amber-100 text-amber-800' : 'bg-surface-container text-on-surface-variant'}">
+                ${escapeHtml(item.isAlumni || '否')}
+              </span>
+            </td>
+            <td class="py-3.5 px-4 text-on-surface-variant truncate max-w-[150px]">
+              ${escapeHtml(item.serviceRoles || '-')}
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="inline-flex items-center gap-1 font-bold ${String(item.status).includes('優先') ? 'text-amber-700' : 'text-emerald-700'}">
+                <span class="w-1.5 h-1.5 rounded-full ${String(item.status).includes('優先') ? 'bg-amber-500' : 'bg-emerald-600'}"></span>
+                ${escapeHtml(item.status || '審核中')}
+              </span>
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    // 6. Delete Single Registration (Sync with Google Sheet)
+    async function deleteSingleRegistration(regId, targetName) {
+      if (!confirm(`確定要刪除報名編號【${regId}】${targetName ? `（${targetName}）` : ''} 嗎？\n\n⚠️ 此操作將同時從 Google 試算表雲端資料庫永久刪除該筆資料！`)) {
+        return;
+      }
+
+      showToast(`正在從 Google 試算表同步刪除【${regId}】...`, true);
+
+      // 1. Call GAS delete endpoint
+      let gasDeleted = false;
+      try {
+        const resp = await fetch(`${GAS_URL}?action=delete&regId=${encodeURIComponent(regId)}`, {
+          method: 'GET',
+          mode: 'cors'
+        });
+        if (resp.ok) {
+          const res = await resp.json();
+          gasDeleted = res && res.deleted;
+        }
+      } catch (err) {
+        console.warn('GAS 刪除請求發送失敗，嘗試 POST 或本地刪除:', err);
+      }
+
+      // 2. Remove from LocalStorage
+      let list = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS) || '[]');
+      const beforeLen = list.length;
+      list = list.filter(item => item.id !== regId);
+      localStorage.setItem(STORAGE_KEY_REGISTRATIONS, JSON.stringify(list));
+
+      // 3. Update active table & toast
+      renderActiveTable();
+      showToast(`✅ 已成功刪除【${regId}】，並已同步更新資料庫！`, true);
+    }
+
+    // 7. Clear All Test Data (Sync with Google Sheet)
+    async function confirmClearAllTestData() {
+      if (!confirm('⚠️ 警告：確定要清除所有測試名冊資料嗎？\n\n此操作將會清空本機測試名單，並發送指令同步清空 Google 試算表中的所有名單列（表頭欄位格式將完整保留）。')) {
+        return;
+      }
+
+      showToast('正在向 Google 試算表發送清空測試資料指令...', true);
+
+      try {
+        await fetch(`${GAS_URL}?action=clearAll`, { method: 'GET', mode: 'cors' });
+      } catch (err) {
+        console.warn('GAS clearAll attempt:', err);
+      }
+
+      // Clear local storage
+      localStorage.setItem(STORAGE_KEY_REGISTRATIONS, '[]');
+      cloudData = { family: [], relay: [], volunteer: [] };
+
+      renderActiveTable();
+      showToast('🎉 所有測試名單已全數清空！系統回歸乾淨上線狀態。', true);
+    }
+
+    // 8. Export CSV based on Current Tab
+    function exportCSV() {
+      const list = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS) || '[]');
+      let headers = [];
+      let rows = [];
+      let filename = '';
+
+      if (currentTab === 'family') {
+        const familyList = list.filter(i => i.type === 'family');
+        if (familyList.length === 0) return alert('目前無親子趣味競賽名單可匯出');
+        headers = ['編號', '報名日期時間', '家長姓名', 'Email', '行動電話', '學生姓名', '學生年級', '學生班級', '錄取狀態'];
+        rows = familyList.map(i => [
+          `"${i.id || ''}"`,
+          `"${i.date || ''}"`,
+          `"${i.parentName || i.leaderName || ''}"`,
+          `"${i.email || ''}"`,
+          `"${i.phone || ''}"`,
+          `"${i.studentName || i.childName || ''}"`,
+          `"${i.studentGrade || ''}"`,
+          `"${i.studentClass || ''}"`,
+          `"${i.status || ''}"`
+        ]);
+        filename = `71大庄校慶_圈力衝刺親子賽名冊_${new Date().toISOString().slice(0, 10)}.csv`;
+      } else if (currentTab === 'relay') {
+        const relayList = list.filter(i => i.type === 'relay');
+        if (relayList.length === 0) return alert('目前無大隊接力名單可匯出');
+        headers = ['編號', '報名日期時間', '姓名', '性別', 'Email', '出生年次', '行動電話', '校友畢業年度', '報名組別', '錄取狀態'];
+        rows = relayList.map(i => [
+          `"${i.id || ''}"`,
+          `"${i.date || ''}"`,
+          `"${i.name || i.leaderName || ''}"`,
+          `"${i.gender || ''}"`,
+          `"${i.email || ''}"`,
+          `"${i.birthYear || ''}"`,
+          `"${i.phone || ''}"`,
+          `"${i.gradYear || ''}"`,
+          `"${i.category || ''}"`,
+          `"${i.status || ''}"`
+        ]);
+        filename = `71大庄校慶_薪傳大隊接力名冊_${new Date().toISOString().slice(0, 10)}.csv`;
+      } else {
+        const volList = list.filter(i => i.type === 'volunteer' || i.type === 'volunteers');
+        if (volList.length === 0) return alert('目前無志工名單可匯出');
+        headers = ['編號', '報名日期時間', '學生姓名', '學校班級', '學生手機', '家長姓名與關係', '家長手機', 'Email', '是否為校友', '服務組別', '錄取狀態'];
+        rows = volList.map(i => [
+          `"${i.id || ''}"`,
+          `"${i.date || ''}"`,
+          `"${i.studentName || ''}"`,
+          `"${i.schoolClass || ''}"`,
+          `"${i.phoneSelf || i.phone || ''}"`,
+          `"${i.parentRel || ''}"`,
+          `"${i.phoneParent || ''}"`,
+          `"${i.email || ''}"`,
+          `"${i.isAlumni || ''}"`,
+          `"${i.serviceRoles || ''}"`,
+          `"${i.status || ''}"`
+        ]);
+        filename = `71大庄校慶_熱血志工名冊_${new Date().toISOString().slice(0, 10)}.csv`;
+      }
+
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    document.addEventListener('DOMContentLoaded', checkAuth);
+  </script>
+</body>
+</html>

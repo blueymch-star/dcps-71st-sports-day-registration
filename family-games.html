@@ -766,7 +766,7 @@
   <script>
     // ---------- GAS Config & Storage ----------
     const STORAGE_KEY_GAS_URL = 'dachuang_71_gas_url';
-    const DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbyDemoRelayRegistrationGasService/exec';
+    const DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbzl7zf48nxLH2_BPzEL0T48NNR8EI0SO_ROErJ0cDszftJphDOJ1lG-OTfrsxERv-h57A/exec';
     let currentGasUrl = localStorage.getItem(STORAGE_KEY_GAS_URL) || DEFAULT_GAS_URL;
 
     const STORAGE_KEY_ALL_REG = 'dachuang_71_registrations';
@@ -774,29 +774,9 @@
     const MAX_WAITLIST_QUOTA = 2;  // 候補 2 組
     const MAX_TOTAL_QUOTA = 22;    // 總上限 22 組
 
-    // Preset authentic initial registrations if completely empty
+    // Get family registrations from storage
     function getFamilyRegistrations() {
-      let all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG) || 'null');
-      if (!all) {
-        // Initial mock setup with 14 registered groups so user can see actual count (14/20 regular)
-        all = [
-          { id: 'DC71-FAM-1001', type: 'family', studentGrade: '一年級', studentClass: '甲班', studentName: '林宥廷', parentName: '林志豪', date: '2026-11-01 09:12', status: '正選 (第 1 組)' },
-          { id: 'DC71-FAM-1002', type: 'family', studentGrade: '一年級', studentClass: '乙班', studentName: '陳品妍', parentName: '陳文彬', date: '2026-11-01 10:25', status: '正選 (第 2 組)' },
-          { id: 'DC71-FAM-1003', type: 'family', studentGrade: '二年級', studentClass: '丙班', studentName: '黃子謙', parentName: '黃俊傑', date: '2026-11-01 11:40', status: '正選 (第 3 組)' },
-          { id: 'DC71-FAM-1004', type: 'family', studentGrade: '二年級', studentClass: '甲班', studentName: '張品睿', parentName: '張世昌', date: '2026-11-01 14:15', status: '正選 (第 4 組)' },
-          { id: 'DC71-FAM-1005', type: 'family', studentGrade: '三年級', studentClass: '丁班', studentName: '李思嫻', parentName: '李國榮', date: '2026-11-02 08:30', status: '正選 (第 5 組)' },
-          { id: 'DC71-FAM-1006', type: 'family', studentGrade: '三年級', studentClass: '乙班', studentName: '王禹晴', parentName: '王建宏', date: '2026-11-02 10:10', status: '正選 (第 6 組)' },
-          { id: 'DC71-FAM-1007', type: 'family', studentGrade: '三年級', studentClass: '甲班', studentName: '趙冠宇', parentName: '趙大同', date: '2026-11-02 13:20', status: '正選 (第 7 組)' },
-          { id: 'DC71-FAM-1008', type: 'family', studentGrade: '四年級', studentClass: '戊班', studentName: '周彥廷', parentName: '周志強', date: '2026-11-02 15:45', status: '正選 (第 8 組)' },
-          { id: 'DC71-FAM-1009', type: 'family', studentGrade: '四年級', studentClass: '丙班', studentName: '許宸瑋', parentName: '許文隆', date: '2026-11-03 09:05', status: '正選 (第 9 組)' },
-          { id: 'DC71-FAM-1010', type: 'family', studentGrade: '四年級', studentClass: '甲班', studentName: '鄭心語', parentName: '鄭富商', date: '2026-11-03 11:20', status: '正選 (第 10 組)' },
-          { id: 'DC71-FAM-1011', type: 'family', studentGrade: '五年級', studentClass: '乙班', studentName: '吳庭萱', parentName: '吳信宏', date: '2026-11-03 14:00', status: '正選 (第 11 組)' },
-          { id: 'DC71-FAM-1012', type: 'family', studentGrade: '五年級', studentClass: '丁班', studentName: '徐子安', parentName: '徐瑞豐', date: '2026-11-03 16:30', status: '正選 (第 12 組)' },
-          { id: 'DC71-FAM-1013', type: 'family', studentGrade: '六年級', studentClass: '甲班', studentName: '蔡承宏', parentName: '蔡榮發', date: '2026-11-04 08:50', status: '正選 (第 13 組)' },
-          { id: 'DC71-FAM-1014', type: 'family', studentGrade: '六年級', studentClass: '丙班', studentName: '劉怡君', parentName: '劉德祥', date: '2026-11-04 10:15', status: '正選 (第 14 組)' }
-        ];
-        localStorage.setItem(STORAGE_KEY_ALL_REG, JSON.stringify(all));
-      }
+      let all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG) || '[]');
       return all.filter(r => r.type === 'family' || (r.typeName && r.typeName.indexOf('趣味') !== -1));
     }
 
@@ -1020,6 +1000,10 @@
           typeName: '圈力衝刺 親子趣味競賽',
           category: `趣味賽・${studentGrade}${studentClass}`,
           teamName: `${studentGrade}${studentClass} ${studentName} ＆ ${parentName}`,
+          parentName: parentName,
+          studentName: studentName,
+          studentGrade: studentGrade,
+          studentClass: studentClass,
           leaderName: `${parentName} (家長)`,
           childName: `${studentName} (${studentGrade}${studentClass})`,
           email: parentEmail,
