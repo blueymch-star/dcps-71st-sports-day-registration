@@ -2,33 +2,64 @@
 
 **專案名稱**：第 71 屆大庄校慶運動會線上報名入口系統  
 **記錄時間**：2026-11-05  
-**目前狀態**：Google 試算表電話欄位保留開頭 0 機制全面生效、即時重複姓名審查、額滿防超額鎖定、雙向通知信件發送機制皆已就緒。
+**目前狀態**：全系統核心功能、後台管理、Google Sheets 雲端資料庫雙向串接、取消報名封存與候補釋出、個資遮罩防護與電話號碼保全均已驗證完成。
 
 ---
 
-## 📌 今日完成事項
+## 📌 今日完成重點
 
-1. **Google Sheets 資料庫電話號碼保留開頭 0 機制**：
-   - **寫入防除 0**：在 `GAS_Backend_Code.gs` 中引入 `formatPhoneForSheet()`，在電話欄位前加上試算表純文字前綴 `'`，並將該欄儲存格格式設定為 `@`（純文字），徹底防止 Google 試算表自動將 `09xxxxxxxx` 轉為純數字而吃掉開頭的 `0`。
-   - **既有資料自動校正**：新增 `fixExistingPhones()` 函式，隨每次同步自動檢視並修復試算表中過去遺失開頭 0 的 9 碼電話號碼。
-   - **讀取還原**：在 `getAllRegistrations()` 中加入 `cleanPhoneVal()`，向前端 API 回傳 JSON 時保證電話號碼具備完整的 `09xxxxxxxx` 格式。
-   - **前端匯出與表單相容**：
-     - 前台各表單（接力賽、親子賽、志工）送出時，若使用者誤輸入 9 碼（如 `912345678`），系統自動補齊開頭 `0`。
-     - 後台管理系統 [`admin.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/admin.html) 表格呈現與 CSV 匯出均加入 Tab 字元保護，確保以 Excel 或任何試算表軟體開啟時，開頭的 `0` 均能完整顯示不被省略。
+1. **取消報名資料庫封存與名額釋出機制**：
+   - 取消報名不會直接刪除資料，而是自動移至 Google 試算表「**已取消報名**」工作表完整備存。
+   - 釋出正選／候補名額供後續選手遞補，並向管理者與報名者寄送取消確認備存通知信。
 
-2. **Apps Script 部署升級**：
-   - 透過 clasp 更新部署至版本 `@6`，維持相同 Web App URL。
+2. **Google Sheets 電話欄位開頭「0」防除保護**：
+   - 解決試算表將純數字字串判定為數值而移除開頭 `0` 的問題：後端全面改用單引號前綴 `'` 與 `@`（純文字）儲存格格式。
+   - 自動修復歷史遺漏資料（`fixExistingPhones`），且後台匯出 CSV 時加入格式防護，確保 Excel 開啟時電話開頭 `0` 完好保留。
+
+3. **個資安全遮罩與雙重驗證查詢**：
+   - 報名查詢改為「姓名」＋「聯絡電話」雙重核驗。
+   - 查詢結果畫面全面實施去識別化遮罩（如：`陳*雄`、`0928-***-456`），防止公開查詢洩漏個資。
+
+4. **介面純淨化與後台門禁保護**：
+   - 移除各前台報名頁面右上角易造成使用者困惑的 GAS 設定齒輪按鈕。
+   - 首頁整合「大會後台端」專屬入口，設定 6 位數管理員密碼（`183618`）門禁。
+   - 後台管理系統支援親子賽、大隊接力、志工專屬欄位呈現、即時同步與 CSV 名冊匯出。
+
+5. **重複報名審查機制**：
+   - 親子趣味賽（學生/家長姓名）、薪傳大隊接力（姓名）、熱血志工（姓名/手機）均設置重複報名即時攔截阻擋。
+
+---
+
+## ⚠️ 踩坑經驗與注意事項 (Pitfalls)
+
+1. **Google Sheets 純數字字串吃 0 問題**：
+   - 使用 `appendRow()` 寫入 `0912345678` 時，試算表會預設解析為浮點數或整數而變成 `912345678`。
+   - **解法**：在寫入前補上前綴 `'`（單引號），試算表會將其識別為純文字並完整呈現開頭 `0`，且儲存格畫面中不會顯示單引號。
+2. **clasp 重新部署需指定 deploymentId**：
+   - 若直接執行 `create-deployment` 會產生全新的 Web App URL，導致前端必須重新更換網址。
+   - **解法**：使用 `npx @google/clasp create-deployment -i <deploymentId> -d "<說明>"`，即可在同一個 URL 下更新版本號（如 `@6`）。
+3. **個資去識別化原則**：
+   - 避免在公開頁面直接列出所有人姓名與手機，查詢功能嚴格限制為姓名+電話雙重相符，且電話中間 3 碼與姓名中間字皆以 `*` 遮蔽。
 
 ---
 
 ## 🧭 目前專案檔案結構
 
-- [`index.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/index.html)：大會首頁門戶 ＆ 數位通行證查詢 ＆ 後台入口（密碼：`183618`）
+- [`index.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/index.html)：大會首頁門戶 ＆ 雙重核驗個資遮罩查詢 ＆ 後台入口（密碼：`183618`）
 - [`admin.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/admin.html)：大會後台管理系統（名冊檢視、同步刪除、試算表直連、CSV 匯出、電話保留 0）
-- [`relay.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/relay.html)：薪傳大隊接力報名專頁
-- [`family-games.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/family-games.html)：圈力衝刺親子趣味賽報名專頁
-- [`volunteers.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/volunteers.html)：校慶熱血志工招募專頁
+- [`relay.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/relay.html)：薪傳大隊接力報名專頁（自動組別判定、重複審查、取消退選機制）
+- [`family-games.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/family-games.html)：圈力衝刺親子趣味賽報名專頁（22組額滿鎖定、重複審查、取消退選機制）
+- [`volunteers.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/volunteers.html)：校慶熱血志工招募專頁（20人額滿鎖定、校友優先審查、取消退選機制）
 - [`dynamic-island.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/dynamic-island.html)：71校慶動態島 (3D/互動島)
-- [`GAS_Backend_Code.gs`](file:///c:/Users/User/Documents/2026%20校慶運動會/GAS_Backend_Code.gs)：Google 試算表 Web App 接收代碼
+- [`GAS_Backend_Code.gs`](file:///c:/Users/User/Documents/2026%20校慶運動會/GAS_Backend_Code.gs)：Google 試算表 Web App 接收代碼（支援寫入、取消封存、刪除、雙向通知）
 - [`appsscript.json`](file:///c:/Users/User/Documents/2026%20校慶運動會/appsscript.json)：Apps Script 部署設定檔
 - [`.clasp.json`](file:///c:/Users/User/Documents/2026%20校慶運動會/.clasp.json)：clasp 專案連線設定
+
+---
+
+## 💡 下一步建議
+
+1. **GitHub 遠端儲存庫與公開部署**：
+   - 建立 GitHub 遠端儲存庫並推播，開啟 GitHub Pages 或部署至 Netlify，產生正式公開網址與 QR Code 供全校親師生掃碼。
+2. **實機掃碼演練**：
+   - 以手機實際測試各頁面填表、Email 接收確認信、取消退選後工作表名額釋出等完整流程。
