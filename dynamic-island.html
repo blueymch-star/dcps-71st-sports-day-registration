@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="h-full">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+  <meta content="mobile_tab" name="shell-type"/>
+  <title>奔馳榮耀島・71校慶動態島大冒險 - 大庄國小 71 週年校慶</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+  
+  <style>
+    @layer base{
+      html,body{width:100vw;margin:0;padding:0;background-color:#faf8ff;}
+      body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent;}
+      .pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}
+      .pt-safe{padding-top:env(safe-area-inset-top,0px);}
+      main>:first-child{margin-top:0!important;}
+      main>:last-child{margin-bottom:0!important;}
+    }
+    ::-webkit-scrollbar{display:none;}
+    .hero-card.active {
+      border: 2px solid #0037b0 !important;
+      background-color: #ffffff !important;
+      box-shadow: 0 4px 20px -2px rgba(0, 55, 176, 0.15) !important;
+    }
+  </style>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-fixed-dim": "#4edea3",
+            "inverse-on-surface": "#eef0ff",
+            "surface": "#faf8ff",
+            "on-tertiary-fixed-variant": "#005236",
+            "primary-container": "#1d4ed8",
+            "surface-container-highest": "#dae2fd",
+            "surface-container-high": "#e2e7ff",
+            "surface-tint": "#2151da",
+            "surface-container-low": "#f2f3ff",
+            "tertiary-fixed": "#6ffbbe",
+            "surface-dim": "#d2d9f4",
+            "on-surface": "#131b2e",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-container": "#60eeb1",
+            "tertiary-container": "#006a48",
+            "on-background": "#131b2e",
+            "secondary-fixed-dim": "#ffb690",
+            "tertiary": "#004f35",
+            "on-tertiary-fixed": "#002113",
+            "surface-variant": "#dae2fd",
+            "on-secondary": "#ffffff",
+            "on-surface-variant": "#434655",
+            "on-error-container": "#93000a",
+            "primary-fixed": "#dce1ff",
+            "on-error": "#ffffff",
+            "on-secondary-fixed-variant": "#783200",
+            "error-container": "#ffdad6",
+            "primary": "#0037b0",
+            "background": "#faf8ff",
+            "on-primary-fixed-variant": "#0039b5",
+            "on-primary-container": "#cad3ff",
+            "inverse-primary": "#b7c4ff",
+            "on-secondary-fixed": "#341100",
+            "surface-container": "#eaedff",
+            "on-primary-fixed": "#001551",
+            "surface-bright": "#faf8ff",
+            "inverse-surface": "#283044",
+            "secondary": "#9d4300",
+            "on-secondary-container": "#5c2400",
+            "secondary-container": "#fd761a",
+            "error": "#ba1a1a",
+            "on-tertiary": "#ffffff",
+            "primary-fixed-dim": "#b7c4ff",
+            "outline": "#747686",
+            "outline-variant": "#c4c5d7",
+            "on-primary": "#ffffff",
+            "secondary-fixed": "#ffdbca"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xl": "2rem",
+            "gutter": "1rem",
+            "margin": "1rem",
+            "space-md": "0.75rem",
+            "space-sm": "0.5rem",
+            "margin-tablet": "2rem",
+            "gutter-tablet": "1.5rem",
+            "space-lg": "1.25rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "label-md": ["'Noto Sans TC'", "Plus Jakarta Sans"],
+            "body-sm": ["'Noto Sans TC'", "Plus Jakarta Sans"],
+            "headline-lg": ["'Space Grotesk'", "'Noto Sans TC'"],
+            "body-lg": ["'Noto Sans TC'", "Plus Jakarta Sans"],
+            "label-lg": ["'Noto Sans TC'", "Plus Jakarta Sans"],
+            "headline-display": ["'Space Grotesk'", "'Noto Sans TC'"],
+            "body-md": ["'Noto Sans TC'", "Plus Jakarta Sans"],
+            "headline-sm": ["'Space Grotesk'", "'Noto Sans TC'"],
+            "headline-md": ["'Space Grotesk'", "'Noto Sans TC'"],
+            "label-sm": ["'Noto Sans TC'", "Plus Jakarta Sans"],
+            "headline-display-mobile": ["'Space Grotesk'", "'Noto Sans TC'"]
+          }
+        }
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+</head>
+<body class="bg-surface font-body-md text-on-surface flex flex-col min-h-screen">
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+    <div class="h-16 px-gutter flex items-center justify-between max-w-4xl mx-auto">
+      <div class="flex items-center gap-space-sm cursor-pointer" onclick="location.href='index.html'">
+        <div class="flex items-center gap-space-xs">
+          <span class="flex items-center justify-center w-8 h-8 rounded-full bg-primary-container text-on-primary font-headline-sm text-headline-sm shadow-sm">71</span>
+          <div class="flex flex-col">
+            <div class="flex items-center gap-space-xs">
+              <span class="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-tight">71校慶運動會</span>
+              <span id="dynamic-island-countdown-pill" class="font-label-sm text-label-sm px-1.5 py-0.5 rounded-full bg-secondary text-on-secondary font-bold tracking-wider">倒數計算中</span>
+            </div>
+            <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Dynamic Island</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-space-xs">
+        <button onclick="toggleModal('modal-notifications')" aria-label="通知與廣播" class="relative w-11 h-11 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container transition-colors">
+          <span class="material-symbols-outlined text-[22px]">notifications</span>
+          <span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-secondary-container"></span>
+        </button>
+        <a aria-label="報名查詢與個人檔案" class="flex items-center justify-center p-0.5 rounded-full hover:ring-2 hover:ring-primary/20 transition-all" href="index.html#registration-inquiry">
+          <img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDs9ITEHsQmZkQfwQkg6rvJlYwbz-Zhj0giA0b5NTCEG7gBEcbBy3QTPe4aclIW8yqYBVMpvquR0bPifZ21zjoKbW47U4U8uQxcmExmzamOfjOgEaQsAgioSM0fTfj3XoqLQL8IYBv1UjEYdSp1Tq21o8b57rHSzbxPt6lb_wLDDRAzucp7g9Tb1b0puWTUYfy8WOXfdeVzzL4th5eTHSRRUTPaQjVuXov6mfDidIE"/>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface max-w-4xl mx-auto">
+    <div class="flex flex-col w-full px-margin pb-10 space-y-6">
+
+      <!-- 1. Top Hero Island Card -->
+      <div class="relative w-full rounded-2xl overflow-hidden bg-inverse-surface text-inverse-on-surface shadow-2xl p-space-lg flex flex-col gap-space-md border border-white/10">
+        <!-- Ambient glowing aura -->
+        <div class="absolute -top-16 -right-16 w-52 h-52 bg-primary-container/30 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-16 -left-16 w-44 h-44 bg-secondary-container/25 rounded-full blur-2xl pointer-events-none"></div>
+
+        <!-- Island 3D Artwork Container -->
+        <div class="relative w-full h-56 rounded-xl overflow-hidden bg-on-background/40 shadow-inner">
+          <img alt="71週年校慶奔馳榮耀島3D立體浮島全景地圖" class="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-A71gOzNShHdI6kH36Tv7Km8JzS3hD9UlGFE_3hlh65KLhf70dIs7kV6BpZyltCriOWbDYPcAyIiOksoAwXFw8LKsFXsL-BiXZDK5zrtEvyVSGb1Vf_7ninpBspHXQJDuSA8K7wsgAFMFfRhIsi-SWdNxUbUXzLW78XDn-GH8P5e7_WKgKkIyGthgX0ELXbgLKTGxoguOuz1OMtRHn6UZMZE9KW6KaZHg4_0Qj-k"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-inverse-surface via-transparent to-black/20"></div>
+
+          <!-- Floating Live Badges -->
+          <div class="absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1 rounded-full bg-inverse-surface/85 backdrop-blur-md border border-white/10 shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-tertiary-fixed animate-ping"></span>
+            <span class="font-label-sm text-label-sm text-tertiary-fixed font-bold tracking-wider">3D 全景虛擬島即時在線</span>
+          </div>
+          <div class="absolute bottom-3 right-3 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary font-label-sm text-label-sm font-bold shadow-md">
+            71 週年紀念限定
+          </div>
+        </div>
+
+        <!-- Title & Descriptions -->
+        <div class="relative z-10 flex flex-col gap-1">
+          <div class="flex items-center gap-2">
+            <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-primary text-on-primary font-bold">盛典冒險開跑</span>
+            <span class="font-label-sm text-label-sm text-inverse-on-surface/70">DCPS Sports 71</span>
+          </div>
+          <h1 class="font-headline-display-mobile text-headline-display-mobile text-white tracking-tight font-extrabold">
+            奔馳榮耀島・校慶運動大冒險
+          </h1>
+          <p class="font-body-md text-body-md text-inverse-on-surface/80 leading-relaxed">
+            七一大庄、五力飛揚｜71 週年校慶 3D 浮島賽場沉浸體驗
+          </p>
+        </div>
+
+        <!-- Quick Stats Grid (4 Pills) -->
+        <div class="relative z-10 grid grid-cols-2 gap-2">
+          <div class="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-2.5 rounded-xl border border-white/10 shadow-inner">
+            <span class="material-symbols-outlined text-tertiary-fixed text-[20px]">sprint</span>
+            <div class="flex flex-col">
+              <span class="font-label-sm text-label-sm text-inverse-on-surface/60">探索賽區</span>
+              <span class="font-label-md text-label-md text-white font-bold">6 座五力賽場島</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-2.5 rounded-xl border border-white/10 shadow-inner">
+            <span class="material-symbols-outlined text-secondary-fixed text-[20px]">pin_drop</span>
+            <div class="flex flex-col">
+              <span class="font-label-sm text-label-sm text-inverse-on-surface/60">立體校園</span>
+              <span class="font-label-md text-label-md text-white font-bold">19 座建築地標</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-2.5 rounded-xl border border-white/10 shadow-inner">
+            <span class="material-symbols-outlined text-secondary-container text-[20px]">military_tech</span>
+            <div class="flex flex-col">
+              <span class="font-label-sm text-label-sm text-inverse-on-surface/60">個人成就</span>
+              <span class="font-label-md text-label-md text-white font-bold" id="hero-passport-counter">0/5 五力集章護照</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-2.5 rounded-xl border border-white/10 shadow-inner">
+            <span class="material-symbols-outlined text-primary-fixed text-[20px]">bolt</span>
+            <div class="flex flex-col">
+              <span class="font-label-sm text-label-sm text-inverse-on-surface/60">熱血競逐</span>
+              <span class="font-label-md text-label-md text-white font-bold">32 項校慶程序</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Direct External Portal CTA -->
+        <a class="relative z-10 w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-full bg-secondary-container hover:bg-secondary text-on-secondary font-label-lg text-label-lg font-bold shadow-lg shadow-secondary-container/30 transition-all duration-200 active:scale-[0.98]" href="https://dcps-sports-71-island.vercel.app/" rel="noopener noreferrer" target="_blank">
+          <span>進入 3D 動態島全景大冒險</span>
+          <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+        </a>
+      </div>
+
+      <!-- 2. Collectible Sports Hero Identity Cards -->
+      <div class="flex flex-col gap-space-md">
+        <!-- Header with Banner Graphic -->
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-6 rounded-full bg-primary-container"></span>
+              <h2 class="font-headline-md text-headline-md font-bold text-on-surface">五力運動英雄・參賽身分卡牌</h2>
+            </div>
+            <span class="font-label-sm text-label-sm px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-bold">5 款專屬英雄</span>
+          </div>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">選擇你的專屬出戰身份卡，解鎖專屬賽場增益充能 BUFF</p>
+        </div>
+
+        <!-- Hero Card Banner Preview Image -->
+        <div class="relative w-full h-44 rounded-2xl overflow-hidden bg-inverse-surface shadow-md">
+          <img alt="五力運動英雄卡牌英雄全陣容插畫" class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrXBQ5IjYeIBC_t3dvxQu_u7Gi-xqybwBv-bTT2spfSoJwxNkbvOOG3MUeGoQxHg-_vy2JXXkwdUa2sj6JY7-nfHPI38R8VytATwDgGBZD9KHfYLPjHnVGSz0JcTjpsWXMfJAgtLzYDdgCLckydOuj6TBH4lUlVgYcopXfsQeRrvdrn0e4fMAqowlTY2RycZFi6NARHuhIjhEmmHo11DFCpx1kEJsjGKtWEilTtwc"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/90 via-transparent to-transparent flex items-end p-space-md">
+            <span class="font-label-md text-label-md text-white/90 font-medium">🌟 點擊下方卡牌切換出戰身分，點亮運動員專屬光環！</span>
+          </div>
+        </div>
+
+        <!-- Cards List -->
+        <div class="flex flex-col gap-3" id="hero-card-deck">
+          <!-- Card A: Tiger Rookie (Active State Default) -->
+          <div class="hero-card active relative rounded-2xl p-space-md bg-surface-container-lowest shadow-md transition-all cursor-pointer flex flex-col gap-2.5 border border-surface-container" data-hero-id="tiger">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-secondary-fixed flex items-center justify-center text-[26px] shadow-sm">
+                  🐯
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-headline-sm text-headline-sm text-on-surface font-bold">低年級小選手卡</span>
+                    <span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed font-bold">⭐ 入門友善</span>
+                  </div>
+                  <span class="font-label-sm text-label-sm text-on-surface-variant">專屬萌虎衝刺｜敏捷爆發系</span>
+                </div>
+              </div>
+              <span class="active-indicator flex items-center justify-center w-6 h-6 rounded-full bg-primary-container text-on-primary shadow-xs">
+                <span class="material-symbols-outlined text-[16px]">check</span>
+              </span>
+            </div>
+            <div class="grid grid-cols-3 gap-1.5 pt-1">
+              <div class="bg-surface-container px-2 py-1.5 rounded-lg text-center">
+                <span class="font-label-sm text-label-sm text-on-surface-variant block">充能門檻</span>
+                <span class="font-label-md text-label-md text-primary font-bold">減半 -50%</span>
+              </div>
+              <div class="bg-surface-container px-2 py-1.5 rounded-lg text-center">
+                <span class="font-label-sm text-label-sm text-on-surface-variant block">答題錦囊</span>
+                <span class="font-label-md text-label-md text-secondary font-bold">小選手專屬</span>
+              </div>
+              <div class="bg-surface-container px-2 py-1.5 rounded-lg text-center">
+                <span class="font-label-sm text-label-sm text-on-surface-variant block">特殊技</span>
+                <span class="font-label-md text-label-md text-tertiary font-bold">萌虎衝刺</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card B: Flash Runner -->
+          <div class="hero-card relative rounded-2xl p-space-md bg-surface-container-lowest shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col gap-2.5 opacity-90 border border-surface-container" data-hero-id="flash">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center text-[26px] shadow-sm">
+                  ⚡
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-headline-sm text-headline-sm text-on-surface font-bold">中年級飛毛腿卡</span>
+                    <span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-bold">⭐⭐ 標準進階</span>
+                  </div>
+                  <span class="font-label-sm text-label-sm text-on-surface-variant">跑道敏捷專家｜均勻配速型</span>
+                </div>
+              </div>
+              <span class="active-indicator hidden items-center justify-center w-6 h-6 rounded-full bg-primary-container text-on-primary shadow-xs">
+                <span class="material-symbols-outlined text-[16px]">check</span>
+              </span>
+            </div>
+            <div class="grid grid-cols-3 gap-1.5 pt-1">
+              <div class="bg-surface-container px-2 py-1.5 rounded-lg text-center">
+                <span class="font-label-sm text-label-sm text-on-surface-variant block">起跑反應</span>
+                <span class="font-label-md text-label-md text-primary font-bold">瞬時 +0.15s</span>
+              </div>
+              <div class="bg-surface-container px-2 py-1.5 rounded-lg text-center">
+                <span class="font-label-sm text-label-sm text-on-surface-variant block">賽道適應</span>
+                <span class="font-label-md text-label-md text-primary font-bold">紫色跑道</span>
+              </div>
+              <div class="bg-surface-container px-2 py-1.5 rounded-lg text-center">
+                <span class="font-label-sm text-label-sm text-on-surface-variant block">特殊技</span>
+                <span class="font-label-md text-label-md text-tertiary font-bold">常識大師</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card C: Wind Breaker -->
+          <div class="hero-card relative rounded-2xl p-space-md bg-surface-container-lowest shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col gap-2.5 opacity-90 border border-surface-container" data-hero-id="wind">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-error-container flex items-center justify-center text-[26px] shadow-sm">
+                  🔥
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-headline-sm text-headline-sm text-on-surface font-bold">高年級破風手卡</span>
+                    <span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-error-container text-on-error-container font-bold">⭐⭐⭐ 競速破風</span>
+                  </div>
+                  <span class="font-label-sm text-label-sm text-on-surface-variant">大隊接力外側超越｜手速狂暴連擊</span>
+                </div>
+              </div>
+              <span class="active-indicator hidden items-center justify-center w-6 h-6 rounded-full bg-primary-container text-on-primary shadow-xs">
+                <span class="material-symbols-outlined text-[16px]">check</span>
+              </span>
+            </div>
+            <div class="grid grid-cols-3 gap-1.5 pt-1">
+              <div class="bg-surface-container px-2 py-1.5 rounded-lg text-center">
+                <span class="font-label-sm text-label-sm text-on-surface-variant block">充能爆發</span>
+                <span class="font-label-md text-label-md text-secondary font-bold">手速連擊 x3</span>
+              </div>
+              <div class="bg-surface-container px-2 py-1.5 rounded-lg text-center">
+                <span class="font-label-sm text-label-sm text-on-surface-variant block">接力過彎</span>
+                <span class="font-label-md text-label-md text-primary font-bold">外側極限超越</span>
+              </div>
+              <div class="bg-surface-container px-2 py-1.5 rounded-lg text-center">
+                <span class="font-label-sm text-label-sm text-on-surface-variant block">終點衝刺</span>
+                <span class="font-label-md text-label-md text-tertiary font-bold">破風金光</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card D: Parent Cheering -->
+          <div class="hero-card relative rounded-2xl p-space-md bg-surface-container-lowest shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col gap-2.5 opacity-90 border border-surface-container" data-hero-id="parent">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-tertiary-fixed flex items-center justify-center text-[26px] shadow-sm">
+                  📸
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-headline-sm text-headline-sm text-on-surface font-bold">熱血應援家長卡</span>
+                    <span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-bold">⭐⭐ 親子應援</span>
+                  </div>
+                  <span class="font-label-sm text-label-sm text-on-surface-variant">趣味競賽敏捷圈協力｜熱情相伴</span>
+                </div>
+              </div>
+              <span class="active-indicator hidden items-center justify-center w-6 h-6 rounded-full bg-primary-container text-on-primary shadow-xs">
+                <span class="material-symbols-outlined text-[16px]">check</span>
+              </span>
+            </div>
+            <div class="grid grid-cols-3 gap-1.5 pt-1">
+              <div class="bg-surface-container px-2 py-1.5 rounded-lg text-center">
+                <span class="font-label-sm text-label-sm text-on-surface-variant block">敏捷圈協力</span>
+                <span class="font-label-md text-label-md text-tertiary font-bold">失誤保護 +1</span>
+              </div>
+              <div class="bg-surface-container px-2 py-1.5 rounded-lg text-center">
+                <span class="font-label-sm text-label-sm text-on-surface-variant block">活力應援</span>
+                <span class="font-label-md text-label-md text-secondary font-bold">鼓掌狂熱連擊</span>
+              </div>
+              <div class="bg-surface-container px-2 py-1.5 rounded-lg text-center">
+                <span class="font-label-sm text-label-sm text-on-surface-variant block">回憶捕捉</span>
+                <span class="font-label-md text-label-md text-primary font-bold">全場特寫</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card E: Alumni VIP -->
+          <div class="hero-card relative rounded-2xl p-space-md bg-surface-container-lowest shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col gap-2.5 opacity-90 border border-surface-container" data-hero-id="alumni">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-secondary-fixed-dim flex items-center justify-center text-[26px] shadow-sm">
+                  🏅
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-headline-sm text-headline-sm text-on-surface font-bold">親善校友貴賓卡</span>
+                    <span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-secondary-fixed-dim text-on-secondary-fixed font-bold">⭐⭐⭐ 校友薪傳</span>
+                  </div>
+                  <span class="font-label-sm text-label-sm text-on-surface-variant">薪傳71年風華｜世界體育傳奇加持</span>
+                </div>
+              </div>
+              <span class="active-indicator hidden items-center justify-center w-6 h-6 rounded-full bg-primary-container text-on-primary shadow-xs">
+                <span class="material-symbols-outlined text-[16px]">check</span>
+              </span>
+            </div>
+            <div class="grid grid-cols-3 gap-1.5 pt-1">
+              <div class="bg-surface-container px-2 py-1.5 rounded-lg text-center">
+                <span class="font-label-sm text-label-sm text-on-surface-variant block">傳承蓄力</span>
+                <span class="font-label-md text-label-md text-secondary font-bold">光環加乘 +71%</span>
+              </div>
+              <div class="bg-surface-container px-2 py-1.5 rounded-lg text-center">
+                <span class="font-label-sm text-label-sm text-on-surface-variant block">傳奇導師</span>
+                <span class="font-label-md text-label-md text-primary font-bold">解鎖6大名將</span>
+              </div>
+              <div class="bg-surface-container px-2 py-1.5 rounded-lg text-center">
+                <span class="font-label-sm text-label-sm text-on-surface-variant block">校慶勳章</span>
+                <span class="font-label-md text-label-md text-tertiary font-bold">尊爵金箔紋</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. The 6 Hexagonal Power Islands Cards -->
+      <div class="flex flex-col gap-space-md">
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-6 rounded-full bg-secondary-container"></span>
+              <h2 class="font-headline-md text-headline-md text-on-surface font-bold">六大五力主題賽區島嶼</h2>
+            </div>
+            <span class="font-label-sm text-label-sm text-primary font-bold">3D 地標對照</span>
+          </div>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">大庄國小 71 週年特色賽道浮島，集滿印章解鎖榮耀</p>
+        </div>
+
+        <!-- Island Cards Grid -->
+        <div class="grid grid-cols-1 gap-3">
+          <!-- Island 01 -->
+          <div class="relative rounded-2xl p-space-md bg-surface-container-lowest shadow-sm flex flex-col gap-2.5 border border-surface-container">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-secondary-fixed text-on-secondary-fixed font-headline-sm text-headline-sm font-bold">01</span>
+                <div>
+                  <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">校慶盛典與接力島</h3>
+                  <span class="font-label-sm text-label-sm text-on-surface-variant">薪傳大隊接力・聖火台勝利煙火</span>
+                </div>
+              </div>
+              <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-bold">群體力 🤝</span>
+            </div>
+            <div class="flex items-center justify-between bg-surface-container-low p-2.5 rounded-xl border border-surface-container">
+              <div class="flex items-center gap-1.5 text-secondary">
+                <span class="material-symbols-outlined text-[18px]">local_fire_department</span>
+                <span class="font-label-md text-label-md font-bold">金框尊爵聖火中心</span>
+              </div>
+              <span class="font-label-sm text-label-sm text-on-surface-variant">全校齊聚開幕</span>
+            </div>
+          </div>
+
+          <!-- Island 02 -->
+          <div class="relative rounded-2xl p-space-md bg-surface-container-lowest shadow-sm flex flex-col gap-2.5 border border-surface-container">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-primary-fixed text-on-primary-fixed font-headline-sm text-headline-sm font-bold">02</span>
+                <div>
+                  <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">五力競賽與展演島</h3>
+                  <span class="font-label-sm text-label-sm text-on-surface-variant">六道立體紫色橡膠跑道・短跑個人賽</span>
+                </div>
+              </div>
+              <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-bold">體能力 ⚡</span>
+            </div>
+            <div class="flex items-center justify-between bg-surface-container-low p-2.5 rounded-xl border border-surface-container">
+              <div class="flex items-center gap-1.5 text-primary">
+                <span class="material-symbols-outlined text-[18px]">timer</span>
+                <span class="font-label-md text-label-md font-bold">極速感應計時晶片</span>
+              </div>
+              <span class="font-label-sm text-label-sm text-on-surface-variant">衝刺角逐個人金牌</span>
+            </div>
+          </div>
+
+          <!-- Island 03 -->
+          <div class="relative rounded-2xl p-space-md bg-surface-container-lowest shadow-sm flex flex-col gap-2.5 border border-surface-container">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-surface-variant text-on-surface font-headline-sm text-headline-sm font-bold">03</span>
+                <div>
+                  <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">風起律動舞台島</h3>
+                  <span class="font-label-sm text-label-sm text-on-surface-variant">六學年特色舞蹈・活力迎賓律動</span>
+                </div>
+              </div>
+              <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-surface-variant text-on-surface font-bold">美感力 🎨</span>
+            </div>
+            <div class="flex items-center justify-between bg-surface-container-low p-2.5 rounded-xl border border-surface-container">
+              <div class="flex items-center gap-1.5 text-on-surface">
+                <span class="material-symbols-outlined text-[18px]">music_note</span>
+                <span class="font-label-md text-label-md font-bold">光影律動視聽震撼</span>
+              </div>
+              <span class="font-label-sm text-label-sm text-on-surface-variant">創意化裝進場</span>
+            </div>
+          </div>
+
+          <!-- Island 04 -->
+          <div class="relative rounded-2xl p-space-md bg-surface-container-lowest shadow-sm flex flex-col gap-2.5 border border-surface-container">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-error-container text-on-error-container font-headline-sm text-headline-sm font-bold">04</span>
+                <div>
+                  <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">趣味嘉年華島</h3>
+                  <span class="font-label-sm text-label-sm text-on-surface-variant">圈力衝刺敏捷圈・親子協力趣味賽</span>
+                </div>
+              </div>
+              <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-bold">道德力 💖</span>
+            </div>
+            <div class="flex items-center justify-between bg-surface-container-low p-2.5 rounded-xl border border-surface-container">
+              <div class="flex items-center gap-1.5 text-secondary">
+                <span class="material-symbols-outlined text-[18px]">diversity_1</span>
+                <span class="font-label-md text-label-md font-bold">親子攜手運動家風範</span>
+              </div>
+              <span class="font-label-sm text-label-sm text-on-surface-variant">大庄家族同樂</span>
+            </div>
+          </div>
+
+          <!-- Island 05 -->
+          <div class="relative rounded-2xl p-space-md bg-surface-container-lowest shadow-sm flex flex-col gap-2.5 border border-surface-container">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed font-headline-sm text-headline-sm font-bold">05</span>
+                <div>
+                  <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">知識傳奇英雄島</h3>
+                  <span class="font-label-sm text-label-sm text-on-surface-variant">古柏坦、李小龍、紀政、歐文斯、喬丹、楊傳廣</span>
+                </div>
+              </div>
+              <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-bold">知識力 🧠</span>
+            </div>
+            <div class="flex items-center justify-between bg-surface-container-low p-2.5 rounded-xl border border-surface-container">
+              <div class="flex items-center gap-1.5 text-tertiary">
+                <span class="material-symbols-outlined text-[18px]">auto_stories</span>
+                <span class="font-label-md text-label-md font-bold">6 大體育傳奇常識問答</span>
+              </div>
+              <span class="font-label-sm text-label-sm text-on-surface-variant">通關即解鎖專屬勳章</span>
+            </div>
+          </div>
+
+          <!-- Island 06 -->
+          <div class="relative rounded-2xl p-space-md bg-surface-container-lowest shadow-sm flex flex-col gap-2.5 border border-surface-container">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-secondary-container text-on-secondary font-headline-sm text-headline-sm font-bold">06</span>
+                <div>
+                  <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">榮耀頒獎與動態島</h3>
+                  <span class="font-label-sm text-label-sm text-on-surface-variant">即時大庄 WIN 榜單・金牌證書下載</span>
+                </div>
+              </div>
+              <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary font-bold">大庄 WIN 🏆</span>
+            </div>
+            <div class="flex items-center justify-between bg-surface-container-low p-2.5 rounded-xl border border-surface-container">
+              <div class="flex items-center gap-1.5 text-secondary">
+                <span class="material-symbols-outlined text-[18px]">workspace_premium</span>
+                <span class="font-label-md text-label-md font-bold">全場總錦標盛大加冕</span>
+              </div>
+              <span class="font-label-sm text-label-sm text-on-surface-variant">即刻下載榮譽</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Passports & Trophy Rewards Section -->
+      <div class="relative rounded-2xl bg-surface-container-lowest p-space-lg shadow-lg flex flex-col gap-space-md overflow-hidden border border-surface-container">
+        <!-- Top subtle aura banner -->
+        <div class="flex items-start justify-between">
+          <div class="flex flex-col gap-0.5">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-secondary-container text-[24px]">verified</span>
+              <h2 class="font-headline-md text-headline-md font-bold text-on-surface">五力試煉護照</h2>
+            </div>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">完成浮島探索任務，集滿五枚專屬力之印章</p>
+          </div>
+          <div class="px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-headline-sm text-headline-sm font-bold" id="passport-score-badge">
+            0 / 5
+          </div>
+        </div>
+
+        <!-- Stamps Tracker Display -->
+        <div class="grid grid-cols-5 gap-2">
+          <!-- Stamp 1 -->
+          <div class="stamp-item flex flex-col items-center gap-1.5 p-2 rounded-xl bg-surface-container text-center cursor-pointer transition-all border border-surface-container hover:scale-105 active:scale-95" data-stamp="美感力">
+            <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant font-bold text-[16px] shadow-inner">
+              🎨
+            </div>
+            <span class="font-label-sm text-label-sm text-on-surface font-semibold">美感力</span>
+            <span class="font-label-sm text-label-sm text-on-surface-variant status-text">點擊解鎖</span>
+          </div>
+
+          <!-- Stamp 2 -->
+          <div class="stamp-item flex flex-col items-center gap-1.5 p-2 rounded-xl bg-surface-container text-center cursor-pointer transition-all border border-surface-container hover:scale-105 active:scale-95" data-stamp="群體力">
+            <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant font-bold text-[16px] shadow-inner">
+              🤝
+            </div>
+            <span class="font-label-sm text-label-sm text-on-surface font-semibold">群體力</span>
+            <span class="font-label-sm text-label-sm text-on-surface-variant status-text">點擊解鎖</span>
+          </div>
+
+          <!-- Stamp 3 -->
+          <div class="stamp-item flex flex-col items-center gap-1.5 p-2 rounded-xl bg-surface-container text-center cursor-pointer transition-all border border-surface-container hover:scale-105 active:scale-95" data-stamp="道德力">
+            <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant font-bold text-[16px] shadow-inner">
+              💖
+            </div>
+            <span class="font-label-sm text-label-sm text-on-surface font-semibold">道德力</span>
+            <span class="font-label-sm text-label-sm text-on-surface-variant status-text">點擊解鎖</span>
+          </div>
+
+          <!-- Stamp 4 -->
+          <div class="stamp-item flex flex-col items-center gap-1.5 p-2 rounded-xl bg-surface-container text-center cursor-pointer transition-all border border-surface-container hover:scale-105 active:scale-95" data-stamp="知識力">
+            <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant font-bold text-[16px] shadow-inner">
+              🧠
+            </div>
+            <span class="font-label-sm text-label-sm text-on-surface font-semibold">知識力</span>
+            <span class="font-label-sm text-label-sm text-on-surface-variant status-text">點擊解鎖</span>
+          </div>
+
+          <!-- Stamp 5 -->
+          <div class="stamp-item flex flex-col items-center gap-1.5 p-2 rounded-xl bg-surface-container text-center cursor-pointer transition-all border border-surface-container hover:scale-105 active:scale-95" data-stamp="體能力">
+            <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant font-bold text-[16px] shadow-inner">
+              ⚡
+            </div>
+            <span class="font-label-sm text-label-sm text-on-surface font-semibold">體能力</span>
+            <span class="font-label-sm text-label-sm text-on-surface-variant status-text">點擊解鎖</span>
+          </div>
+        </div>
+
+        <!-- Motivational Box -->
+        <div class="p-space-md rounded-xl bg-surface-container-low flex items-center gap-3 border border-surface-container">
+          <div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary flex items-center justify-center shrink-0 shadow-sm">
+            <span class="material-symbols-outlined text-[20px]">celebration</span>
+          </div>
+          <p class="font-body-sm text-body-sm text-on-surface">
+            集滿 <strong class="text-secondary font-bold">5 枚印章</strong> 引燃全景 3D 聖火勝利煙火，現場解鎖五力金牌數位證書！
+          </p>
+        </div>
+
+        <!-- Action Button -->
+        <button class="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-lg text-label-lg font-bold shadow-md transition-all active:scale-[0.98]" id="btn-start-quest">
+          <span class="material-symbols-outlined text-[20px]">bolt</span>
+          <span>開啟五力闖關任務 ⚡</span>
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ==================== BOTTOM TAB BAR NAVIGATION ==================== -->
+  <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_-2px_12px_rgba(15,23,42,0.05)] border-t border-surface-container">
+    <div class="flex justify-around items-center h-20 px-space-xs max-w-4xl mx-auto">
+      <a class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition-all duration-200" data-path="relay" href="relay.html">
+        <span class="material-symbols-outlined text-[24px]">sprint</span>
+        <span class="font-label-md text-label-md">薪傳接力</span>
+      </a>
+      <a class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition-all duration-200" data-path="family-games" href="family-games.html">
+        <span class="material-symbols-outlined text-[24px]">sports_score</span>
+        <span class="font-label-md text-label-md">親子趣味</span>
+      </a>
+      <a class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition-all duration-200" data-path="volunteers" href="volunteers.html">
+        <span class="material-symbols-outlined text-[24px]">volunteer_activism</span>
+        <span class="font-label-md text-label-md">熱血志工</span>
+      </a>
+      <a aria-current="page" class="flex flex-col items-center justify-center gap-1 w-16 h-14 transition-all duration-200 text-primary font-bold" data-path="dynamic-island" href="dynamic-island.html">
+        <span class="material-symbols-outlined text-[24px]">campaign</span>
+        <span class="font-label-md text-label-md">71動態島</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Notification Modal -->
+  <div id="modal-notifications" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-surface-container overflow-hidden">
+      <div class="p-4 bg-primary text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[22px]">notifications_active</span>
+          <h3 class="font-bold text-base">大會即時推播</h3>
+        </div>
+        <button onclick="toggleModal('modal-notifications')" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/20">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+      <div class="p-4 space-y-3 max-h-[60vh] overflow-y-auto">
+        <div class="p-3 rounded-xl bg-surface-container-low border border-surface-container">
+          <span class="text-xs font-bold text-secondary">【3D 動態島更新】</span>
+          <p class="text-xs text-on-surface font-medium mt-1">
+            71 週年「奔馳榮耀島」3D 全景虛擬島已正式上線！歡迎點擊進入探索 19 座校園地標與 6 大五力賽場。
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCRIPT ==================== -->
+  <script>
+    function toggleModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.toggle('hidden');
+    }
+
+    // Interactive Hero Card Selector
+    const heroCards = document.querySelectorAll('.hero-card');
+    heroCards.forEach(card => {
+      card.addEventListener('click', () => {
+        heroCards.forEach(c => {
+          c.classList.remove('active', 'opacity-100');
+          c.classList.add('opacity-90');
+          const indicator = c.querySelector('.active-indicator');
+          if (indicator) {
+            indicator.classList.add('hidden');
+            indicator.classList.remove('flex');
+          }
+        });
+        card.classList.add('active', 'opacity-100');
+        card.classList.remove('opacity-90');
+        const activeIndicator = card.querySelector('.active-indicator');
+        if (activeIndicator) {
+          activeIndicator.classList.remove('hidden');
+          activeIndicator.classList.add('flex');
+        }
+
+        const heroName = card.querySelector('.font-headline-sm')?.textContent || '';
+        try {
+          localStorage.setItem('dachuang_71_selected_hero', heroName);
+          confetti({ particleCount: 25, spread: 50, origin: { y: 0.6 } });
+        } catch(e) {}
+      });
+    });
+
+    // Stamp quick interaction feedback with counter
+    let unlockedStamps = 0;
+    const stampItems = document.querySelectorAll('.stamp-item');
+    const badgeScore = document.getElementById('passport-score-badge');
+    const heroScoreCounter = document.getElementById('hero-passport-counter');
+
+    stampItems.forEach(stamp => {
+      stamp.addEventListener('click', () => {
+        const stateLabel = stamp.querySelector('.status-text');
+        if (stateLabel && stateLabel.textContent !== '已獲取 ✨') {
+          stateLabel.textContent = '已獲取 ✨';
+          stateLabel.className = 'font-label-sm text-label-sm text-tertiary font-bold status-text';
+          stamp.classList.remove('bg-surface-container');
+          stamp.classList.add('bg-tertiary-fixed/30', 'border-tertiary-fixed');
+
+          unlockedStamps++;
+          if (badgeScore) badgeScore.textContent = `${unlockedStamps} / 5`;
+          if (heroScoreCounter) heroScoreCounter.textContent = `${unlockedStamps}/5 五力集章護照`;
+
+          try {
+            confetti({ particleCount: 30, spread: 60, origin: { y: 0.8 } });
+          } catch(e) {}
+
+          if (unlockedStamps === 5) {
+            setTimeout(() => {
+              try {
+                confetti({ particleCount: 120, spread: 100, origin: { y: 0.5 } });
+              } catch(e) {}
+              alert('🎉 恭喜您集齊全部「五力試煉印章」！成功解鎖大庄 71 週年全景榮耀聖火煙火大冒險！');
+            }, 300);
+          }
+        }
+      });
+    });
+
+    // Start Quest CTA
+    const questBtn = document.getElementById('btn-start-quest');
+    if (questBtn) {
+      questBtn.addEventListener('click', () => {
+        window.open('https://dcps-sports-71-island.vercel.app/', '_blank');
+      });
+    }
+
+    // Countdown pill sync to 2026-12-12 08:00:00
+    const eventTime = new Date('2026-12-12T08:00:00').getTime();
+    const nowTime = new Date().getTime();
+    const diffDays = Math.max(0, Math.floor((eventTime - nowTime) / (1000 * 60 * 60 * 24)));
+    const diPill = document.getElementById('dynamic-island-countdown-pill');
+    if (diPill) diPill.textContent = `倒數 ${diffDays} 天`;
+  </script>
+</body>
+</html>

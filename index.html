@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="h-full">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+  <meta content="mobile_tab" name="shell-type"/>
+  <title>第71屆大庄校慶運動會報名入口網 - 七一大庄・五力飛揚</title>
+
+  <!-- Google Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+
+  <!-- Tailwind CSS with custom config -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "tertiary-fixed-dim": "#4edea3",
+            "inverse-on-surface": "#eef0ff",
+            "surface": "#faf8ff",
+            "on-tertiary-fixed-variant": "#005236",
+            "primary-container": "#1d4ed8",
+            "surface-container-highest": "#dae2fd",
+            "surface-container-high": "#e2e7ff",
+            "surface-tint": "#2151da",
+            "surface-container-low": "#f2f3ff",
+            "tertiary-fixed": "#6ffbbe",
+            "surface-dim": "#d2d9f4",
+            "on-surface": "#131b2e",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-container": "#60eeb1",
+            "tertiary-container": "#006a48",
+            "on-background": "#131b2e",
+            "secondary-fixed-dim": "#ffb690",
+            "tertiary": "#004f35",
+            "on-tertiary-fixed": "#002113",
+            "surface-variant": "#dae2fd",
+            "on-secondary": "#ffffff",
+            "on-surface-variant": "#434655",
+            "on-error-container": "#93000a",
+            "primary-fixed": "#dce1ff",
+            "on-error": "#ffffff",
+            "on-secondary-fixed-variant": "#783200",
+            "error-container": "#ffdad6",
+            "primary": "#0037b0",
+            "background": "#faf8ff",
+            "on-primary-fixed-variant": "#0039b5",
+            "on-primary-container": "#cad3ff",
+            "inverse-primary": "#b7c4ff",
+            "on-secondary-fixed": "#341100",
+            "surface-container": "#eaedff",
+            "on-primary-fixed": "#001551",
+            "surface-bright": "#faf8ff",
+            "inverse-surface": "#283044",
+            "secondary": "#9d4300",
+            "on-secondary-container": "#5c2400",
+            "secondary-container": "#fd761a",
+            "error": "#ba1a1a",
+            "on-tertiary": "#ffffff",
+            "primary-fixed-dim": "#b7c4ff",
+            "outline": "#747686",
+            "outline-variant": "#c4c5d7",
+            "on-primary": "#ffffff",
+            "secondary-fixed": "#ffdbca"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "2xl": "1rem",
+            "3xl": "1.5rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "sans": ["'Noto Sans TC'", "'Plus Jakarta Sans'", "sans-serif"],
+            "headline": ["'Space Grotesk'", "'Noto Sans TC'", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Canvas Confetti for celebrations -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <style>
+    body {
+      min-height: 100vh;
+      overscroll-behavior-y: none;
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Noto Sans TC', 'Plus Jakarta Sans', sans-serif;
+    }
+    .pb-safe { padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px); }
+    .pt-safe { padding-top: max(env(safe-area-inset-top, 0px), 12px); }
+    ::-webkit-scrollbar { display: none; }
+    
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: inline-flex;
+      animation: marquee 28s linear infinite;
+    }
+    .animate-marquee:hover {
+      animation-play-state: paused;
+    }
+
+    /* Modal transition styles */
+    .fade-enter { opacity: 0; transform: translateY(16px) scale(0.98); }
+    .fade-enter-active { opacity: 1; transform: translateY(0) scale(1); transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+    .fade-exit { opacity: 1; transform: translateY(0); }
+    .fade-exit-active { opacity: 0; transform: translateY(12px) scale(0.98); transition: all 0.2s ease-in; }
+
+    /* Floating cheer bubble animation */
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(0.8) rotate(0deg); }
+      50% { opacity: 0.9; transform: translateY(-40px) scale(1.1) rotate(-10deg); }
+      100% { opacity: 0; transform: translateY(-80px) scale(1.2) rotate(15deg); }
+    }
+    .cheer-bubble {
+      position: absolute;
+      pointer-events: none;
+      animation: floatUp 1.2s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+      z-index: 100;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface flex flex-col min-h-screen selection:bg-secondary-container/20 selection:text-secondary">
+
+  <!-- ==================== TOP APP HEADER ==================== -->
+  <header class="fixed top-0 w-full z-40 pt-safe bg-surface/90 backdrop-blur-xl border-b border-surface-container shadow-[0_1px_8px_rgba(0,0,0,0.03)]">
+    <div class="h-16 px-4 max-w-4xl mx-auto flex items-center justify-between">
+      <!-- Logo & Title -->
+      <div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('home')">
+        <span class="flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-tr from-primary to-primary-container text-on-primary font-headline font-bold text-lg shadow-sm">
+          71
+        </span>
+        <div class="flex flex-col">
+          <div class="flex items-center gap-1.5">
+            <span class="font-headline font-bold text-base text-on-surface tracking-tight leading-tight">71校慶運動會</span>
+            <span id="header-countdown-pill" class="text-[11px] px-2 py-0.5 rounded-full bg-secondary text-on-secondary font-bold tracking-wider animate-pulse">
+              倒數計算中
+            </span>
+          </div>
+          <span class="text-[11px] text-on-surface-variant font-medium">Da-Chuang 2026 Sports Festival</span>
+        </div>
+      </div>
+
+      <!-- Action Icons -->
+      <div class="flex items-center gap-1.5">
+        <!-- Notification Button -->
+        <button onclick="toggleModal('modal-notifications')" aria-label="大會即時推播" class="relative w-10 h-10 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container active:scale-95 transition-all">
+          <span class="material-symbols-outlined text-[23px]">notifications</span>
+          <span class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-secondary-container ring-2 ring-surface"></span>
+        </button>
+
+        <!-- Registration Inquiry / Pass Avatar Button -->
+        <button onclick="navigateTo('registration-inquiry')" aria-label="報名查詢與數位證" class="relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high active:scale-95 transition-all border border-surface-container-highest">
+          <span class="material-symbols-outlined text-primary text-[20px]">badge</span>
+          <span class="text-xs font-bold text-primary hidden sm:inline">報名查詢</span>
+          <span id="header-reg-badge" class="hidden w-2 h-2 rounded-full bg-tertiary"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT SPA VIEWS ==================== -->
+  <main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface max-w-4xl mx-auto">
+
+    <!-- VIEW 1: HOME PORTAL (Default View) -->
+    <div id="view-home" class="flex flex-col w-full px-4 py-4 gap-5">
+      <!-- Hero Festival Banner -->
+      <div class="relative w-full rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-[#002b8a] via-primary to-[#0f3b9e] text-on-primary">
+        <div class="bg-cover bg-center absolute inset-0 opacity-25 mix-blend-overlay" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD24bOsPFmbHdoAJxof0oJRGoRDAFEHG6I9gq5RS3AFwm64x4VlprgGuJbu3DN_hl4VYqyicXO7Fy46Ile76adEWox2xk5J4kqbohCrfIXS_3Z78fnZx30kF4vlqedqxFRfi-CSTIBfaIoYewor6mEyJbW9gLre6FQ9dDjIFv2sq_8MLXg31Qc1pk6gQpZ3iSgnA4xa_btJENhW-YfCxLhAEibWXhez01HA__MtXpk')"></div>
+        <div class="relative z-10 p-5 sm:p-6 flex flex-col gap-4">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-white font-bold text-xs tracking-wider shadow-md">
+              <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+              第 71 屆大會盛事
+            </span>
+            <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-lowest/20 backdrop-blur-md text-xs font-semibold text-white">
+              <span class="material-symbols-outlined text-[15px]">event</span>
+              2026.12.12 (六) 08:00 準時開始
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <p class="text-xs sm:text-sm font-bold text-primary-fixed tracking-widest uppercase">Da-Chuang's 71st: Soaring with the Five Powers</p>
+            <h1 class="font-headline text-2xl sm:text-3xl font-extrabold text-white tracking-tight">七一大庄・五力飛揚</h1>
+            <p class="text-xs sm:text-sm text-primary-fixed-dim mt-0.5 leading-relaxed">徳智體群美・齊心奔馳！線上報名全面啟動，歡迎全校師生、校友與家長踴躍組隊。</p>
+          </div>
+
+          <!-- Live Countdown HUD -->
+          <div class="mt-1 p-3.5 rounded-xl bg-black/25 backdrop-blur-md border border-white/10 flex items-center justify-between">
+            <div class="flex flex-col">
+              <span class="text-[11px] text-white/70 font-medium uppercase tracking-wider">大會點火倒數</span>
+              <span class="text-xs sm:text-sm text-secondary-fixed font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">timer</span>
+                主田徑場點火起跑
+              </span>
+            </div>
+            <div class="flex items-center gap-1.5 sm:gap-2 text-center" id="countdown-hud">
+              <div class="flex flex-col bg-white/15 px-2.5 py-1 rounded-lg">
+                <span class="font-headline text-lg sm:text-xl leading-none font-bold text-white" id="days-val">14</span>
+                <span class="text-[10px] text-white/75 mt-0.5">天</span>
+              </div>
+              <span class="font-headline text-base sm:text-lg leading-none font-bold text-secondary-fixed">:</span>
+              <div class="flex flex-col bg-white/15 px-2.5 py-1 rounded-lg">
+                <span class="font-headline text-lg sm:text-xl leading-none font-bold text-white" id="hours-val">08</span>
+                <span class="text-[10px] text-white/75 mt-0.5">時</span>
+              </div>
+              <span class="font-headline text-base sm:text-lg leading-none font-bold text-secondary-fixed">:</span>
+              <div class="flex flex-col bg-white/15 px-2.5 py-1 rounded-lg">
+                <span class="font-headline text-lg sm:text-xl leading-none font-bold text-white" id="mins-val">42</span>
+                <span class="text-[10px] text-white/75 mt-0.5">分</span>
+              </div>
+              <span class="font-headline text-base sm:text-lg leading-none font-bold text-secondary-fixed">:</span>
+              <div class="flex flex-col bg-white/15 px-2.5 py-1 rounded-lg">
+                <span class="font-headline text-lg sm:text-xl leading-none font-bold text-white" id="secs-val">59</span>
+                <span class="text-[10px] text-white/75 mt-0.5">秒</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Marquee Ticker -->
+      <div class="w-full bg-surface-container-low border border-surface-container rounded-xl p-2.5 flex items-center gap-2.5 shadow-sm overflow-hidden">
+        <span class="flex items-center justify-center w-7 h-7 rounded-full bg-secondary text-on-secondary shrink-0 shadow-sm">
+          <span class="material-symbols-outlined text-[16px]">campaign</span>
+        </span>
+        <div class="relative overflow-hidden w-full h-5">
+          <div class="whitespace-nowrap animate-marquee flex items-center gap-8 text-xs font-medium text-on-surface">
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary-container"></span>【最新公告】庄情薪傳大隊接力報名至 11/27 中午 12:00 截止，敬請把握！</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-tertiary"></span>【系統升級】報名系統已完成串接 Google 試算表 (GAS) 即時資料庫。</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary"></span>【即時動態】線上應援牆集氣熱烈展開，歡迎全校師生為 71 校慶點燃熱情！</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary-container"></span>【秩序提醒】比賽當日校園實施北側車輛通行管制，請多搭乘接駁專車。</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Portal Big Cards Section -->
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center justify-between px-1">
+          <div class="flex items-center gap-2">
+            <span class="w-1.5 h-5 rounded-full bg-primary"></span>
+            <h2 class="font-headline text-lg sm:text-xl text-on-surface font-bold">賽事核心專區</h2>
+          </div>
+          <span class="text-xs text-on-surface-variant font-medium">四大核心通道・即刻報名</span>
+        </div>
+
+        <!-- 1. Relay Card -->
+        <div class="relative w-full rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-[#002b8a] via-[#0b3faa] to-[#c24e00] text-on-primary transition-all hover:shadow-2xl border border-white/10 group">
+          <div class="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-overlay group-hover:scale-105 transition-transform duration-700" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBoJCy_99XcQO6sisL-ywYkwmvbNW8e4-D2s6TAkuXORoIF8hWlpkmBulhXbwQE1Ab3-BbYcKDjHdUpio7EcSsvnQZRjNtDn4twncc35s-wACbSPF9C8NJPp8ToqQC1P2RZjLR0ODLV76AqHb-AMfJELZmHtmejlOOvRbk6ppl8fcbeZZASB1gRFlbJs1xm-K52SNJ4-ooUfAPBtHKLP9b00FbLikb1AYqSH2xY4G4');"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-[#00174e]/95 via-[#002b8a]/60 to-transparent pointer-events-none"></div>
+          <div class="relative z-10 p-5 flex flex-col gap-4">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-white text-xs font-bold shadow-md">
+                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+                第71屆 焦點主賽事・11/27 中午12:00 報名截止
+              </span>
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-emerald-600/90 backdrop-blur-md text-white text-xs font-bold border border-emerald-400/40">
+                ⚡ 五隊同場競技
+              </span>
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <div class="flex items-center gap-2">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-secondary-container text-white shadow-sm">
+                  <span class="material-symbols-outlined text-[20px]">sprint</span>
+                </span>
+                <h3 class="font-headline text-xl sm:text-2xl text-white font-bold tracking-tight">庄情薪傳大隊接力賽</h3>
+              </div>
+              <p class="text-xs sm:text-sm text-white/90 leading-relaxed">師長組、家長會及家長組、校友組及五、六年級在校生組同心熱跑！壓軸嗨翻紫色夢幻跑道。</p>
+            </div>
+            <div class="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-xs">
+              <div class="flex flex-col">
+                <span class="text-white/75">參賽組別</span>
+                <span class="text-white font-bold text-sm mt-0.5">師長組 / 家長組 / 校友組</span>
+              </div>
+              <div class="flex flex-col text-right">
+                <span class="text-white/75">名額上限</span>
+                <span class="text-secondary-fixed font-bold text-sm mt-0.5">師長(8+2)・家長(8+2)・校友(24+6)</span>
+              </div>
+            </div>
+            <a href="relay.html" class="w-full h-12 flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-secondary-container to-[#ff8c38] text-white font-bold text-sm shadow-lg shadow-secondary-container/30 hover:brightness-110 active:scale-95 transition-all">
+              <span>進入庄園薪傳接力報名</span>
+              <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 2. Family Fun Card -->
+        <div class="relative w-full rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-[#005236] via-[#006a48] to-[#997300] text-on-primary transition-all hover:shadow-2xl border border-white/10 group">
+          <div class="absolute inset-0 bg-cover bg-center opacity-35 mix-blend-overlay group-hover:scale-105 transition-transform duration-700" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBKByC3tKClqq0TYpD-6fsXbZB4yMMykTfm1iAd2CQleYbKyWUhrpepeoPJvxENafci4QW-R4jFylA-1f7qsxBBO2XePoMahcTmPPT1dEXAuwSQ6185HERYrPv8ro8V4UpPG8dN2IVP9xHNlihzwaVBgi1OPEZeKrYmz_6dYo7_AOjnXfSlF-ImxcMb4EgNt_pUKAHRwyhtwvsqR9hhzKwH5YG4bB-oz5NHW4gRMu8');"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-[#003120]/95 via-[#005236]/65 to-transparent pointer-events-none"></div>
+          <div class="relative z-10 p-5 flex flex-col gap-4">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-xs font-bold shadow-md">
+                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">eco</span>
+                親子齊心・敏捷躍進・11/27 中午12:00 報名截止
+              </span>
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-bold border border-white/20">
+                ⚡ 四隊童趣歡樂
+              </span>
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <div class="flex items-center gap-2">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-tertiary-fixed text-on-tertiary-fixed shadow-sm">
+                  <span class="material-symbols-outlined text-[20px]">sports_score</span>
+                </span>
+                <h3 class="font-headline text-xl sm:text-2xl text-white font-bold tracking-tight">圈力衝刺 親子趣味競賽</h3>
+              </div>
+              <p class="text-xs sm:text-sm text-white/90 leading-relaxed">大手拉小手接力闖關！家長擺圈、孩子躍進，10M 折返角色互換，熱血沸騰本校操場中央草皮區！</p>
+            </div>
+            <div class="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-xs">
+              <div class="flex flex-col">
+                <span class="text-white/75">活動時間與地點</span>
+                <span class="text-white font-bold text-sm mt-0.5">12/12 操場中央草皮區</span>
+              </div>
+              <div class="flex flex-col text-right">
+                <span class="text-white/75">名額上限</span>
+                <span class="text-tertiary-fixed font-bold text-sm mt-0.5">正選 20 組 + 候補 2 組 ★</span>
+              </div>
+            </div>
+            <a href="family-games.html" class="w-full h-12 flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-tertiary-fixed to-[#4edea3] text-on-tertiary-fixed font-bold text-sm shadow-lg shadow-tertiary-fixed/30 hover:brightness-105 active:scale-95 transition-all">
+              <span>進入親子趣味競賽報名</span>
+              <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 3. Volunteers Card -->
+        <div class="relative w-full rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-[#1e3a8a] via-[#3730a3] to-[#581c87] text-on-primary transition-all hover:shadow-2xl border border-white/10 group">
+          <div class="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-overlay group-hover:scale-105 transition-transform duration-700" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBSH-W4-HYiZ2kbCLKcIRamowdvtlknGu2AkjYusKWS7tKZCQsEsF-uXMUvfdJNxcZzTuZApzSwvFvbiV-_WjU223PDaAdiY5ru2LNKy9K1AzDNu-Mk_kTxRoq6Wt2LBOOcxroJM01rSLsW4DyX9_PxBfUIuX3pSKz62esc01P7bDpnlLOOGggaorRmn4F9bfWRcWa3b6Cu038Lqpv5G33C_x0Yn38s1mDrNryb3Hw');"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-[#111827]/95 via-[#1e1b4b]/65 to-transparent pointer-events-none"></div>
+          <div class="relative z-10 p-5 flex flex-col gap-4">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-white text-xs font-bold shadow-md">
+                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">how_to_reg</span>
+                限定 20 人
+              </span>
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-bold border border-white/20">
+                ★ 畢業校友優先錄取
+              </span>
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <div class="flex items-center gap-2">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-primary-fixed text-on-primary-fixed shadow-sm">
+                  <span class="material-symbols-outlined text-[20px]">volunteer_activism</span>
+                </span>
+                <h3 class="font-headline text-xl sm:text-2xl text-white font-bold tracking-tight">校慶熱血志工</h3>
+              </div>
+              <p class="text-xs sm:text-sm text-white/90 leading-relaxed">場器佈置、動線引導、秩序維護、愛護環境！成為賽道旁最耀眼的無名英雄。</p>
+            </div>
+            <div class="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-xs">
+              <div class="flex flex-col">
+                <span class="text-white/75">服務時間</span>
+                <span class="text-white font-bold text-sm mt-0.5"> 08:30-12:30 </span>
+              </div>
+              <div class="flex flex-col text-right">
+                <span class="text-white/75">時數認證</span>
+                <span class="text-primary-fixed font-bold text-sm mt-0.5">核發官方志願服務證書</span>
+              </div>
+            </div>
+            <a href="volunteers.html" class="w-full h-12 flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary-container to-[#3b82f6] text-white font-bold text-sm shadow-lg shadow-primary-container/30 hover:brightness-110 active:scale-95 transition-all">
+              <span>加入熱血志工團隊報名</span>
+              <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 4. Live Island HUD Card -->
+        <div class="relative w-full rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-b from-[#181d29] via-[#0f1420] to-[#090d16] text-inverse-on-surface transition-all hover:shadow-2xl border border-white/10">
+          <div class="absolute -right-12 -top-12 w-48 h-48 rounded-full bg-secondary-container/20 blur-3xl pointer-events-none"></div>
+          <div class="absolute -left-12 -bottom-12 w-48 h-48 rounded-full bg-primary/25 blur-3xl pointer-events-none"></div>
+          <div class="relative z-10 p-5 flex flex-col gap-4">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 shadow-inner">
+                <span class="relative flex h-2.5 w-2.5">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                </span>
+                <span class="text-xs text-white font-bold tracking-wider">奔馳榮耀島・校慶運動大冒險</span>
+              </div>
+              <span class="px-2.5 py-1 rounded-full bg-secondary-container/20 text-secondary-container border border-secondary-container/30 text-xs font-bold tracking-widest uppercase">
+                領取五力集章護照
+              </span>
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <div class="flex items-center gap-2">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-secondary-container text-white shadow-sm">
+                  <span class="material-symbols-outlined text-[20px]">stream</span>
+                </span>
+                <h3 class="font-headline text-xl sm:text-2xl font-bold text-white tracking-tight">71校慶動態島</h3>
+              </div>
+              <p class="text-xs sm:text-sm text-surface-variant/80 leading-relaxed">探索 32 項精彩節目與賽前個人賽英雄榜，集滿五力印章引燃勝利煙火！</p>
+            </div>
+            
+            <!-- Live Widget inside -->
+            <div class="p-3.5 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-between gap-3 shadow-inner">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-full bg-secondary-container/20 border border-secondary-container/40 flex items-center justify-center text-secondary-container shrink-0">
+                  <span class="material-symbols-outlined text-[22px]">sports</span>
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span>
+                    <span class="text-xs text-surface-variant font-medium">競賽進行中</span>
+                  </div>
+                  <span class="text-sm text-white font-bold truncate">高三男子 100M 預賽第 4 組</span>
+                </div>
+              </div>
+              <div class="text-right shrink-0 flex flex-col items-end">
+                <span class="text-xs text-secondary-fixed font-bold">跑道 3 領先 (11"42)</span>
+                <span class="text-xs text-white/70 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[14px] text-secondary-container" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+                  <span id="home-flame-count">0</span> 火焰
+                </span>
+              </div>
+            </div>
+
+            <a href="dynamic-island.html" class="w-full h-12 flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-secondary-container via-[#ff8833] to-[#ff6b00] text-white font-bold text-sm shadow-lg shadow-secondary-container/30 hover:brightness-110 active:scale-95 transition-all">
+              <span>開啟 71 校慶動態島 (3D浮島＆五力試煉)</span>
+              <span class="material-symbols-outlined text-[20px]">open_in_new</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Cheering Quick Button Box (從零開始集氣) -->
+      <div class="relative overflow-hidden w-full bg-gradient-to-r from-surface-container-low to-surface-container rounded-2xl p-4 flex items-center justify-between shadow-sm border border-surface-container">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-white shadow-sm shrink-0">
+            <span class="material-symbols-outlined text-[22px]">favorite</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-bold text-sm text-on-surface">為七一校慶點燃熱情</span>
+            <span class="text-xs text-on-surface-variant" id="cheer-counter-text">全校已送出 0 個元氣</span>
+          </div>
+        </div>
+        <button id="cheer-btn" onclick="addCheer(event)" class="relative px-4 py-2 rounded-full bg-secondary text-white font-bold text-xs shadow-md active:scale-90 transition-all flex items-center gap-1.5 hover:bg-secondary/90">
+          <span class="material-symbols-outlined text-[16px]">touch_app</span>
+          <span>集氣 +1</span>
+        </button>
+      </div>
+    </div>
+
+
+    <!-- ==================== VIEW 2: 薪傳接力報名 (RELAY) ==================== -->
+    <div id="view-relay" class="hidden flex-col w-full px-4 py-4 gap-5">
+      <!-- Top Navigation back -->
+      <div class="flex items-center justify-between">
+        <button onclick="navigateTo('home')" class="flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
+          <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+          返回首頁
+        </button>
+        <span class="text-xs px-2.5 py-0.5 rounded-full bg-secondary-container/10 text-secondary-container font-bold">
+          大隊接力專區
+        </span>
+      </div>
+
+      <!-- Header Intro Card -->
+      <div class="bg-gradient-to-r from-[#002b8a] to-[#1d4ed8] text-white p-5 rounded-2xl shadow-md">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="material-symbols-outlined text-secondary-fixed">sprint</span>
+          <h2 class="text-xl font-bold font-headline">薪傳大隊接力 報名表單</h2>
+        </div>
+        <p class="text-xs text-primary-fixed-dim leading-relaxed">
+          每隊編制 20 名正選選手（男女各 10 名，棒次前 10 棒為女生，後 10 棒為男生），可填報候補選手至多 4 名。
+        </p>
+        <div class="mt-3 flex items-center gap-3 text-xs">
+          <span class="bg-white/15 px-2.5 py-1 rounded-md">比賽長度：2000M</span>
+          <span class="bg-white/15 px-2.5 py-1 rounded-md">限額隊數：各組限 12 隊</span>
+        </div>
+      </div>
+
+      <!-- Registration Form -->
+      <form id="relay-form" onsubmit="handleRelaySubmit(event)" class="flex flex-col gap-5">
+        <!-- Step 1: 隊伍基本資料 -->
+        <div class="bg-surface-container-lowest p-5 rounded-2xl border border-surface-container shadow-sm flex flex-col gap-4">
+          <h3 class="font-bold text-sm text-on-surface flex items-center gap-2 border-b border-surface-container pb-2">
+            <span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs">1</span>
+            隊伍代表資料
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">參賽組別 <span class="text-error">*</span></label>
+              <select id="relay-category" required class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent">
+                <option value="高中男子組">高中男子組 (限高一~高三)</option>
+                <option value="高中女子組">高中女子組 (限高一~高三)</option>
+                <option value="男女混合班際組" selected>男女混合班際組 (推薦)</option>
+                <option value="教職員暨校友同樂組">教職員暨校友同樂組</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">隊伍名稱 <span class="text-error">*</span></label>
+              <input type="text" id="relay-team-name" required placeholder="例：三年信班奔雷隊 / 資工系校友聯隊" class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">隊長 / 領隊姓名 <span class="text-error">*</span></label>
+              <input type="text" id="relay-leader-name" required placeholder="王小明" class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">聯絡手機 <span class="text-error">*</span></label>
+              <input type="tel" id="relay-leader-phone" required placeholder="0912-345-678" pattern="[0-9]{10}|[0-9]{4}-[0-9]{3}-[0-9]{3}" class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">電子信箱 <span class="text-error">*</span></label>
+              <input type="email" id="relay-leader-email" required placeholder="team@school.edu.tw" class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: 棒次名單 (1~20棒與候補) -->
+        <div class="bg-surface-container-lowest p-5 rounded-2xl border border-surface-container shadow-sm flex flex-col gap-4">
+          <div class="flex items-center justify-between border-b border-surface-container pb-2 flex-wrap gap-2">
+            <h3 class="font-bold text-sm text-on-surface flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs">2</span>
+              20 棒次名單快速登錄
+            </h3>
+            <button type="button" onclick="autoFillRelayMock()" class="text-xs text-primary font-bold hover:underline flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">magic_button</span>
+              一鍵填入範例名單
+            </button>
+          </div>
+
+          <p class="text-xs text-on-surface-variant">
+            提示：第 1~10 棒為女子棒次，第 11~20 棒為男子棒次（混合組）。請確保每位跑者身心狀況良好。
+          </p>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-h-[380px] overflow-y-auto pr-1" id="relay-runners-container">
+            <!-- Dynamically generated 20 runners inputs -->
+          </div>
+
+          <!-- 候補名單 -->
+          <div class="pt-2">
+            <label class="block text-xs font-semibold text-on-surface-variant mb-1">候補選手（至多 4 位，以逗號分隔）</label>
+            <input type="text" id="relay-substitutes" placeholder="例：林大寶 (男)、陳小雅 (女)" class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2 focus:ring-2 focus:ring-primary">
+          </div>
+        </div>
+
+        <!-- Step 3: 安全規約與宣告 -->
+        <div class="bg-surface-container-low p-4 rounded-xl border border-surface-container flex items-start gap-2.5">
+          <input type="checkbox" id="relay-terms" required class="mt-1 rounded text-primary focus:ring-primary">
+          <label for="relay-terms" class="text-xs text-on-surface-variant leading-relaxed">
+            本隊全體選手已詳閱並同意大會競賽規程，並確認參賽者身體狀況健全，適合從事激烈運動；如患有心血管或不適症狀已自律評估。
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full h-12 rounded-full bg-primary text-white font-bold text-sm shadow-lg shadow-primary/30 hover:bg-primary/95 active:scale-95 transition-all flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-[20px]">how_to_reg</span>
+          <span>確認送出大隊接力報名</span>
+        </button>
+      </form>
+    </div>
+
+
+    <!-- ==================== VIEW 3: 親子趣味競賽報名 (FAMILY GAMES) ==================== -->
+    <div id="view-family-games" class="hidden flex-col w-full px-4 py-4 gap-5">
+      <!-- Top Navigation back -->
+      <div class="flex items-center justify-between">
+        <button onclick="navigateTo('home')" class="flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
+          <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+          返回首頁
+        </button>
+        <span class="text-xs px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-bold">
+          親子同樂專區
+        </span>
+      </div>
+
+      <!-- Header Intro Card -->
+      <div class="bg-gradient-to-r from-[#005236] to-[#006a48] text-white p-5 rounded-2xl shadow-md">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="material-symbols-outlined text-tertiary-fixed">sports_score</span>
+          <h2 class="text-xl font-bold font-headline">親子趣味競賽 預約報名</h2>
+        </div>
+        <p class="text-xs text-white/90 leading-relaxed">
+          歡迎家長與孩子組隊同樂！完賽皆可領取 71 校慶專屬運動毛巾、限量水壺與完賽獎章。
+        </p>
+      </div>
+
+      <!-- Form -->
+      <form id="family-form" onsubmit="handleFamilySubmit(event)" class="flex flex-col gap-5">
+        <!-- 趣味項目選擇 -->
+        <div class="bg-surface-container-lowest p-5 rounded-2xl border border-surface-container shadow-sm flex flex-col gap-4">
+          <h3 class="font-bold text-sm text-on-surface flex items-center gap-2 border-b border-surface-container pb-2">
+            <span class="w-6 h-6 rounded-full bg-tertiary text-white flex items-center justify-center text-xs">1</span>
+            選擇趣味項目（可多選）
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <label class="cursor-pointer border-2 border-surface-container hover:border-tertiary rounded-xl p-3 flex flex-col gap-2 transition-all has-[:checked]:border-tertiary has-[:checked]:bg-tertiary/5">
+              <div class="flex items-center justify-between">
+                <span class="material-symbols-outlined text-tertiary">group</span>
+                <input type="checkbox" name="family-games" value="兩人三腳歡樂行" checked class="rounded text-tertiary focus:ring-tertiary">
+              </div>
+              <span class="font-bold text-sm text-on-surface">兩人三腳歡樂行</span>
+              <span class="text-[11px] text-on-surface-variant">親子綁腿快步競走 30M，考驗親密默契</span>
+            </label>
+
+            <label class="cursor-pointer border-2 border-surface-container hover:border-tertiary rounded-xl p-3 flex flex-col gap-2 transition-all has-[:checked]:border-tertiary has-[:checked]:bg-tertiary/5">
+              <div class="flex items-center justify-between">
+                <span class="material-symbols-outlined text-tertiary">sports_soccer</span>
+                <input type="checkbox" name="family-games" value="巨型滾球向前衝" class="rounded text-tertiary focus:ring-tertiary">
+              </div>
+              <span class="font-bold text-sm text-on-surface">巨型滾球向前衝</span>
+              <span class="text-[11px] text-on-surface-variant">推動 1.8 米大充氣球繞錐折返，趣味十足</span>
+            </label>
+
+            <label class="cursor-pointer border-2 border-surface-container hover:border-tertiary rounded-xl p-3 flex flex-col gap-2 transition-all has-[:checked]:border-tertiary has-[:checked]:bg-tertiary/5">
+              <div class="flex items-center justify-between">
+                <span class="material-symbols-outlined text-tertiary">cruelty_free</span>
+                <input type="checkbox" name="family-games" value="袋鼠趣味跳跳袋" class="rounded text-tertiary focus:ring-tertiary">
+              </div>
+              <span class="font-bold text-sm text-on-surface">袋鼠趣味跳跳袋</span>
+              <span class="text-[11px] text-on-surface-variant">穿上可愛袋鼠袋彈跳接力，笑聲滿分</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 場次與家庭資料 -->
+        <div class="bg-surface-container-lowest p-5 rounded-2xl border border-surface-container shadow-sm flex flex-col gap-4">
+          <h3 class="font-bold text-sm text-on-surface flex items-center gap-2 border-b border-surface-container pb-2">
+            <span class="w-6 h-6 rounded-full bg-tertiary text-white flex items-center justify-center text-xs">2</span>
+            預約場次與聯絡人資訊
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">參加場次時間 <span class="text-error">*</span></label>
+              <select id="family-session" required class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-tertiary">
+                <option value="上午場 (09:30 - 11:00)">上午場 (09:30 - 11:00) 尚有名額</option>
+                <option value="下午第一場 (13:30 - 14:30)">下午第一場 (13:30 - 14:30) 熱門場次</option>
+                <option value="下午第二場 (15:00 - 16:00)">下午第二場 (15:00 - 16:00)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">參賽人數 (大人+小孩) <span class="text-error">*</span></label>
+              <select id="family-count" required class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-tertiary">
+                <option value="2人 (1大1小)">2 人 (1大 1小)</option>
+                <option value="3人 (2大1小 或 1大2小)">3 人 (2大 1小 或 1大 2小)</option>
+                <option value="4人以上家庭隊">4 人以上家庭隊伍</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">家長姓名 <span class="text-error">*</span></label>
+              <input type="text" id="family-parent-name" required placeholder="林媽媽" class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-tertiary">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">孩子姓名 / 班級 <span class="text-error">*</span></label>
+              <input type="text" id="family-child-name" required placeholder="林小宇 (一年忠班)" class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-tertiary">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">家長聯絡手機 <span class="text-error">*</span></label>
+              <input type="tel" id="family-phone" required placeholder="0928-123-456" class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-tertiary">
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full h-12 rounded-full bg-tertiary text-white font-bold text-sm shadow-lg shadow-tertiary/30 hover:bg-tertiary/95 active:scale-95 transition-all flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-[20px]">celebration</span>
+          <span>確認預約親子趣味賽</span>
+        </button>
+      </form>
+    </div>
+
+
+    <!-- ==================== VIEW 4: 校慶熱血志工招募 (VOLUNTEERS) ==================== -->
+    <div id="view-volunteers" class="hidden flex-col w-full px-4 py-4 gap-5">
+      <!-- Top Navigation back -->
+      <div class="flex items-center justify-between">
+        <button onclick="navigateTo('home')" class="flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
+          <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+          返回首頁
+        </button>
+        <span class="text-xs px-2.5 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-bold">
+          志工招募專區
+        </span>
+      </div>
+
+      <!-- Header Intro Card -->
+      <div class="bg-gradient-to-r from-[#1e3a8a] via-[#3730a3] to-[#581c87] text-white p-5 rounded-2xl shadow-md">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="material-symbols-outlined text-primary-fixed">volunteer_activism</span>
+          <h2 class="text-xl font-bold font-headline">71校慶熱血志工 招募報名</h2>
+        </div>
+        <p class="text-xs text-white/90 leading-relaxed">
+          運動會最堅強的後盾！凡報名並完成值勤服務者，大會核發 8~16 小時服務學習時數認證、專屬工作紀念T恤及雙主菜美味便當。
+        </p>
+      </div>
+
+      <!-- Form -->
+      <form id="volunteer-form" onsubmit="handleVolunteerSubmit(event)" class="flex flex-col gap-5">
+        <div class="bg-surface-container-lowest p-5 rounded-2xl border border-surface-container shadow-sm flex flex-col gap-4">
+          <h3 class="font-bold text-sm text-on-surface flex items-center gap-2 border-b border-surface-container pb-2">
+            <span class="w-6 h-6 rounded-full bg-primary-container text-white flex items-center justify-center text-xs">1</span>
+            志願組別與時段選擇
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">服務組別第一志願 <span class="text-error">*</span></label>
+              <select id="vol-group" required class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-primary-container">
+                <option value="檢錄裁判與計時組">檢錄裁判與計時組 (協助起終點與發令)</option>
+                <option value="動態引導與大會接待組" selected>動態引導與大會接待組 (貴賓接待與場地指引)</option>
+                <option value="醫護救護與運動防護組">醫護救護與運動防護組 (護理站與補水巡守)</option>
+                <option value="賽事實況攝影與社群播報組">賽事實況攝影與社群播報組 (精彩抓拍與動態島快報)</option>
+                <option value="機動後勤與器材搬運組">機動後勤與器材搬運組 (器材調度與場地佈置)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">服務時段 <span class="text-error">*</span></label>
+              <select id="vol-shift" required class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-primary-container">
+                <option value="全天班 07:30 - 17:00 (核發 16 小時時數)">全天班 07:30 - 17:00 (核發 16 小時時數)</option>
+                <option value="上午班 07:30 - 12:30 (核發 8 小時時數)">上午班 07:30 - 12:30 (核發 8 小時時數)</option>
+                <option value="下午班 12:00 - 17:00 (核發 8 小時時數)">下午班 12:00 - 17:00 (核發 8 小時時數)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">大會紀念戰袍T恤尺碼 <span class="text-error">*</span></label>
+              <select id="vol-tshirt" required class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-primary-container">
+                <option value="S">S (155-165cm)</option>
+                <option value="M">M (165-172cm)</option>
+                <option value="L" selected>L (170-178cm)</option>
+                <option value="XL">XL (175-185cm)</option>
+                <option value="2XL">2XL (185cm以上 / 寬鬆)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">便當飲食偏好 <span class="text-error">*</span></label>
+              <select id="vol-diet" required class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-primary-container">
+                <option value="雙主菜葷食">雙主菜葷食 (排骨+雞腿)</option>
+                <option value="健康素食/蛋奶素">健康蔬食 / 蛋奶素</option>
+                <option value="全素食">全素食</option>
+                <option value="自理 (不用便當)">自理 (不用便當)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-surface-container-lowest p-5 rounded-2xl border border-surface-container shadow-sm flex flex-col gap-4">
+          <h3 class="font-bold text-sm text-on-surface flex items-center gap-2 border-b border-surface-container pb-2">
+            <span class="w-6 h-6 rounded-full bg-primary-container text-white flex items-center justify-center text-xs">2</span>
+            志工個人基本資料
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">姓名 <span class="text-error">*</span></label>
+              <input type="text" id="vol-name" required placeholder="張志豪" class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-primary-container">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">身分別 / 學號或職稱 <span class="text-error">*</span></label>
+              <input type="text" id="vol-identity" required placeholder="在校生 41012345 / 熱心家長" class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-primary-container">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">聯絡電話 <span class="text-error">*</span></label>
+              <input type="tel" id="vol-phone" required placeholder="0933-888-999" class="w-full text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-primary-container">
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full h-12 rounded-full bg-gradient-to-r from-primary-container to-[#3b82f6] text-white font-bold text-sm shadow-lg shadow-primary-container/30 hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-[20px]">assignment_turned_in</span>
+          <span>提交志工報名</span>
+        </button>
+      </form>
+    </div>
+
+
+    <!-- ==================== VIEW 5: 71動態島 (DYNAMIC ISLAND & LIVE HUD) ==================== -->
+    <div id="view-dynamic-island" class="hidden flex-col w-full px-4 py-4 gap-5">
+      <!-- Top Navigation back -->
+      <div class="flex items-center justify-between">
+        <button onclick="navigateTo('home')" class="flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
+          <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+          返回首頁
+        </button>
+        <span class="text-xs px-2.5 py-0.5 rounded-full bg-secondary-container/20 text-secondary-container font-bold flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full bg-secondary-container animate-ping"></span>
+          即時戰況同步
+        </span>
+      </div>
+
+      <!-- Live Track Status -->
+      <div class="bg-gradient-to-b from-[#181d29] to-[#090d16] text-white p-5 rounded-2xl shadow-xl border border-white/10 flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></span>
+            <span class="font-headline font-bold text-lg text-white">田徑主場 LIVE 戰報</span>
+          </div>
+          <span class="text-xs text-white/60">每 10 秒自動更新</span>
+        </div>
+
+        <!-- Current Match Card -->
+        <div class="bg-white/10 rounded-xl p-4 border border-white/10 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold px-2 py-0.5 rounded bg-secondary-container text-white">現正進行</span>
+            <span class="text-xs text-secondary-fixed font-mono font-bold">倒數 14 天預熱測試</span>
+          </div>
+          <h4 class="text-base font-bold text-white">高三男子 100M 決賽種子模擬排位</h4>
+          
+          <div class="grid grid-cols-3 gap-2 text-center text-xs">
+            <div class="bg-white/5 p-2 rounded-lg">
+              <span class="text-white/60 block text-[10px]">跑道 1 (高三甲)</span>
+              <span class="font-bold text-white">11"58</span>
+            </div>
+            <div class="bg-secondary-container/20 border border-secondary-container/40 p-2 rounded-lg">
+              <span class="text-secondary-container block text-[10px] font-bold">跑道 3 (高三丙) 領先</span>
+              <span class="font-bold text-secondary-fixed text-sm">11"32 ★</span>
+            </div>
+            <div class="bg-white/5 p-2 rounded-lg">
+              <span class="text-white/60 block text-[10px]">跑道 5 (高三己)</span>
+              <span class="font-bold text-white">11"64</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grade Standings Ladder (總積分天梯排行榜) -->
+        <div class="flex flex-col gap-2 pt-2">
+          <h5 class="text-xs font-bold text-white/80 uppercase tracking-wider flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px] text-primary-fixed">leaderboard</span>
+            年級精神總錦標 即時積分天梯
+          </h5>
+          <div class="space-y-2">
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-bold">🥇 高三年級 (領先群)</span>
+                <span class="font-mono text-secondary-fixed font-bold">1,420 分</span>
+              </div>
+              <div class="w-full h-2.5 bg-white/10 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-secondary-container to-secondary" style="width: 88%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-bold">🥈 高二年級</span>
+                <span class="font-mono text-white/90">1,310 分</span>
+              </div>
+              <div class="w-full h-2.5 bg-white/10 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-primary to-primary-container" style="width: 78%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-bold">🥉 高一年級</span>
+                <span class="font-mono text-white/90">1,190 分</span>
+              </div>
+              <div class="w-full h-2.5 bg-white/10 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-tertiary to-tertiary-fixed-dim" style="width: 68%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Online Live Cheering Wall (即時彈幕留言牆) -->
+      <div class="bg-surface-container-lowest p-5 rounded-2xl border border-surface-container shadow-sm flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-secondary text-[22px]">forum</span>
+            <h3 class="font-headline font-bold text-base text-on-surface">全校應援加油留言牆</h3>
+          </div>
+          <span class="text-xs text-on-surface-variant font-mono" id="cheer-wall-count">24 則即時應援</span>
+        </div>
+
+        <!-- Input message -->
+        <div class="flex gap-2">
+          <input type="text" id="cheer-input" placeholder="寫下一句熱血應援，為同學打氣！" maxlength="50" class="flex-1 text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-secondary focus:border-transparent">
+          <button onclick="postCheerMessage()" class="px-4 py-2.5 rounded-xl bg-secondary text-white font-bold text-xs shrink-0 active:scale-95 transition-all flex items-center gap-1 hover:bg-secondary/90">
+            <span class="material-symbols-outlined text-[16px]">send</span>
+            發送
+          </button>
+        </div>
+
+        <!-- Messages Scroll Container -->
+        <div id="cheer-messages-list" class="space-y-2.5 max-h-[320px] overflow-y-auto pr-1">
+          <!-- Default preset mock comments -->
+          <div class="p-3 rounded-xl bg-surface-container-low border border-surface-container flex items-start gap-2.5">
+            <span class="w-7 h-7 rounded-full bg-primary/20 text-primary font-bold text-xs flex items-center justify-center shrink-0">三甲</span>
+            <div class="flex flex-col flex-1">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-on-surface">三年甲班導師</span>
+                <span class="text-[10px] text-on-surface-variant">2分鐘前</span>
+              </div>
+              <p class="text-xs text-on-surface-variant mt-0.5">三甲大隊接力衝啊！目標破大會紀錄，大家辛苦了！🔥</p>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-surface-container-low border border-surface-container flex items-start gap-2.5">
+            <span class="w-7 h-7 rounded-full bg-secondary-container/20 text-secondary-container font-bold text-xs flex items-center justify-center shrink-0">小陳</span>
+            <div class="flex flex-col flex-1">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-on-surface">陳同學 (高二)</span>
+                <span class="text-[10px] text-on-surface-variant">5分鐘前</span>
+              </div>
+              <p class="text-xs text-on-surface-variant mt-0.5">兩人三腳我有報名，期待跟老爸一起拿第一名完賽禮物！🎁</p>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-surface-container-low border border-surface-container flex items-start gap-2.5">
+            <span class="w-7 h-7 rounded-full bg-tertiary/20 text-tertiary font-bold text-xs flex items-center justify-center shrink-0">志工</span>
+            <div class="flex flex-col flex-1">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-on-surface">校慶裁判組</span>
+                <span class="text-[10px] text-on-surface-variant">12分鐘前</span>
+              </div>
+              <p class="text-xs text-on-surface-variant mt-0.5">裁判組志工大家加油！第71屆大庄運動會一定圓滿精彩！👏</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ==================== VIEW 6: 報名查詢與數位證 (REGISTRATION INQUIRY) ==================== -->
+    <div id="view-registration-inquiry" class="hidden flex-col w-full px-4 py-4 gap-5">
+      <!-- Top Navigation back -->
+      <div class="flex items-center justify-between">
+        <button onclick="navigateTo('home')" class="flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
+          <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+          返回首頁
+        </button>
+        <span class="text-xs px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface font-bold">
+          選手與志工數位通行證
+        </span>
+      </div>
+
+      <!-- Search Box -->
+      <div class="bg-surface-container-lowest p-5 rounded-2xl border border-surface-container shadow-sm flex flex-col gap-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[22px]">manage_search</span>
+          <h3 class="font-headline font-bold text-base text-on-surface">報名紀錄查詢</h3>
+        </div>
+        <p class="text-xs text-on-surface-variant">
+          請輸入隊伍名稱、隊長姓名或手機號碼，即可查詢已登記的報名資料與產生數位檢錄證。
+        </p>
+        <div class="flex gap-2">
+          <input type="text" id="inquiry-keyword" placeholder="輸入報名者姓名 / 手機 / 隊伍名稱" class="flex-1 text-sm rounded-xl border-surface-container-highest bg-surface-container-low px-3 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent">
+          <button onclick="searchRegistration()" class="px-5 py-2.5 rounded-xl bg-primary text-white font-bold text-xs shrink-0 active:scale-95 transition-all flex items-center gap-1">
+            <span class="material-symbols-outlined text-[16px]">search</span>
+            查詢
+          </button>
+        </div>
+      </div>
+
+      <!-- Inquiry Result Cards Container -->
+      <div id="inquiry-results-container" class="flex flex-col gap-4">
+        <!-- Results or Empty state rendered by JS -->
+      </div>
+    </div>
+
+  </main>
+
+
+  <!-- ==================== BOTTOM TAB BAR NAVIGATION ==================== -->
+  <nav class="fixed bottom-0 w-full z-40 pb-safe bg-surface-container-lowest/95 backdrop-blur-xl border-t border-surface-container shadow-[0_-2px_12px_rgba(15,23,42,0.06)]">
+    <div class="max-w-4xl mx-auto flex justify-around items-center h-16 px-2">
+      <!-- Tab 1: 首頁 -->
+      <button onclick="navigateTo('home')" id="nav-btn-home" class="nav-tab flex flex-col items-center justify-center gap-1 w-16 h-12 text-primary font-bold transition-all">
+        <span class="material-symbols-outlined text-[23px]">home</span>
+        <span class="text-[11px]">大會首頁</span>
+      </button>
+
+      <!-- Tab 2: 薪傳接力 -->
+      <a href="relay.html" id="nav-btn-relay" class="nav-tab flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-primary transition-all">
+        <span class="material-symbols-outlined text-[23px]">sprint</span>
+        <span class="text-[11px]">薪傳接力</span>
+      </a>
+
+      <!-- Tab 3: 親子趣味 -->
+      <a href="family-games.html" id="nav-btn-family-games" class="nav-tab flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-primary transition-all">
+        <span class="material-symbols-outlined text-[23px]">sports_score</span>
+        <span class="text-[11px]">親子趣味</span>
+      </a>
+
+      <!-- Tab 4: 熱血志工 -->
+      <a href="volunteers.html" id="nav-btn-volunteers" class="nav-tab flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-primary transition-all">
+        <span class="material-symbols-outlined text-[23px]">volunteer_activism</span>
+        <span class="text-[11px]">熱血志工</span>
+      </a>
+
+      <!-- Tab 5: 71動態島 -->
+      <a href="dynamic-island.html" id="nav-btn-dynamic-island" class="nav-tab flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-primary transition-all">
+        <span class="material-symbols-outlined text-[23px]">campaign</span>
+        <span class="text-[11px]">71動態島</span>
+      </a>
+    </div>
+  </nav>
+
+
+  <!-- ==================== MODALS & POPUPS ==================== -->
+
+  <!-- Modal 1: 大會即時推播公告 (Notifications) -->
+  <div id="modal-notifications" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-surface-container overflow-hidden fade-enter-active">
+      <div class="p-4 bg-primary text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[22px]">notifications_active</span>
+          <h3 class="font-bold text-base">大會即時推播與通告</h3>
+        </div>
+        <button onclick="toggleModal('modal-notifications')" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/20">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="p-4 space-y-3 max-h-[60vh] overflow-y-auto">
+        <div class="p-3 rounded-xl bg-surface-container-low border border-surface-container">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs font-bold text-secondary">【緊急通知】</span>
+            <span class="text-[10px] text-on-surface-variant">1小時前</span>
+          </div>
+          <p class="text-xs text-on-surface font-medium">薪傳大隊接力男女混合組僅剩最後 3 組名額，額滿系統將自動轉為候補名冊！</p>
+        </div>
+
+        <div class="p-3 rounded-xl bg-surface-container-low border border-surface-container">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs font-bold text-primary">【志工培訓】</span>
+            <span class="text-[10px] text-on-surface-variant">3小時前</span>
+          </div>
+          <p class="text-xs text-on-surface font-medium">第一梯次裁判檢錄組志工行前說明會，將於 12/5 (五) 12:30 於活動中心二樓召開。</p>
+        </div>
+
+        <div class="p-3 rounded-xl bg-surface-container-low border border-surface-container">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs font-bold text-tertiary">【好康抽獎】</span>
+            <span class="text-[10px] text-on-surface-variant">昨天</span>
+          </div>
+          <p class="text-xs text-on-surface font-medium">線上應援牆累計元氣達標，校慶當日將於大會服務台抽出 100 份校慶 71 週年紀念保溫杯！</p>
+        </div>
+      </div>
+
+      <div class="p-3 bg-surface-container border-t border-surface-container flex justify-end">
+        <button onclick="toggleModal('modal-notifications')" class="px-4 py-1.5 rounded-full bg-primary text-white text-xs font-bold">
+          關閉
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: 大會便民指南 (Quick Guide Modal: Map / Traffic / Rules / FAQ) -->
+  <div id="modal-guide" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-lg rounded-2xl shadow-2xl border border-surface-container overflow-hidden max-h-[85vh] flex flex-col">
+      <div class="p-4 bg-surface-container-high border-b border-surface-container flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span id="guide-modal-icon" class="material-symbols-outlined text-primary text-[24px]">map</span>
+          <h3 id="guide-modal-title" class="font-bold text-base text-on-surface">大會便民指南</h3>
+        </div>
+        <button onclick="toggleModal('modal-guide')" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-surface-container text-on-surface">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div id="guide-modal-body" class="p-5 overflow-y-auto space-y-4 text-xs text-on-surface leading-relaxed">
+        <!-- Content will be injected dynamically based on clicked item -->
+      </div>
+
+      <div class="p-3 bg-surface-container-low border-t border-surface-container flex justify-end">
+        <button onclick="toggleModal('modal-guide')" class="px-4 py-2 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary/90">
+          了解並關閉
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: 報名成功憑證卡彈窗 (Success Modal) -->
+  <div id="modal-success" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-surface-container overflow-hidden flex flex-col animate-bounce-short">
+      <div class="p-5 bg-gradient-to-r from-primary to-primary-container text-white text-center flex flex-col items-center gap-1">
+        <span class="material-symbols-outlined text-5xl text-tertiary-fixed">check_circle</span>
+        <h3 class="text-xl font-bold font-headline">報名登錄成功！</h3>
+        <p class="text-xs text-primary-fixed-dim" id="success-reg-id">憑證代碼：DC71-2026-0000</p>
+      </div>
+
+      <div class="p-5 flex flex-col gap-4 text-xs text-on-surface" id="success-reg-details">
+        <!-- Details injected here -->
+      </div>
+
+      <div class="p-4 bg-surface-container flex gap-2">
+        <button onclick="viewMyPassFromSuccess()" class="flex-1 py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-md hover:bg-primary/95 flex items-center justify-center gap-1">
+          <span class="material-symbols-outlined text-[18px]">badge</span>
+          查看數位選手證
+        </button>
+        <button onclick="toggleModal('modal-success')" class="px-4 py-2.5 rounded-xl bg-surface-container-high text-on-surface text-xs font-bold">
+          關閉
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <script>
+    // ---------- State & Storage Management ----------
+    const STORAGE_KEY_REGISTRATIONS = 'dachuang_71_registrations';
+    const STORAGE_KEY_CHEERS = 'dachuang_71_cheer_count';
+    const STORAGE_KEY_MESSAGES = 'dachuang_71_cheer_messages';
+
+    let registrations = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS) || '[]');
+    let cheerCount = parseInt(localStorage.getItem(STORAGE_KEY_CHEERS) || '0', 10);
+    // 重設歸零檢查，確保從 0 開始集氣
+    if (cheerCount >= 15000) {
+      cheerCount = 0;
+      localStorage.setItem(STORAGE_KEY_CHEERS, '0');
+    }
+    let cheerMessages = JSON.parse(localStorage.getItem(STORAGE_KEY_MESSAGES) || 'null');
+
+    // Preset mock registrations if empty so user immediately has data to inspect
+    if (registrations.length === 0) {
+      registrations = [
+        {
+          id: 'DC71-RELAY-101',
+          type: 'relay',
+          typeName: '薪傳大隊接力',
+          category: '男女混合班際組',
+          teamName: '三年信班奔雷隊',
+          leaderName: '林大宇',
+          phone: '0912-345-678',
+          email: 'lin.dayu@school.edu.tw',
+          membersCount: 20,
+          date: '2026-11-04 10:20'
+        },
+        {
+          id: 'DC71-FAM-205',
+          type: 'family',
+          typeName: '親子趣味競賽',
+          category: '兩人三腳歡樂行 / 巨型滾球',
+          teamName: '陳家歡樂衝衝隊',
+          leaderName: '陳志雄 (家長)',
+          childName: '陳冠宇 (一年忠班)',
+          phone: '0928-123-456',
+          session: '上午場 (09:30 - 11:00)',
+          date: '2026-11-04 11:15'
+        }
+      ];
+      localStorage.setItem(STORAGE_KEY_REGISTRATIONS, JSON.stringify(registrations));
+    }
+
+    // ---------- SPA View Router ----------
+    function navigateTo(viewId) {
+      const views = ['home', 'relay', 'family-games', 'volunteers', 'dynamic-island', 'registration-inquiry'];
+      views.forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        if (el) {
+          if (v === viewId) {
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+          } else {
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+          }
+        }
+
+        // Update Tab styles
+        const navBtn = document.getElementById(`nav-btn-${v}`);
+        if (navBtn) {
+          if (v === viewId) {
+            navBtn.classList.remove('text-on-surface-variant');
+            navBtn.classList.add('text-primary', 'font-bold');
+          } else {
+            navBtn.classList.remove('text-primary', 'font-bold');
+            navBtn.classList.add('text-on-surface-variant');
+          }
+        }
+      });
+
+      // Window scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // If opening inquiry, automatically load data
+      if (viewId === 'registration-inquiry') {
+        renderInquiryResults();
+      }
+    }
+
+    // ---------- Modal Helpers ----------
+    function toggleModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.toggle('hidden');
+      }
+    }
+
+    // Guide Modal Provider
+    function openGuideModal(topic) {
+      const titleEl = document.getElementById('guide-modal-title');
+      const iconEl = document.getElementById('guide-modal-icon');
+      const bodyEl = document.getElementById('guide-modal-body');
+
+      if (topic === 'map') {
+        titleEl.textContent = '校園賽場與各組動線地圖';
+        iconEl.textContent = 'map';
+        bodyEl.innerHTML = `
+          <div class="rounded-xl overflow-hidden border border-surface-container bg-surface-container p-3 text-center">
+            <div class="h-44 rounded-lg bg-gradient-to-tr from-emerald-800 to-teal-900 text-white flex flex-col items-center justify-center p-3 relative">
+              <span class="material-symbols-outlined text-4xl text-tertiary-fixed mb-1">stadium</span>
+              <span class="font-bold text-sm">71校慶主田徑場動線配置</span>
+              <span class="text-[10px] text-white/70 mt-1">400M 標準 PU 跑道・司令台・家長看台區</span>
+              <div class="absolute bottom-2 left-3 bg-black/40 px-2 py-0.5 rounded text-[10px] text-white">
+                🔴 檢錄處：東側體育館門廊
+              </div>
+              <div class="absolute bottom-2 right-3 bg-red-600/80 px-2 py-0.5 rounded text-[10px] text-white">
+                🚑 救護站：司令台後方
+              </div>
+            </div>
+          </div>
+          <div class="space-y-2 mt-2">
+            <h4 class="font-bold text-on-surface text-sm">📍 重要節點導引：</h4>
+            <p>1. <strong>選手檢錄區</strong>：設於體育館東側迴廊，各賽事請於表定時間前 20 分鐘抵達完成唱名檢錄。</p>
+            <p>2. <strong>親子趣味競賽區</strong>：位於大草坪南側趣味專區，由專任志工引導集合。</p>
+            <p>3. <strong>醫護防護救護站</strong>：全場共設 2 處（司令台西側及北跑道彎道處），常駐合格護理師與運動防護員。</p>
+            <p>4. <strong>飲水補給站</strong>：每 100 米設有環保溫水/冰水補給桶，大會全面落實自備水壺減塑政策。</p>
+          </div>
+        `;
+      } else if (topic === 'traffic') {
+        titleEl.textContent = '校慶交通管制與接駁專車公告';
+        iconEl.textContent = 'traffic';
+        bodyEl.innerHTML = `
+          <div class="p-3 rounded-xl bg-secondary/10 border border-secondary/20 text-secondary font-medium">
+            ⚠️ 校慶當日 07:00 ~ 17:30，正門及周邊學府路實施單向通行交通管制，無通行證車輛禁止進入校區。
+          </div>
+          <div class="space-y-2.5 mt-2">
+            <h4 class="font-bold text-on-surface text-sm">🚌 免費接駁專車時間表：</h4>
+            <p>• <strong>火車站線</strong>：每 15 分鐘一班（自 07:20 起至 18:00）。</p>
+            <p>• <strong>捷運站專線</strong>：每 10 分鐘一班直達學校西側校門。</p>
+            <h4 class="font-bold text-on-surface text-sm mt-3">🅿️ 家長與貴賓特約停車場：</h4>
+            <p>• 第一特約：運動公園地下停車場（憑校慶家長邀請函可享免費停車 4 小時折抵）。</p>
+            <p>• 第二特約：文化中心平面停車場（距校門步行約 5 分鐘）。</p>
+          </div>
+        `;
+      } else if (topic === 'rules') {
+        titleEl.textContent = '71屆運動會競賽規程與規則簡章';
+        iconEl.textContent = 'menu_book';
+        bodyEl.innerHTML = `
+          <div class="space-y-3">
+            <div class="p-3 rounded-xl bg-surface-container-low border border-surface-container">
+              <h5 class="font-bold text-primary text-sm mb-1">【薪傳大隊接力規則要點】</h5>
+              <p>1. 每隊 20 人，前 10 棒必須為女性選手，後 10 棒為男性選手。</p>
+              <p>2. 接力區為 30 公尺，交接棒必須在接力區內完成，掉棒必須由原掉棒者拾起，否則視為違規。</p>
+              <p>3. 參賽選手需穿著運動鞋（嚴禁釘鞋）及佩掛大會統一印製之號碼布。</p>
+            </div>
+            <div class="p-3 rounded-xl bg-surface-container-low border border-surface-container">
+              <h5 class="font-bold text-tertiary text-sm mb-1">【趣味競賽與計分規程】</h5>
+              <p>1. 親子趣味競賽以安全、家庭同樂為首要目標，嚴禁推擠危險動作。</p>
+              <p>2. 完賽即可至各分站服務台蓋章領取紀念水壺與運動毛巾乙份。</p>
+            </div>
+            <div class="p-3 rounded-xl bg-surface-container-low border border-surface-container">
+              <h5 class="font-bold text-secondary text-sm mb-1">【申訴及爭議處理】</h5>
+              <p>對賽事判決有疑義時，應於賽後 30 分鐘內由領隊或導師以書面向審判委員會提出。</p>
+            </div>
+          </div>
+        `;
+      } else if (topic === 'faq') {
+        titleEl.textContent = '常見問題 FAQ';
+        iconEl.textContent = 'help_center';
+        bodyEl.innerHTML = `
+          <div class="space-y-3">
+            <details class="p-3 rounded-xl bg-surface-container-low border border-surface-container cursor-pointer group" open>
+              <summary class="font-bold text-on-surface flex justify-between items-center">
+                Q1: 報名送出後可以更換選手名單或棒次嗎？
+                <span class="material-symbols-outlined text-sm group-open:rotate-180 transition-transform">expand_more</span>
+              </summary>
+              <p class="mt-2 text-on-surface-variant">
+                可以！於比賽前 3 日（12/9 17:00 前），各隊隊長可持報名代碼至「報名查詢」頁面或至體育組申請棒次微調。
+              </p>
+            </details>
+            <details class="p-3 rounded-xl bg-surface-container-low border border-surface-container cursor-pointer group">
+              <summary class="font-bold text-on-surface flex justify-between items-center">
+                Q2: 號碼布與志工紀念戰袍何時可以領取？
+                <span class="material-symbols-outlined text-sm group-open:rotate-180 transition-transform">expand_more</span>
+              </summary>
+              <p class="mt-2 text-on-surface-variant">
+                各班級代表與各隊隊長請於 12/10 (四) 下午 13:00~16:00 統一至學務處體育組領取參賽號碼布與選手手冊；志工服裝將於志工培訓會上直接發放。
+              </p>
+            </details>
+            <details class="p-3 rounded-xl bg-surface-container-low border border-surface-container cursor-pointer group">
+              <summary class="font-bold text-on-surface flex justify-between items-center">
+                Q3: 當天若遇下雨賽事如何安排？
+                <span class="material-symbols-outlined text-sm group-open:rotate-180 transition-transform">expand_more</span>
+              </summary>
+              <p class="mt-2 text-on-surface-variant">
+                大會備有雨天備案，若遇小雨田徑賽事照常進行；若雨勢過大，趣味競賽與頒獎典禮將移至大禮堂與室內體育館舉行，大會將即時透過首頁「71動態島」進行推播廣播。
+              </p>
+            </details>
+          </div>
+        `;
+      }
+
+      toggleModal('modal-guide');
+    }
+
+    // ---------- Interactive Cheering Button ----------
+    function addCheer(e) {
+      cheerCount += 1;
+      localStorage.setItem(STORAGE_KEY_CHEERS, cheerCount);
+      document.getElementById('cheer-counter-text').textContent = `全校已送出 ${cheerCount.toLocaleString()} 個元氣`;
+      const homeFlame = document.getElementById('home-flame-count');
+      if (homeFlame) homeFlame.textContent = cheerCount.toLocaleString();
+
+      // Trigger Confetti
+      try {
+        confetti({
+          particleCount: 28,
+          spread: 60,
+          origin: { y: 0.85, x: 0.75 }
+        });
+      } catch (err) {}
+
+      // Spawn floating hearts
+      const rect = e.target.getBoundingClientRect();
+      const bubble = document.createElement('div');
+      bubble.className = 'cheer-bubble text-secondary font-bold text-lg';
+      bubble.textContent = '+1 🔥 元氣!';
+      bubble.style.left = `${rect.left + 10}px`;
+      bubble.style.top = `${rect.top - 10}px`;
+      document.body.appendChild(bubble);
+      setTimeout(() => bubble.remove(), 1200);
+    }
+
+    // Post Live message
+    function postCheerMessage() {
+      const input = document.getElementById('cheer-input');
+      const text = (input.value || '').trim();
+      if (!text) return;
+
+      const list = document.getElementById('cheer-messages-list');
+      const item = document.createElement('div');
+      item.className = 'p-3 rounded-xl bg-surface-container-high border border-primary/20 flex items-start gap-2.5 animate-pulse-once';
+      item.innerHTML = `
+        <span class="w-7 h-7 rounded-full bg-secondary text-white font-bold text-xs flex items-center justify-center shrink-0">我</span>
+        <div class="flex flex-col flex-1">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-primary">現場熱血應援者</span>
+            <span class="text-[10px] text-on-surface-variant">剛剛</span>
+          </div>
+          <p class="text-xs text-on-surface font-medium mt-0.5">${escapeHtml(text)}</p>
+        </div>
+      `;
+      list.prepend(item);
+      input.value = '';
+
+      // celebrate
+      try {
+        confetti({
+          particleCount: 35,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
+      } catch (err) {}
+    }
+
+    // ---------- Form Submissions ----------
+
+    // 1. Relay Submit
+    function handleRelaySubmit(e) {
+      e.preventDefault();
+      const category = document.getElementById('relay-category').value;
+      const teamName = document.getElementById('relay-team-name').value.trim();
+      const leaderName = document.getElementById('relay-leader-name').value.trim();
+      const leaderPhone = document.getElementById('relay-leader-phone').value.trim();
+      const leaderEmail = document.getElementById('relay-leader-email').value.trim();
+
+      const regId = 'DC71-RELAY-' + Math.floor(100 + Math.random() * 900);
+      const record = {
+        id: regId,
+        type: 'relay',
+        typeName: '薪傳大隊接力',
+        category: category,
+        teamName: teamName,
+        leaderName: leaderName,
+        phone: leaderPhone,
+        email: leaderEmail,
+        membersCount: 20,
+        date: new Date().toLocaleString()
+      };
+
+      registrations.unshift(record);
+      localStorage.setItem(STORAGE_KEY_REGISTRATIONS, JSON.stringify(registrations));
+
+      // Show Confetti & Modal
+      try {
+        confetti({ particleCount: 80, spread: 100, origin: { y: 0.5 } });
+      } catch (err) {}
+
+      showSuccessModal(record);
+      document.getElementById('relay-form').reset();
+    }
+
+    // 2. Family Games Submit
+    function handleFamilySubmit(e) {
+      e.preventDefault();
+      const checkedBoxes = Array.from(document.querySelectorAll('input[name="family-games"]:checked')).map(cb => cb.value);
+      if (checkedBoxes.length === 0) {
+        alert('請至少勾選一項趣味競賽項目！');
+        return;
+      }
+      const session = document.getElementById('family-session').value;
+      const count = document.getElementById('family-count').value;
+      const parentName = document.getElementById('family-parent-name').value.trim();
+      const childName = document.getElementById('family-child-name').value.trim();
+      const phone = document.getElementById('family-phone').value.trim();
+
+      const regId = 'DC71-FAM-' + Math.floor(200 + Math.random() * 800);
+      const record = {
+        id: regId,
+        type: 'family',
+        typeName: '親子趣味競賽',
+        category: checkedBoxes.join(' + '),
+        teamName: `${parentName} 與 ${childName} 親子隊`,
+        leaderName: parentName,
+        childName: childName,
+        session: session,
+        familyCount: count,
+        phone: phone,
+        date: new Date().toLocaleString()
+      };
+
+      registrations.unshift(record);
+      localStorage.setItem(STORAGE_KEY_REGISTRATIONS, JSON.stringify(registrations));
+
+      try {
+        confetti({ particleCount: 70, spread: 90, origin: { y: 0.5 } });
+      } catch (err) {}
+
+      showSuccessModal(record);
+      document.getElementById('family-form').reset();
+    }
+
+    // 3. Volunteer Submit
+    function handleVolunteerSubmit(e) {
+      e.preventDefault();
+      const group = document.getElementById('vol-group').value;
+      const shift = document.getElementById('vol-shift').value;
+      const tshirt = document.getElementById('vol-tshirt').value;
+      const diet = document.getElementById('vol-diet').value;
+      const name = document.getElementById('vol-name').value.trim();
+      const identity = document.getElementById('vol-identity').value.trim();
+      const phone = document.getElementById('vol-phone').value.trim();
+
+      const regId = 'DC71-VOL-' + Math.floor(300 + Math.random() * 700);
+      const record = {
+        id: regId,
+        type: 'volunteer',
+        typeName: '校慶熱血志工',
+        category: group,
+        teamName: `${group}・${name}`,
+        leaderName: name,
+        identity: identity,
+        shift: shift,
+        tshirt: tshirt,
+        diet: diet,
+        phone: phone,
+        date: new Date().toLocaleString()
+      };
+
+      registrations.unshift(record);
+      localStorage.setItem(STORAGE_KEY_REGISTRATIONS, JSON.stringify(registrations));
+
+      try {
+        confetti({ particleCount: 80, spread: 100, origin: { y: 0.5 } });
+      } catch (err) {}
+
+      showSuccessModal(record);
+      document.getElementById('volunteer-form').reset();
+    }
+
+    // Show Success Modal
+    function showSuccessModal(rec) {
+      document.getElementById('success-reg-id').textContent = `憑證代碼：${rec.id}`;
+      const detailsEl = document.getElementById('success-reg-details');
+
+      let html = `
+        <div class="p-3.5 rounded-xl bg-surface-container-low border border-surface-container space-y-1.5">
+          <div class="flex justify-between items-center">
+            <span class="text-on-surface-variant font-medium">報名項目</span>
+            <span class="font-bold text-primary">${rec.typeName}</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-on-surface-variant font-medium">組別 / 名稱</span>
+            <span class="font-bold text-on-surface">${rec.teamName}</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-on-surface-variant font-medium">主要聯絡人</span>
+            <span class="font-bold text-on-surface">${rec.leaderName} (${rec.phone})</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-on-surface-variant font-medium">登錄時間</span>
+            <span class="text-on-surface-variant">${rec.date}</span>
+          </div>
+        </div>
+        <div class="text-center text-xs text-on-surface-variant">
+          請妥善保存憑證代碼，校慶當日可持此數位碼於檢錄處快速通關！
+        </div>
+      `;
+      detailsEl.innerHTML = html;
+      toggleModal('modal-success');
+    }
+
+    function viewMyPassFromSuccess() {
+      toggleModal('modal-success');
+      navigateTo('registration-inquiry');
+    }
+
+    // ---------- Render Inquiry Results ----------
+    function searchRegistration() {
+      const kw = (document.getElementById('inquiry-keyword').value || '').trim().toLowerCase();
+      renderInquiryResults(kw);
+    }
+
+    function renderInquiryResults(keyword = '') {
+      const container = document.getElementById('inquiry-results-container');
+      const filtered = keyword
+        ? registrations.filter(r => 
+            (r.teamName && r.teamName.toLowerCase().includes(keyword)) ||
+            (r.leaderName && r.leaderName.toLowerCase().includes(keyword)) ||
+            (r.phone && r.phone.includes(keyword)) ||
+            (r.id && r.id.toLowerCase().includes(keyword))
+          )
+        : registrations;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center bg-surface-container-lowest rounded-2xl border border-surface-container flex flex-col items-center gap-2">
+            <span class="material-symbols-outlined text-4xl text-on-surface-variant/50">search_off</span>
+            <p class="font-bold text-sm text-on-surface">查無報名資料</p>
+            <p class="text-xs text-on-surface-variant">請確認輸入之姓名、手機號碼或隊伍名稱是否完全相符。</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(r => `
+        <div class="relative w-full rounded-2xl overflow-hidden shadow-md bg-surface-container-lowest border border-surface-container p-5 flex flex-col gap-3">
+          <div class="flex items-center justify-between border-b border-surface-container pb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-full ${r.type === 'relay' ? 'bg-primary/10 text-primary' : r.type === 'family' ? 'bg-tertiary/10 text-tertiary' : 'bg-secondary/10 text-secondary'} flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[18px]">${r.type === 'relay' ? 'sprint' : r.type === 'family' ? 'sports_score' : 'volunteer_activism'}</span>
+              </span>
+              <div>
+                <h4 class="font-bold text-sm text-on-surface">${escapeHtml(r.teamName)}</h4>
+                <span class="text-[11px] text-on-surface-variant">${r.typeName}・${escapeHtml(r.category)}</span>
+              </div>
+            </div>
+            <span class="font-mono text-xs font-bold px-2.5 py-1 rounded-full bg-surface-container text-on-surface">
+              ${r.id}
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div>
+              <span class="text-on-surface-variant block">聯絡代表</span>
+              <span class="font-bold text-on-surface">${escapeHtml(r.leaderName)}</span>
+            </div>
+            <div>
+              <span class="text-on-surface-variant block">聯絡電話</span>
+              <span class="font-bold text-on-surface">${escapeHtml(r.phone)}</span>
+            </div>
+            <div>
+              <span class="text-on-surface-variant block">${r.type === 'relay' ? '選手人數' : r.type === 'family' ? '參加場次' : '志工時段'}</span>
+              <span class="font-bold text-on-surface">${r.type === 'relay' ? '20 人正選 + 候補' : r.type === 'family' ? escapeHtml(r.session || '上午場') : escapeHtml(r.shift || '全天班')}</span>
+            </div>
+            <div>
+              <span class="text-on-surface-variant block">報名狀態</span>
+              <span class="inline-flex items-center gap-1 font-bold text-emerald-600">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> 報名成功
+              </span>
+            </div>
+          </div>
+
+          <!-- Digital Badge QR Code Simulation -->
+          <div class="mt-2 p-3 rounded-xl bg-surface-container-low border border-surface-container flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 bg-white p-1 rounded-lg border border-surface-container flex items-center justify-center shadow-inner">
+                <span class="material-symbols-outlined text-3xl text-on-surface">qr_code_2</span>
+              </div>
+              <div class="flex flex-col">
+                <span class="font-bold text-xs text-on-surface">大會數位通關憑證</span>
+                <span class="text-[10px] text-on-surface-variant">檢錄時向裁判出示本條碼</span>
+              </div>
+            </div>
+            <button onclick="downloadPassSim('${r.id}')" class="px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 text-xs font-bold active:scale-95 transition-all flex items-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">download</span>
+              存證
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function downloadPassSim(id) {
+      alert(`已將【${id}】數位通行證憑證資訊儲存至您的裝置剪貼簿與相簿快取！`);
+    }
+
+    // ---------- Relay 20 Runner Inputs Generator ----------
+    function initRelayRunnersInputs() {
+      const container = document.getElementById('relay-runners-container');
+      if (!container) return;
+
+      let html = '';
+      for (let i = 1; i <= 20; i++) {
+        const isFemale = i <= 10;
+        const genderLabel = isFemale ? '女' : '男';
+        const tagColor = isFemale ? 'bg-pink-100 text-pink-700' : 'bg-blue-100 text-blue-700';
+
+        html += `
+          <div class="p-2 rounded-xl bg-surface-container-low border border-surface-container flex flex-col gap-1">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-on-surface">第 ${i} 棒</span>
+              <span class="text-[10px] px-1.5 py-0.2 rounded font-bold ${tagColor}">${genderLabel}</span>
+            </div>
+            <input type="text" id="runner-${i}" placeholder="姓名" required class="text-xs p-1.5 rounded-lg border-surface-container-highest bg-white focus:ring-1 focus:ring-primary">
+          </div>
+        `;
+      }
+      container.innerHTML = html;
+    }
+
+    function autoFillRelayMock() {
+      const mockNames = [
+        "陳雅筑", "林思妤", "張品涵", "黃沛瑄", "李佳穎", 
+        "王郁婷", "吳若瑄", "周子涵", "許心怡", "鄭宇婕",
+        "林子豪", "陳柏宇", "張育誠", "李冠廷", "黃柏勳", 
+        "吳致遠", "許秉修", "周冠名", "蔡承恩", "鄭維哲"
+      ];
+      for (let i = 1; i <= 20; i++) {
+        const input = document.getElementById(`runner-${i}`);
+        if (input) input.value = mockNames[i - 1] || `選手 ${i}`;
+      }
+      document.getElementById('relay-team-name').value = '高二真班勇者隊';
+      document.getElementById('relay-leader-name').value = '林子豪';
+      document.getElementById('relay-leader-phone').value = '0988-777-666';
+      document.getElementById('relay-leader-email').value = 'hero.lin@school.edu.tw';
+      document.getElementById('relay-terms').checked = true;
+    }
+
+    // ---------- Utility Helpers ----------
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // ---------- Countdown Timer (精確同步上方與下方倒數) ----------
+    function startCountdown() {
+      // Event Date: 2026-12-12 08:00:00 (8 點準時開始)
+      const targetDate = new Date('2026-12-12T08:00:00').getTime();
+
+      function update() {
+        const now = new Date().getTime();
+        const diff = targetDate - now;
+
+        const headerPill = document.getElementById('header-countdown-pill');
+
+        if (diff <= 0) {
+          document.getElementById('days-val').textContent = '00';
+          document.getElementById('hours-val').textContent = '00';
+          document.getElementById('mins-val').textContent = '00';
+          document.getElementById('secs-val').textContent = '00';
+          if (headerPill) headerPill.textContent = '今日盛大登場！';
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+        // 同步頂部 71 校慶運動會旁邊的倒數標籤
+        if (headerPill) {
+          headerPill.textContent = `倒數 ${days} 天`;
+        }
+
+        const dEl = document.getElementById('days-val');
+        const hEl = document.getElementById('hours-val');
+        const mEl = document.getElementById('mins-val');
+        const sEl = document.getElementById('secs-val');
+
+        if (dEl) dEl.textContent = days < 10 ? '0' + days : days;
+        if (hEl) hEl.textContent = hours < 10 ? '0' + hours : hours;
+        if (mEl) mEl.textContent = mins < 10 ? '0' + mins : mins;
+        if (sEl) sEl.textContent = secs < 10 ? '0' + secs : secs;
+      }
+
+      update();
+      setInterval(update, 1000);
+    }
+
+    // ---------- 集氣數字初始化 (從 0 開始) ----------
+    function initCheerUI() {
+      const counterEl = document.getElementById('cheer-counter-text');
+      if (counterEl) counterEl.textContent = `全校已送出 ${cheerCount.toLocaleString()} 個元氣`;
+      const homeFlame = document.getElementById('home-flame-count');
+      if (homeFlame) homeFlame.textContent = cheerCount.toLocaleString();
+    }
+
+    // ---------- Initialization ----------
+    document.addEventListener('DOMContentLoaded', () => {
+      initCheerUI();
+      startCountdown();
+      initRelayRunnersInputs();
+    });
+  </script>
+</body>
+</html>

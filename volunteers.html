@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+  <meta content="mobile_tab" name="shell-type"/>
+  <title>大庄國小 115 學年度暨 71 週年校慶運動會 - 校慶熱血志工招募專區</title>
+  
+  <!-- Material Symbols & Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Space+Grotesk:wght@600;700&amp;family=Noto+Sans+TC:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+  
+  <style>
+    @layer base {
+      html, body {
+        width: 100vw;
+        margin: 0;
+        padding: 0;
+        background-color: #faf8ff;
+        font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+      }
+      body {
+        overscroll-behavior: none;
+        -webkit-tap-highlight-color: transparent;
+        min-height: max(884px, 100dvh);
+      }
+      .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+      .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+      main > :first-child { margin-top: 0 !important; }
+      main > :last-child { margin-bottom: 0 !important; }
+    }
+    ::-webkit-scrollbar { display: none; }
+  </style>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "tertiary-fixed-dim": "#4edea3",
+            "inverse-on-surface": "#eef0ff",
+            "surface": "#faf8ff",
+            "on-tertiary-fixed-variant": "#005236",
+            "primary-container": "#1d4ed8",
+            "surface-container-highest": "#dae2fd",
+            "surface-container-high": "#e2e7ff",
+            "surface-tint": "#2151da",
+            "surface-container-low": "#f2f3ff",
+            "tertiary-fixed": "#6ffbbe",
+            "surface-dim": "#d2d9f4",
+            "on-surface": "#131b2e",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-container": "#60eeb1",
+            "tertiary-container": "#006a48",
+            "on-background": "#131b2e",
+            "secondary-fixed-dim": "#ffb690",
+            "tertiary": "#004f35",
+            "on-tertiary-fixed": "#002113",
+            "surface-variant": "#dae2fd",
+            "on-secondary": "#ffffff",
+            "on-surface-variant": "#434655",
+            "on-error-container": "#93000a",
+            "primary-fixed": "#dce1ff",
+            "on-error": "#ffffff",
+            "on-secondary-fixed-variant": "#783200",
+            "error-container": "#ffdad6",
+            "primary": "#0037b0",
+            "background": "#faf8ff",
+            "on-primary-fixed-variant": "#0039b5",
+            "on-primary-container": "#cad3ff",
+            "inverse-primary": "#b7c4ff",
+            "on-secondary-fixed": "#341100",
+            "surface-container": "#eaedff",
+            "on-primary-fixed": "#001551",
+            "surface-bright": "#faf8ff",
+            "inverse-surface": "#283044",
+            "secondary": "#9d4300",
+            "on-secondary-container": "#5c2400",
+            "secondary-container": "#fd761a",
+            "error": "#ba1a1a",
+            "on-tertiary": "#ffffff",
+            "primary-fixed-dim": "#b7c4ff",
+            "outline": "#747686",
+            "outline-variant": "#c4c5d7",
+            "on-primary": "#ffffff",
+            "secondary-fixed": "#ffdbca"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "space-xl": "2rem",
+            "gutter": "1rem",
+            "margin": "1rem",
+            "space-md": "0.75rem",
+            "space-sm": "0.5rem",
+            "margin-tablet": "2rem",
+            "gutter-tablet": "1.5rem",
+            "space-lg": "1.25rem",
+            "space-xs": "0.25rem"
+          },
+          fontFamily: {
+            "label-md": ["Plus Jakarta Sans", "Noto Sans TC", "sans-serif"],
+            "body-sm": ["Plus Jakarta Sans", "Noto Sans TC", "sans-serif"],
+            "headline-lg": ["Space Grotesk", "Noto Sans TC", "sans-serif"],
+            "body-lg": ["Plus Jakarta Sans", "Noto Sans TC", "sans-serif"],
+            "label-lg": ["Plus Jakarta Sans", "Noto Sans TC", "sans-serif"],
+            "headline-display": ["Space Grotesk", "Noto Sans TC", "sans-serif"],
+            "body-md": ["Plus Jakarta Sans", "Noto Sans TC", "sans-serif"],
+            "headline-sm": ["Space Grotesk", "Noto Sans TC", "sans-serif"],
+            "headline-md": ["Space Grotesk", "Noto Sans TC", "sans-serif"],
+            "label-sm": ["Plus Jakarta Sans", "Noto Sans TC", "sans-serif"],
+            "headline-display-mobile": ["Space Grotesk", "Noto Sans TC", "sans-serif"]
+          },
+          fontSize: {
+            "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "600" }],
+            "body-sm": ["12px", { lineHeight: "18px", fontWeight: "400" }],
+            "headline-lg": ["24px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "700" }],
+            "body-lg": ["16px", { lineHeight: "26px", fontWeight: "400" }],
+            "label-lg": ["14px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "600" }],
+            "headline-display": ["36px", { lineHeight: "44px", letterSpacing: "-0.02em", fontWeight: "700" }],
+            "body-md": ["14px", { lineHeight: "22px", fontWeight: "400" }],
+            "headline-sm": ["18px", { lineHeight: "24px", fontWeight: "600" }],
+            "headline-md": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+            "label-sm": ["10px", { lineHeight: "14px", letterSpacing: "0.04em", fontWeight: "700" }],
+            "headline-display-mobile": ["28px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "700" }]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface font-body-md text-on-surface flex flex-col min-h-screen">
+
+  <!-- ==================== TOP APP BAR ==================== -->
+  <header class="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] border-b border-surface-container">
+    <div class="h-16 px-gutter flex items-center justify-between max-w-4xl mx-auto">
+      <div class="flex items-center gap-space-sm cursor-pointer" onclick="location.href='index.html'">
+        <div class="flex items-center gap-space-xs">
+          <span class="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-on-primary font-headline-sm text-headline-sm shadow-sm font-bold">71</span>
+          <div class="flex flex-col">
+            <div class="flex items-center gap-space-xs">
+              <span class="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-tight font-bold">71校慶運動會</span>
+              <span id="countdown-pill" class="font-label-sm text-label-sm px-1.5 py-0.5 rounded-full bg-secondary text-on-secondary font-bold tracking-wider">熱血招募</span>
+            </div>
+            <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Volunteers Service</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-space-xs">
+        <button onclick="toggleModal('modal-gas-config')" title="雲端試算表設定" class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold hover:bg-emerald-100 transition-all">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="hidden sm:inline">GAS 試算表</span>
+        </button>
+        <button aria-label="通知與廣播" onclick="toggleModal('modal-notifications')" class="relative w-10 h-10 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container transition-colors">
+          <span class="material-symbols-outlined text-[22px]">notifications</span>
+          <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-secondary-container"></span>
+        </button>
+        <a aria-label="報名查詢與個人檔案" class="flex items-center justify-center p-0.5 rounded-full hover:ring-2 hover:ring-primary/20 transition-all" href="index.html#registration-inquiry">
+          <img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDs9ITEHsQmZkQfwQkg6rvJlYwbz-Zhj0giA0b5NTCEG7gBEcbBy3QTPe4aclIW8yqYBVMpvquR0bPifZ21zjoKbW47U4U8uQxcmExmzamOfjOgEaQsAgioSM0fTfj3XoqLQL8IYBv1UjEYdSp1Tq21o8b57rHSzbxPt6lb_wLDDRAzucp7g9Tb1b0puWTUYfy8WOXfdeVzzL4th5eTHSRRUTPaQjVuXov6mfDidIE"/>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface max-w-4xl mx-auto">
+    <div class="flex flex-col w-full">
+
+      <!-- Quota & Urgency Status Island (即時依照資料庫報名人數呈現) -->
+      <div class="px-gutter pt-space-md pb-space-xs">
+        <div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-2.5 border border-outline-variant/30">
+          <div class="flex items-center justify-between gap-space-sm">
+            <div class="flex items-center gap-space-sm min-w-0">
+              <span class="flex-shrink-0 w-10 h-10 rounded-full bg-secondary-container text-on-secondary flex items-center justify-center">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">how_to_reg</span>
+              </span>
+              <div class="flex flex-col min-w-0">
+                <div class="flex items-center gap-space-xs flex-wrap">
+                  <span class="font-headline-sm text-headline-sm text-on-surface truncate font-bold">志工甄選開放中</span>
+                  <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-error-container text-error font-bold tracking-wide" id="quota-badge-volunteers">限定 20 人，剩餘 6 名</span>
+                </div>
+                <span class="font-body-sm text-body-sm text-on-surface-variant truncate">甄選錄取順序：1. 畢業校友優先 2. 表單報名順序</span>
+              </div>
+            </div>
+            <div class="flex-shrink-0 text-right">
+              <span class="font-label-sm text-label-sm text-secondary font-bold uppercase tracking-wider block">主辦單位</span>
+              <span class="font-headline-sm text-headline-sm text-primary font-bold">大庄國小學務處</span>
+            </div>
+          </div>
+
+          <!-- Real-time Quota Progress Bar (依確實人數動態演算) -->
+          <div class="pt-2 border-t border-surface-container flex flex-col gap-1.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-on-surface" id="quota-progress-label">志工招募進度：14 / 20 人 (70%)</span>
+              <span class="font-bold text-secondary" id="quota-progress-remain">剩餘 6 名即額滿</span>
+            </div>
+            <div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden">
+              <div class="bg-gradient-to-r from-secondary-container via-amber-500 to-primary h-full transition-all duration-500" id="quota-progress-bar" style="width: 70%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Banner -->
+      <div class="px-gutter py-space-sm">
+        <div class="relative rounded-xl overflow-hidden bg-primary p-space-lg text-on-primary shadow-md">
+          <svg class="absolute right-0 bottom-0 opacity-15 pointer-events-none w-48 h-48 -mr-6 -mb-6" fill="none" viewbox="0 0 200 200">
+            <path d="M40 0C40 88.3656 111.634 160 200 160" stroke="#FFFFFF" stroke-linecap="round" stroke-width="18"></path>
+            <path d="M0 0C0 110.457 89.543 200 200 200" stroke="#FD761A" stroke-linecap="round" stroke-width="18"></path>
+            <path d="M80 0C80 66.2742 133.726 120 200 120" stroke="#6FFBBE" stroke-linecap="round" stroke-width="14"></path>
+          </svg>
+          <div class="relative z-10 flex flex-col gap-space-sm">
+            <div class="flex items-center gap-space-xs">
+              <div class="flex flex-wrap items-center justify-between gap-space-xs w-full">
+                <div class="flex items-center gap-space-xs">
+                  <span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary font-label-sm text-label-sm font-bold shadow-sm">七一大庄・五力飛揚</span>
+                  <span class="px-2 py-0.5 rounded-full bg-on-primary/20 backdrop-blur-sm font-label-sm text-label-sm text-on-primary font-medium tracking-wide">志工招募</span>
+                </div>
+                <span class="font-label-sm text-label-sm text-tertiary-fixed-dim font-bold flex items-center gap-0.5">
+                  <span class="material-symbols-outlined text-[14px]">verified</span> 校友優先錄取
+                </span>
+              </div>
+            </div>
+
+            <h1 class="font-headline-lg text-headline-lg leading-tight tracking-tight text-on-primary font-bold">
+              大庄國小 115 學年度<br/>校慶服務志工報名表
+            </h1>
+            <p class="font-body-md text-body-md text-on-primary-container max-w-lg">
+              活動目的：協助大庄國小 115 學年度校慶運動會各項賽事與活動順利進行，歡迎熱心同學與校友回校相聚支援！
+            </p>
+
+            <!-- Key Info Cards -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-space-xs pt-space-xs">
+              <div class="flex items-center gap-space-xs bg-on-primary/10 backdrop-blur-md rounded-lg p-space-xs">
+                <span class="material-symbols-outlined text-secondary-fixed text-[18px]">calendar_today</span>
+                <div class="flex flex-col">
+                  <span class="font-label-sm text-label-sm font-bold text-on-primary">活動日期</span>
+                  <span class="font-body-sm text-[11px] text-on-primary/90">115年12月12日 (六)</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-space-xs bg-on-primary/10 backdrop-blur-md rounded-lg p-space-xs">
+                <span class="material-symbols-outlined text-secondary-fixed text-[18px]">schedule</span>
+                <div class="flex flex-col">
+                  <span class="font-label-sm text-label-sm font-bold text-on-primary">服務時間</span>
+                  <span class="font-body-sm text-[11px] text-on-primary/90">08:30 - 12:30 (4小時)</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-space-xs bg-on-primary/10 backdrop-blur-md rounded-lg p-space-xs">
+                <span class="material-symbols-outlined text-secondary-fixed text-[18px]">location_on</span>
+                <div class="flex flex-col">
+                  <span class="font-label-sm text-label-sm font-bold text-on-primary">報到地點</span>
+                  <span class="font-body-sm text-[11px] text-on-primary/90">大庄國小學務處</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-space-xs bg-on-primary/10 backdrop-blur-md rounded-lg p-space-xs">
+                <span class="material-symbols-outlined text-secondary-fixed text-[18px]">military_tech</span>
+                <div class="flex flex-col">
+                  <span class="font-label-sm text-label-sm font-bold text-on-primary">時數認證</span>
+                  <span class="font-body-sm text-[11px] text-on-primary/90">核發 4 小時學習時數</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Container -->
+      <form id="volunteer-form" onsubmit="handleVolunteerSubmit(event)" class="space-y-space-lg">
+        
+        <!-- Section 1: Desired Volunteer Roles -->
+        <section class="px-gutter pt-space-sm">
+          <div class="flex items-center justify-between mb-space-sm">
+            <div class="flex items-center gap-space-xs">
+              <span class="w-2.5 h-6 rounded-full bg-primary"></span>
+              <h2 class="font-headline-md text-headline-md text-on-surface tracking-tight font-bold">1. 希望服務內容</h2>
+            </div>
+            <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">可複選・依校方調度</span>
+          </div>
+          <p class="font-body-sm text-body-sm text-on-surface-variant mb-space-sm">
+            預排時儘量符合個人期待，校方仍保有依大會整體運作調度之最終考量權。
+          </p>
+
+          <div class="grid grid-cols-1 gap-space-sm" id="service-group-options">
+            <!-- Role 1: 場地器材組 -->
+            <label class="group relative flex items-start gap-space-md p-space-md rounded-xl bg-surface-container-lowest shadow-sm cursor-pointer transition-all hover:shadow-md border border-transparent has-[:checked]:border-primary/40 has-[:checked]:bg-primary/5">
+              <input checked class="peer sr-only service-role-input" name="service_content" type="checkbox" value="場地器材組"/>
+              <div class="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center text-on-primary-fixed flex-shrink-0 group-hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-[26px]">inventory_2</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <span class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors font-bold">場地器材組</span>
+                  <div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center transition-all check-badge">
+                    <span class="material-symbols-outlined text-[16px]">check</span>
+                  </div>
+                </div>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+                  搬運舞台區桌椅及設備，趣味競賽器材場佈及活動後撤場協助。
+                </p>
+                <div class="flex items-center gap-space-xs mt-space-xs">
+                  <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-bold">核心體能支援</span>
+                  <span class="font-label-sm text-label-sm text-outline">司令台與競賽跑道</span>
+                </div>
+              </div>
+            </label>
+
+            <!-- Role 2: 秩序維護組 -->
+            <label class="group relative flex items-start gap-space-md p-space-md rounded-xl bg-surface-container-lowest shadow-sm cursor-pointer transition-all hover:shadow-md border border-transparent has-[:checked]:border-primary/40 has-[:checked]:bg-primary/5">
+              <input checked class="peer sr-only service-role-input" name="service_content" type="checkbox" value="秩序維護組"/>
+              <div class="w-12 h-12 rounded-xl bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed flex-shrink-0 group-hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-[26px]">shield</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <span class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors font-bold">秩序維護組</span>
+                  <div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center transition-all check-badge">
+                    <span class="material-symbols-outlined text-[16px]">check</span>
+                  </div>
+                </div>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+                  表演或競賽時，避免家長過於靠近比賽或活動區域，協助現場動線及區域淨空。
+                </p>
+                <div class="flex items-center gap-space-xs mt-space-xs">
+                  <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-bold">動線與安全</span>
+                  <span class="font-label-sm text-label-sm text-outline">跑道周邊與家長加油區</span>
+                </div>
+              </div>
+            </label>
+
+            <!-- Role 3: 愛護環境組 -->
+            <label class="group relative flex items-start gap-space-md p-space-md rounded-xl bg-surface-container-lowest shadow-sm cursor-pointer transition-all hover:shadow-md border border-transparent has-[:checked]:border-primary/40 has-[:checked]:bg-primary/5">
+              <input class="peer sr-only service-role-input" name="service_content" type="checkbox" value="愛護環境組"/>
+              <div class="w-12 h-12 rounded-xl bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed flex-shrink-0 group-hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-[26px]">eco</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <span class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors font-bold">愛護環境組</span>
+                  <div class="w-6 h-6 rounded-full bg-surface-container text-surface-container flex items-center justify-center transition-all check-badge">
+                    <span class="material-symbols-outlined text-[16px]">check</span>
+                  </div>
+                </div>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+                  維護校園清潔兼散步養皮克敏，隨巡各區資源回收與環境清幽。
+                </p>
+                <div class="flex items-center gap-space-xs mt-space-xs">
+                  <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-bold">散步養皮克敏</span>
+                  <span class="font-label-sm text-label-sm text-outline">校園全區動態巡檢</span>
+                </div>
+              </div>
+            </label>
+
+            <!-- Role 4: 以上皆可隨校方安排 -->
+            <label class="group relative flex items-start gap-space-md p-space-md rounded-xl bg-surface-container-lowest shadow-sm cursor-pointer transition-all hover:shadow-md border border-transparent has-[:checked]:border-primary/40 has-[:checked]:bg-primary/5">
+              <input class="peer sr-only service-role-input" name="service_content" type="checkbox" value="以上皆可，隨校方安排"/>
+              <div class="w-12 h-12 rounded-xl bg-surface-container-highest flex items-center justify-center text-primary flex-shrink-0 group-hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-[26px]">handshake</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <span class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors font-bold">以上皆可，隨校方安排</span>
+                  <div class="w-6 h-6 rounded-full bg-surface-container text-surface-container flex items-center justify-center transition-all check-badge">
+                    <span class="material-symbols-outlined text-[16px]">check</span>
+                  </div>
+                </div>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+                  彈性支援大會各項機動任務，服從學務處當日即時調配與人力支援安排。
+                </p>
+                <div class="flex items-center gap-space-xs mt-space-xs">
+                  <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface font-bold">全力相挺</span>
+                  <span class="font-label-sm text-label-sm text-outline">機動應變組</span>
+                </div>
+              </div>
+            </label>
+          </div>
+        </section>
+
+        <!-- Section 2: Volunteer Registration Form Fields -->
+        <section class="px-gutter">
+          <div class="flex items-center gap-space-xs mb-space-sm">
+            <span class="w-2.5 h-6 rounded-full bg-secondary"></span>
+            <h2 class="font-headline-md text-headline-md text-on-surface tracking-tight font-bold">2. 志工報名資料填寫</h2>
+          </div>
+
+          <div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-md border border-outline-variant/30">
+            <!-- Field: Alumni Priority Toggle -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="font-label-md text-label-md text-on-surface font-semibold">是否為大庄畢業校友? <span class="text-error font-bold">*</span></label>
+                <span class="font-label-sm text-label-sm text-primary font-bold flex items-center gap-0.5">
+                  <span class="material-symbols-outlined text-[14px]">verified</span> 校友享有優先錄取資格
+                </span>
+              </div>
+              <div class="grid grid-cols-2 gap-space-xs">
+                <label class="alumni-option relative flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-primary bg-primary/10 text-primary font-label-md text-label-md cursor-pointer transition-all">
+                  <input checked class="sr-only alumni-radio" name="is_alumni" type="radio" value="是，為大庄國小校友"/>
+                  <span class="material-symbols-outlined text-[18px]">school</span>
+                  <span>是，為大庄國小校友</span>
+                </label>
+                <label class="alumni-option relative flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-transparent bg-surface-container text-on-surface-variant font-label-md text-label-md cursor-pointer transition-all hover:bg-surface-container-high">
+                  <input class="sr-only alumni-radio" name="is_alumni" type="radio" value="否，非校友"/>
+                  <span class="material-symbols-outlined text-[18px]">person</span>
+                  <span>否，非校友</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Student Name & Current School -->
+            <div class="flex flex-col gap-space-sm">
+              <div>
+                <label class="font-label-md text-label-md text-on-surface mb-1 block font-semibold">學生姓名 <span class="text-error font-bold">*</span></label>
+                <div class="relative">
+                  <input id="vol-student-name" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="請輸入學生真實姓名" required type="text" value="陳俊宏"/>
+                  <span class="material-symbols-outlined absolute right-3.5 top-3.5 text-outline text-[22px]">badge</span>
+                </div>
+              </div>
+              <div>
+                <label class="font-label-md text-label-md text-on-surface mb-1 block font-semibold">現就讀學校 / 班級 <span class="text-error font-bold">*</span></label>
+                <div class="relative">
+                  <input id="vol-school-class" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="例：香山高中 / 一年二班" required type="text" value="香山高中 / 一年二班"/>
+                  <span class="material-symbols-outlined absolute right-3.5 top-3.5 text-outline text-[22px]">apartment</span>
+                </div>
+              </div>
+
+              <!-- Contact Phones -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm">
+                <div>
+                  <label class="font-label-md text-label-md text-on-surface mb-1 block font-semibold">聯絡電話 / 手機 1 (自己) <span class="text-error font-bold">*</span></label>
+                  <div class="relative">
+                    <input id="vol-phone-self" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="例：0912-345-678" required type="tel" value="0933-888-710"/>
+                    <span class="material-symbols-outlined absolute right-3.5 top-3.5 text-outline text-[22px]">smartphone</span>
+                  </div>
+                </div>
+                <div>
+                  <label class="font-label-md text-label-md text-on-surface mb-1 block font-semibold">聯絡電話 / 手機 2 (家長) <span class="text-error font-bold">*</span></label>
+                  <div class="relative">
+                    <input id="vol-phone-parent" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="例：0911-223-344" required type="tel" value="0911-223-344"/>
+                    <span class="material-symbols-outlined absolute right-3.5 top-3.5 text-outline text-[22px]">contact_phone</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Parent Name & Relationship -->
+              <div>
+                <label class="font-label-md text-label-md text-on-surface mb-1 block font-semibold">家長姓名 / 關係 <span class="text-error font-bold">*</span></label>
+                <div class="relative">
+                  <input id="vol-parent-rel" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="例：陳美玲 / 母親" required type="text" value="王秀琴 / 母親"/>
+                  <span class="material-symbols-outlined absolute right-3.5 top-3.5 text-outline text-[22px]">family_restroom</span>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="font-label-md text-label-md text-on-surface font-semibold">E-mail <span class="text-error font-bold">*</span></label>
+                  <span class="font-label-sm text-label-sm text-outline">錄取通知寄送與工作聯繫</span>
+                </div>
+                <div class="relative">
+                  <input id="vol-email" class="w-full h-[52px] px-space-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-outline border border-surface-container-highest" placeholder="請輸入電子郵件信箱" required type="email" value="running_chen71@gmail.com"/>
+                  <span class="material-symbols-outlined absolute right-3.5 top-3.5 text-outline text-[22px]">mail</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Current Count & Footer Link (完全參照 BeClass 原貌與動作設計) -->
+            <div class="pt-3 border-t border-surface-container flex flex-col gap-2 text-xs">
+              <div class="flex items-center justify-between text-on-surface-variant flex-wrap gap-2">
+                <span class="text-primary font-bold text-sm" id="current-registered-text">※目前報名數：14 人 (限定 20 人)</span>
+                <div class="flex items-center gap-1.5 text-primary font-bold text-sm">
+                  <a href="index.html#registration-inquiry" class="hover:underline flex items-center gap-0.5">
+                    <span class="text-emerald-700">[✓查詢]</span>
+                  </a>
+                  <span class="text-on-surface-variant/40">、</span>
+                  <button type="button" onclick="openEditModal()" class="hover:underline text-emerald-700 cursor-pointer">
+                    [✓編修]
+                  </button>
+                  <span class="text-on-surface-variant/40">、</span>
+                  <button type="button" onclick="openCancelModal()" class="hover:underline text-emerald-700 cursor-pointer">
+                    [✓取消]
+                  </button>
+                </div>
+              </div>
+              <div class="flex items-center justify-between flex-wrap gap-2 pt-1 border-t border-surface-container/60">
+                <a href="relay.html" class="text-xs text-primary font-bold hover:underline flex items-center gap-1">
+                  <span class="text-secondary font-bold">※</span>瞧瞧近日熱門的報名活動：庄情薪傳大隊接力 →
+                </a>
+                <div class="flex items-center gap-2">
+                  <button type="button" onclick="openDemoFill()" class="text-[11px] text-on-surface-variant hover:text-primary underline">
+                    [一鍵示範填寫資料]
+                  </button>
+                  <span class="text-on-surface-variant/30">・</span>
+                  <button type="button" onclick="resetVolunteerMockList()" class="text-[11px] text-amber-700 underline" title="重設志工名冊資料庫">
+                    [重設 14 人名冊]
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Section 3: Notice & Important Instructions -->
+        <section class="px-gutter">
+          <div class="flex items-center gap-space-xs mb-space-sm">
+            <span class="w-2.5 h-6 rounded-full bg-tertiary"></span>
+            <h2 class="font-headline-md text-headline-md text-on-surface tracking-tight font-bold">3. 注意事項與大會叮嚀</h2>
+          </div>
+
+          <div class="rounded-xl bg-surface-container-lowest border border-outline-variant/30 p-space-md shadow-sm flex flex-col gap-space-sm">
+            <div class="flex items-start gap-space-sm pb-space-xs border-b border-surface-container">
+              <span class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-label-sm flex-shrink-0 mt-0.5">1</span>
+              <div class="font-body-sm text-body-sm text-on-surface">
+                <span class="font-semibold text-on-surface">錄取名單公告：</span>錄取名單會公告於學校最新消息並寄 E-mail 通知；<span class="text-error font-medium">未錄取者不另行通知</span>。
+              </div>
+            </div>
+            <div class="flex items-start gap-space-sm pb-space-xs border-b border-surface-container">
+              <span class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-label-sm flex-shrink-0 mt-0.5">2</span>
+              <div class="font-body-sm text-body-sm text-on-surface">
+                <span class="font-semibold text-on-surface">時數證明與茶水：</span>完成服務工作者，大會發予 <span class="text-primary font-bold">4 小時服務學習時數證明</span>，並現場提供飲用茶水與活動紀念品。
+              </div>
+            </div>
+            <div class="flex items-start gap-space-sm pb-space-xs border-b border-surface-container">
+              <span class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-label-sm flex-shrink-0 mt-0.5">3</span>
+              <div class="font-body-sm text-body-sm text-on-surface">
+                <span class="font-semibold text-on-surface">穿著與備品：</span>當日服務時穿著服務背心，並請自備口罩、個人水壺與便於活動之球鞋。
+              </div>
+            </div>
+            <div class="flex items-start gap-space-sm pb-space-xs border-b border-surface-container">
+              <span class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-label-sm flex-shrink-0 mt-0.5">4</span>
+              <div class="font-body-sm text-body-sm text-on-surface">
+                <span class="font-semibold text-on-surface">安全規範：</span>活動結束後請同學直接返家，切勿在外逗留，家長請保持手機暢通。
+              </div>
+            </div>
+            <div class="rounded-lg bg-surface-container-low p-space-sm flex items-center gap-space-sm mt-1 border border-outline-variant/20">
+              <span class="material-symbols-outlined text-primary text-[24px]">call</span>
+              <div class="flex flex-col">
+                <span class="font-label-md text-label-md text-on-surface font-bold">本案聯絡人：大庄國小學務處體育組</span>
+                <span class="font-body-sm text-body-sm text-on-surface-variant">張永明老師 (03)5384035 分機 607</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Interactive Sticky Bottom Submission Action -->
+        <div class="px-gutter pt-space-xs pb-space-xl">
+          <div class="flex items-center justify-between bg-primary/10 rounded-xl p-space-sm mb-space-sm border border-primary/20">
+            <div class="flex items-center gap-1.5 font-label-md text-label-md text-primary font-bold">
+              <span class="material-symbols-outlined text-[20px]">verified</span>
+              <span>完成可獲 4 小時學習時數</span>
+            </div>
+            <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-primary text-on-primary font-bold">名額倒數中</span>
+          </div>
+          
+          <button id="submit-volunteer-btn" type="submit" class="w-full py-4 px-space-lg rounded-full bg-primary hover:bg-primary-container active:scale-[0.98] text-on-primary font-headline-sm text-headline-sm tracking-wide shadow-lg shadow-primary/25 flex items-center justify-center gap-space-sm transition-all duration-200 font-bold">
+            <span class="material-symbols-outlined text-[24px]">check_circle</span>
+            <span id="submit-btn-text">立即送出志工報名表 (同步寫入 GAS 試算表)</span>
+            <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+          </button>
+          
+          <p class="font-label-sm text-label-sm text-center text-on-surface-variant mt-space-sm">
+            送出表單代表同意大庄國小 115 學年度校慶志工服務規約與個人資料通知使用
+          </p>
+        </div>
+
+      </form>
+
+    </div>
+  </main>
+
+  <!-- ==================== BOTTOM TAB BAR NAVIGATION ==================== -->
+  <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_-2px_12px_rgba(15,23,42,0.05)] border-t border-surface-container">
+    <div class="flex justify-around items-center h-20 px-space-xs max-w-4xl mx-auto">
+      <a class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition-all duration-200" data-path="relay" href="relay.html">
+        <span class="material-symbols-outlined text-[24px]">sprint</span>
+        <span class="font-label-md text-label-md">薪傳接力</span>
+      </a>
+      <a class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition-all duration-200" data-path="family-games" href="family-games.html">
+        <span class="material-symbols-outlined text-[24px]">sports_score</span>
+        <span class="font-label-md text-label-md">親子趣味</span>
+      </a>
+      <a aria-current="page" class="flex flex-col items-center justify-center gap-1 w-16 h-14 transition-all duration-200 text-primary font-bold" data-path="volunteers" href="volunteers.html">
+        <span class="material-symbols-outlined text-[24px]">volunteer_activism</span>
+        <span class="font-label-md text-label-md">熱血志工</span>
+      </a>
+      <a class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition-all duration-200" data-path="dynamic-island" href="dynamic-island.html">
+        <span class="material-symbols-outlined text-[24px]">campaign</span>
+        <span class="font-label-md text-label-md">71動態島</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Modal 1: GAS Config -->
+  <div id="modal-gas-config" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-surface-container overflow-hidden">
+      <div class="p-4 bg-primary text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[22px]">database</span>
+          <h3 class="font-bold text-base">GAS 雲端資料庫設定</h3>
+        </div>
+        <button onclick="toggleModal('modal-gas-config')" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/20">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+      <div class="p-5 flex flex-col gap-3 text-xs">
+        <p class="text-on-surface-variant leading-relaxed">
+          目前志工報名將直接寫入大會 Google Apps Script 雲端試算表（工作表：<strong>校慶服務志工名冊</strong>）。如已部署自有試算表，可於下方替換 Web App 網址：
+        </p>
+        <div class="flex flex-col gap-1">
+          <label class="font-bold text-on-surface">Apps Script Web App 網址：</label>
+          <input type="url" id="gas-url-input" class="w-full h-10 px-3 rounded-lg border border-surface-container-highest text-xs bg-surface-container-low font-mono text-on-surface focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary" placeholder="https://script.google.com/macros/s/.../exec">
+        </div>
+        <p class="text-on-surface-variant/80 text-[11px]">
+          ※ 提示：請參閱專案目錄下 <code class="bg-surface-container px-1 py-0.5 rounded">GAS_Backend_Code.gs</code> 部署「網頁應用程式」，並將存取權設為「任何人 (Anyone)」。
+        </p>
+      </div>
+      <div class="p-4 bg-surface-container flex justify-end gap-2">
+        <button onclick="toggleModal('modal-gas-config')" class="px-4 py-2 rounded-xl bg-surface-container-high text-on-surface text-xs font-bold">
+          取消
+        </button>
+        <button onclick="saveGasUrl()" class="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow hover:bg-primary/90">
+          儲存設定
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: 報名成功彈窗 -->
+  <div id="modal-success" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-surface-container overflow-hidden flex flex-col">
+      <div class="p-5 bg-gradient-to-r from-primary to-primary-container text-white text-center flex flex-col items-center gap-1">
+        <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mb-1">
+          <span class="material-symbols-outlined text-[32px]">task_alt</span>
+        </div>
+        <h3 class="text-xl font-bold font-headline">志工報名登記成功！</h3>
+        <p class="text-xs text-white/80" id="success-reg-id">編號：DC71-VOL-0000</p>
+      </div>
+
+      <div class="p-5 flex flex-col gap-3 text-xs text-on-surface" id="success-reg-details">
+        <!-- Injected by JS -->
+      </div>
+
+      <div class="p-4 bg-surface-container flex gap-2">
+        <button onclick="location.href='index.html#registration-inquiry'" class="flex-1 py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-md hover:bg-primary/95 flex items-center justify-center gap-1">
+          <span class="material-symbols-outlined text-[18px]">badge</span>
+          查看志工數位通行證
+        </button>
+        <button onclick="toggleModal('modal-success')" class="px-4 py-2.5 rounded-xl bg-surface-container-high text-on-surface text-xs font-bold">
+          完成關閉
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: 編修志工報名資料 (對應 BeClass [✓編修]) -->
+  <div id="modal-edit-registration" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-surface-container overflow-hidden flex flex-col">
+      <div class="p-4 bg-primary text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[22px]">edit_note</span>
+          <h3 class="font-bold text-base">編修志工報名資料</h3>
+        </div>
+        <button onclick="toggleModal('modal-edit-registration')" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/20">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+      <div class="p-5 flex flex-col gap-4 text-xs">
+        <p class="text-on-surface-variant leading-relaxed">
+          請輸入登記時填寫的<strong>「學生電話」</strong>或<strong>「Email」</strong>檢索資料進行更新：
+        </p>
+        <div class="flex gap-2">
+          <input type="text" id="edit-search-query" placeholder="請輸入手機號碼或 Email" class="flex-1 h-10 px-3 rounded-lg border border-surface-container-highest text-sm bg-surface-container-low text-on-surface focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary">
+          <button type="button" onclick="searchForEdit()" class="px-4 h-10 rounded-lg bg-primary text-white font-bold hover:bg-primary/90">
+            查詢紀錄
+          </button>
+        </div>
+        <div id="edit-search-result" class="hidden flex-col gap-3 p-3.5 rounded-xl bg-surface-container-low border border-surface-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+      <div class="p-3 bg-surface-container flex justify-end">
+        <button onclick="toggleModal('modal-edit-registration')" class="px-4 py-2 rounded-xl bg-surface-container-high text-on-surface text-xs font-bold">
+          關閉視窗
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: 取消報名 (對應 BeClass [✓取消]) -->
+  <div id="modal-cancel-registration" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-surface-container overflow-hidden flex flex-col">
+      <div class="p-4 bg-error text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[22px]">cancel</span>
+          <h3 class="font-bold text-base">取消志工服務申請</h3>
+        </div>
+        <button onclick="toggleModal('modal-cancel-registration')" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/20">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+      <div class="p-5 flex flex-col gap-4 text-xs">
+        <p class="text-on-surface-variant leading-relaxed">
+          若因行程有變無法出席志工服務，請輸入報名時登記之<strong>「手機號碼」</strong>進行確認與取消：
+        </p>
+        <div class="flex gap-2">
+          <input type="tel" id="cancel-search-phone" placeholder="請輸入聯絡電話 (例：0933-888-710)" class="flex-1 h-10 px-3 rounded-lg border border-surface-container-highest text-sm bg-surface-container-low text-on-surface focus:bg-surface-container-lowest focus:ring-2 focus:ring-error">
+          <button type="button" onclick="processCancelRegistration()" class="px-4 h-10 rounded-lg bg-error text-white font-bold hover:bg-error/90">
+            確認取消
+          </button>
+        </div>
+        <p class="text-[11px] text-error font-medium">
+          ※ 提醒：一旦取消成功，您的名額將即時釋出給其他排隊等待審核的同學與校友。
+        </p>
+      </div>
+      <div class="p-3 bg-surface-container flex justify-end">
+        <button onclick="toggleModal('modal-cancel-registration')" class="px-4 py-2 rounded-xl bg-surface-container-high text-on-surface text-xs font-bold">
+          關閉視窗
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: Notifications -->
+  <div id="modal-notifications" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-surface-container overflow-hidden">
+      <div class="p-4 bg-primary text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[22px]">notifications_active</span>
+          <h3 class="font-bold text-base">志工招募即時公告</h3>
+        </div>
+        <button onclick="toggleModal('modal-notifications')" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/20">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+      <div class="p-4 space-y-3 max-h-[60vh] overflow-y-auto">
+        <div class="p-3 rounded-xl bg-surface-container-low border border-surface-container">
+          <span class="text-xs font-bold text-secondary">【校友優先審核通知】</span>
+          <p class="text-xs text-on-surface font-medium mt-1">
+            大庄國小 71 週年校慶特別歡迎畢業校友返校擔任服務志工，學務處審核時將優先錄取校友同學！
+          </p>
+        </div>
+        <div class="p-3 rounded-xl bg-surface-container-low border border-surface-container">
+          <span class="text-xs font-bold text-primary">【學習時數核發】</span>
+          <p class="text-xs text-on-surface font-medium mt-1">
+            當日完成 08:30 ～ 12:30 四小時服務者，活動結束前將統一由學務處體育組核發「服務學習 4 小時時數證明」。
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCRIPT ==================== -->
+  <script>
+    // ---------- GAS Config & Storage ----------
+    const STORAGE_KEY_GAS_URL = 'dachuang_71_gas_url';
+    const DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbyDemoRelayRegistrationGasService/exec';
+    let currentGasUrl = localStorage.getItem(STORAGE_KEY_GAS_URL) || DEFAULT_GAS_URL;
+    const STORAGE_KEY_ALL_REG = 'dachuang_71_registrations';
+
+    // Alumni Radio Toggle styling
+    const alumniRadios = document.querySelectorAll('.alumni-radio');
+    alumniRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        document.querySelectorAll('.alumni-option').forEach(opt => {
+          opt.classList.remove('border-primary', 'bg-primary/10', 'text-primary');
+          opt.classList.add('border-transparent', 'bg-surface-container', 'text-on-surface-variant');
+        });
+        const parentLabel = radio.closest('label');
+        parentLabel.classList.add('border-primary', 'bg-primary/10', 'text-primary');
+        parentLabel.classList.remove('border-transparent', 'bg-surface-container', 'text-on-surface-variant');
+      });
+    });
+
+    // Role Checkboxes feedback
+    const serviceInputs = document.querySelectorAll('.service-role-input');
+    serviceInputs.forEach(input => {
+      input.addEventListener('change', () => {
+        const parentLabel = input.closest('label');
+        const badge = parentLabel.querySelector('.check-badge');
+        if (input.checked) {
+          badge.classList.remove('bg-surface-container', 'text-surface-container');
+          badge.classList.add('bg-primary', 'text-on-primary');
+        } else {
+          badge.classList.add('bg-surface-container', 'text-surface-container');
+          badge.classList.remove('bg-primary', 'text-on-primary');
+        }
+      });
+    });
+
+    // Modal helpers
+    function toggleModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.toggle('hidden');
+      if (id === 'modal-gas-config') {
+        document.getElementById('gas-url-input').value = currentGasUrl;
+      }
+    }
+
+    function saveGasUrl() {
+      const val = document.getElementById('gas-url-input').value.trim();
+      if (val) {
+        currentGasUrl = val;
+        localStorage.setItem(STORAGE_KEY_GAS_URL, currentGasUrl);
+        alert('GAS 試算表網址已更新儲存！');
+        toggleModal('modal-gas-config');
+      }
+    }
+
+    // ---------- 志工資料庫限額與名冊設定 (限定 20 人，預設 14 人名冊) ----------
+    const MAX_VOLUNTEER_QUOTA = 20;
+
+    const DEFAULT_14_VOLUNTEERS = [
+      { id: 'DC71-VOL-1001', type: 'volunteer', typeName: '校慶熱血服務志工', name: '張育瑋', leaderName: '張育瑋', schoolClass: '香山高中 / 二年三班', phone: '0912-111-222', phoneParent: '0911-000-111', parentRel: '張國豪 / 父親', email: 'yw.chang@example.com', isAlumni: '是，為大庄國小校友', roles: '場地器材組', status: '優先錄取 (校友組)', date: '2026-11-01 09:30' },
+      { id: 'DC71-VOL-1002', type: 'volunteer', typeName: '校慶熱血服務志工', name: '李佳穎', leaderName: '李佳穎', schoolClass: '新竹女中 / 一年五班', phone: '0921-222-333', phoneParent: '0922-111-222', parentRel: '陳淑芬 / 母親', email: 'chiaying.lee@example.com', isAlumni: '是，為大庄國小校友', roles: '秩序維護組', status: '優先錄取 (校友組)', date: '2026-11-01 10:15' },
+      { id: 'DC71-VOL-1003', type: 'volunteer', typeName: '校慶熱血服務志工', name: '王志銘', leaderName: '王志銘', schoolClass: '新竹高中 / 二年一班', phone: '0932-333-444', phoneParent: '0933-222-333', parentRel: '王大同 / 父親', email: 'cm.wang@example.com', isAlumni: '是，為大庄國小校友', roles: '場地器材組', status: '優先錄取 (校友組)', date: '2026-11-01 11:00' },
+      { id: 'DC71-VOL-1004', type: 'volunteer', typeName: '校慶熱血服務志工', name: '陳雅筑', leaderName: '陳雅筑', schoolClass: '成德高中 / 一年二班', phone: '0955-444-555', phoneParent: '0955-333-444', parentRel: '林碧玉 / 母親', email: 'yachu.chen@example.com', isAlumni: '是，為大庄國小校友', roles: '愛護環境組', status: '優先錄取 (校友組)', date: '2026-11-01 14:20' },
+      { id: 'DC71-VOL-1005', type: 'volunteer', typeName: '校慶熱血服務志工', name: '劉子豪', leaderName: '劉子豪', schoolClass: '香山高中 / 三年一班', phone: '0918-555-666', phoneParent: '0918-444-555', parentRel: '劉金龍 / 父親', email: 'tzuhau.liu@example.com', isAlumni: '是，為大庄國小校友', roles: '秩序維護組', status: '優先錄取 (校友組)', date: '2026-11-02 08:45' },
+      { id: 'DC71-VOL-1006', type: 'volunteer', typeName: '校慶熱血服務志工', name: '黃冠宇', leaderName: '黃冠宇', schoolClass: '新竹高工 / 二年四班', phone: '0963-666-777', phoneParent: '0963-555-666', parentRel: '黃明輝 / 父親', email: 'kuanyu.huang@example.com', isAlumni: '是，為大庄國小校友', roles: '場地器材組', status: '優先錄取 (校友組)', date: '2026-11-02 09:50' },
+      { id: 'DC71-VOL-1007', type: 'volunteer', typeName: '校慶熱血服務志工', name: '吳佩萱', leaderName: '吳佩萱', schoolClass: '新竹家商 / 一年六班', phone: '0972-777-888', phoneParent: '0972-666-777', parentRel: '徐美珍 / 母親', email: 'peihsuan.wu@example.com', isAlumni: '是，為大庄國小校友', roles: '愛護環境組', status: '優先錄取 (校友組)', date: '2026-11-02 11:30' },
+      { id: 'DC71-VOL-1008', type: 'volunteer', typeName: '校慶熱血服務志工', name: '蔡政翰', leaderName: '蔡政翰', schoolClass: '香山高中 / 一年四班', phone: '0981-888-999', phoneParent: '0981-777-888', parentRel: '蔡宗哲 / 父親', email: 'chenghan.tsai@example.com', isAlumni: '是，為大庄國小校友', roles: '以上皆可，隨校方安排', status: '優先錄取 (校友組)', date: '2026-11-02 13:10' },
+      { id: 'DC71-VOL-1009', type: 'volunteer', typeName: '校慶熱血服務志工', name: '鄭巧雲', leaderName: '鄭巧雲', schoolClass: '竹北高中 / 二年二班', phone: '0926-999-000', phoneParent: '0926-888-999', parentRel: '鄭勝雄 / 父親', email: 'chiaoyun.cheng@example.com', isAlumni: '是，為大庄國小校友', roles: '秩序維護組', status: '優先錄取 (校友組)', date: '2026-11-03 10:00' },
+      { id: 'DC71-VOL-1010', type: 'volunteer', typeName: '校慶熱血服務志工', name: '謝承恩', leaderName: '謝承恩', schoolClass: '新竹高中 / 一年三班', phone: '0937-123-789', phoneParent: '0937-000-111', parentRel: '謝世榮 / 父親', email: 'chengen.hsieh@example.com', isAlumni: '是，為大庄國小校友', roles: '場地器材組', status: '優先錄取 (校友組)', date: '2026-11-03 11:40' },
+      { id: 'DC71-VOL-1011', type: 'volunteer', typeName: '校慶熱血服務志工', name: '許文心', leaderName: '許文心', schoolClass: '新竹女中 / 二年四班', phone: '0952-234-890', phoneParent: '0952-111-222', parentRel: '許清泉 / 父親', email: 'wenhsin.hsu@example.com', isAlumni: '是，為大庄國小校友', roles: '愛護環境組', status: '優先錄取 (校友組)', date: '2026-11-03 15:20' },
+      { id: 'DC71-VOL-1012', type: 'volunteer', typeName: '校慶熱血服務志工', name: '周柏宇', leaderName: '周柏宇', schoolClass: '香山高中 / 二年二班', phone: '0968-345-901', phoneParent: '0968-222-333', parentRel: '黃秋蓮 / 母親', email: 'poyu.chou@example.com', isAlumni: '否，非校友', roles: '場地器材組', status: '志工甄選中', date: '2026-11-03 16:50' },
+      { id: 'DC71-VOL-1013', type: 'volunteer', typeName: '校慶熱血服務志工', name: '楊雅婷', leaderName: '楊雅婷', schoolClass: '光復高中 / 一年一班', phone: '0975-456-012', phoneParent: '0975-333-444', parentRel: '楊文斌 / 父親', email: 'yating.yang@example.com', isAlumni: '否，非校友', roles: '秩序維護組', status: '志工甄選中', date: '2026-11-04 09:10' },
+      { id: 'DC71-VOL-1014', type: 'volunteer', typeName: '校慶熱血服務志工', name: '趙子敬', leaderName: '趙子敬', schoolClass: '成德高中 / 二年五班', phone: '0988-567-123', phoneParent: '0988-444-555', parentRel: '趙友誠 / 父親', email: 'tzuching.chao@example.com', isAlumni: '否，非校友', roles: '以上皆可，隨校方安排', status: '志工甄選中', date: '2026-11-04 10:30' }
+    ];
+
+    // 確保資料庫中已有初始的志工名冊 (如尚未有志工資料則寫入預設14筆)
+    function ensureVolunteerDataSeeded() {
+      let all = [];
+      try {
+        all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG)) || [];
+      } catch(e) {}
+      const hasVolunteers = all.some(r => r.type === 'volunteer' || (r.typeName && r.typeName.includes('志工')));
+      if (!hasVolunteers) {
+        all = [...DEFAULT_14_VOLUNTEERS, ...all];
+        localStorage.setItem(STORAGE_KEY_ALL_REG, JSON.stringify(all));
+      }
+    }
+
+    // 取得資料庫中實際的志工名冊列表
+    function getVolunteerRegistrations() {
+      ensureVolunteerDataSeeded();
+      let all = [];
+      try {
+        all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG)) || [];
+      } catch(e) {}
+      return all.filter(r => r.type === 'volunteer' || (r.typeName && r.typeName.includes('志工')));
+    }
+
+    // 測試管理輔助：重設為標準 14 人志工名冊
+    function resetVolunteerMockList() {
+      let all = [];
+      try {
+        all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG)) || [];
+      } catch(e) {}
+      all = all.filter(r => r.type !== 'volunteer' && !(r.typeName && r.typeName.includes('志工')));
+      all = [...DEFAULT_14_VOLUNTEERS, ...all];
+      localStorage.setItem(STORAGE_KEY_ALL_REG, JSON.stringify(all));
+      updateVolunteerCountUI();
+      alert('已成功將志工資料庫還原為 14 人名冊 (限定 20 人，剩餘 6 名)！');
+    }
+
+    // Dynamic Volunteer Count (嚴格依照資料庫確實人數呈現剩餘人數與報名數)
+    function updateVolunteerCountUI() {
+      const volList = getVolunteerRegistrations();
+      const currentCount = volList.length; // 確實報名人數
+      const remaining = Math.max(0, MAX_VOLUNTEER_QUOTA - currentCount);
+      const percent = Math.min(100, Math.round((currentCount / MAX_VOLUNTEER_QUOTA) * 100));
+
+      // 1. 上方「志工甄選開放中」旁邊的燈號標籤：限定 20 人，剩餘 X 名
+      const quotaBadge = document.getElementById('quota-badge-volunteers');
+      if (quotaBadge) {
+        if (currentCount >= MAX_VOLUNTEER_QUOTA) {
+          quotaBadge.textContent = '限定 20 人・已額滿 (候補審核中)';
+          quotaBadge.className = 'font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-error text-white font-bold tracking-wide';
+        } else {
+          quotaBadge.textContent = `限定 20 人，剩餘 ${remaining} 名`;
+          quotaBadge.className = 'font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-error-container text-error font-bold tracking-wide';
+        }
+      }
+
+      // 2. 即時招募進度條與剩餘說明
+      const progressLabel = document.getElementById('quota-progress-label');
+      if (progressLabel) {
+        progressLabel.textContent = `志工招募進度：${currentCount} / ${MAX_VOLUNTEER_QUOTA} 人 (${percent}%)`;
+      }
+      const progressRemain = document.getElementById('quota-progress-remain');
+      if (progressRemain) {
+        progressRemain.textContent = remaining > 0 ? `剩餘 ${remaining} 名即額滿` : '已額滿，後續登記轉入候補';
+      }
+      const progressBar = document.getElementById('quota-progress-bar');
+      if (progressBar) {
+        progressBar.style.width = `${percent}%`;
+      }
+
+      // 3. 表單下方 BeClass 狀態行：※目前報名數：X 人 (限定 20 人)
+      const countEl = document.getElementById('current-registered-text');
+      if (countEl) {
+        countEl.textContent = `※目前報名數：${currentCount} 人 (限定 20 人)`;
+      }
+
+      // 4. 防呆處理：額滿時提醒
+      const submitBtn = document.getElementById('submit-volunteer-btn');
+      const submitText = document.getElementById('submit-btn-text');
+      if (submitBtn && submitText) {
+        if (currentCount >= MAX_VOLUNTEER_QUOTA) {
+          submitText.textContent = '立即登記候補志工名額 (滿額排隊遞補)';
+        } else {
+          submitText.textContent = '立即送出志工報名表 (同步寫入 GAS 試算表)';
+        }
+      }
+    }
+
+    // Demo Fill helper
+    function openDemoFill() {
+      document.getElementById('vol-student-name').value = '林廷宇';
+      document.getElementById('vol-school-class').value = '新竹高中 / 二年七班';
+      document.getElementById('vol-phone-self').value = '0922-333-777';
+      document.getElementById('vol-phone-parent').value = '0910-888-999';
+      document.getElementById('vol-parent-rel').value = '林國華 / 父親';
+      document.getElementById('vol-email').value = 'tingyu_lin@example.com';
+      alert('已自動填入一組校友示範資料，您可以直接點擊下方「立即送出志工報名表」測試！');
+    }
+
+    // Submit handler
+    async function handleVolunteerSubmit(e) {
+      e.preventDefault();
+
+      const studentName = document.getElementById('vol-student-name').value.trim();
+      const schoolClass = document.getElementById('vol-school-class').value.trim();
+      const phoneSelf = document.getElementById('vol-phone-self').value.trim();
+      const phoneParent = document.getElementById('vol-phone-parent').value.trim();
+      const parentRel = document.getElementById('vol-parent-rel').value.trim();
+      const email = document.getElementById('vol-email').value.trim();
+      const isAlumni = document.querySelector('input[name="is_alumni"]:checked')?.value || '是，為大庄國小校友';
+
+      const selectedRoles = [];
+      document.querySelectorAll('input[name="service_content"]:checked').forEach(cb => {
+        selectedRoles.push(cb.value);
+      });
+      const rolesString = selectedRoles.length > 0 ? selectedRoles.join('、') : '以上皆可，隨校方安排';
+
+      const submitBtn = document.getElementById('submit-volunteer-btn');
+      const submitText = document.getElementById('submit-btn-text');
+      submitBtn.disabled = true;
+      submitText.textContent = '資料同步送出至 Google 試算表中...';
+
+      const regId = 'DC71-VOL-' + Math.floor(1000 + Math.random() * 9000);
+
+      const payload = {
+        type: 'volunteer',
+        regId: regId,
+        studentName: studentName,
+        schoolClass: schoolClass,
+        phoneSelf: phoneSelf,
+        phoneParent: phoneParent,
+        parentRel: parentRel,
+        email: email,
+        isAlumni: isAlumni,
+        serviceRoles: rolesString,
+        date: new Date().toISOString()
+      };
+
+      let gasSuccess = false;
+      try {
+        await fetch(currentGasUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        gasSuccess = true;
+      } catch(err) {
+        console.warn('GAS Network fallback:', err);
+      }
+
+      // Save to localStorage
+      try {
+        ensureVolunteerDataSeeded();
+        let all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG)) || [];
+        const currentVolList = all.filter(r => r.type === 'volunteer' || (r.typeName && r.typeName.includes('志工')));
+        const isWaitlist = currentVolList.length >= MAX_VOLUNTEER_QUOTA;
+        const assignedStatus = isWaitlist 
+          ? `志工候補 (第 ${currentVolList.length - MAX_VOLUNTEER_QUOTA + 1} 順位)`
+          : (isAlumni.includes('是') ? '優先甄選 (校友組)' : '正選審核中');
+
+        const newRecord = {
+          id: regId,
+          type: 'volunteer',
+          typeName: '校慶熱血服務志工',
+          teamName: `志工隊・${studentName}`,
+          leaderName: studentName,
+          name: studentName,
+          schoolClass: schoolClass,
+          phone: phoneSelf,
+          phoneParent: phoneParent,
+          parentRel: parentRel,
+          email: email,
+          isAlumni: isAlumni,
+          roles: rolesString,
+          status: assignedStatus,
+          gasStatus: gasSuccess ? '已同步雲端試算表' : '本機已暫存',
+          date: new Date().toLocaleString()
+        };
+        all.unshift(newRecord);
+        localStorage.setItem(STORAGE_KEY_ALL_REG, JSON.stringify(all));
+
+        // Confetti celebration
+        confetti({ particleCount: 90, spread: 90, origin: { y: 0.55 } });
+      } catch(err) {}
+
+      submitBtn.disabled = false;
+      submitText.textContent = '立即送出志工報名表 (同步寫入 GAS 試算表)';
+
+      updateVolunteerCountUI();
+
+      // Show success modal
+      showSuccessModal({
+        regId: regId,
+        studentName: studentName,
+        schoolClass: schoolClass,
+        phoneSelf: phoneSelf,
+        isAlumni: isAlumni,
+        roles: rolesString,
+        gasSuccess: gasSuccess
+      });
+    }
+
+    function showSuccessModal(info) {
+      document.getElementById('success-reg-id').textContent = `報名代碼：${info.regId}`;
+      const detailsEl = document.getElementById('success-reg-details');
+      detailsEl.innerHTML = `
+        <div class="p-3.5 rounded-xl bg-surface-container-low border border-surface-container space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="text-on-surface-variant font-medium">志工姓名</span>
+            <span class="font-bold text-primary text-sm">${info.studentName}</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-on-surface-variant font-medium">現就讀學校</span>
+            <span class="font-bold text-on-surface">${info.schoolClass}</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-on-surface-variant font-medium">校友身分資格</span>
+            <span class="px-2 py-0.5 rounded-full text-xs font-bold ${info.isAlumni.includes('是') ? 'bg-primary text-white' : 'bg-surface-container-highest text-on-surface'}">
+              ${info.isAlumni}
+            </span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-on-surface-variant font-medium">希望服務內容</span>
+            <span class="font-bold text-secondary text-right max-w-[200px] truncate">${info.roles}</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-on-surface-variant font-medium">聯絡手機</span>
+            <span class="font-bold text-on-surface">${info.phoneSelf}</span>
+          </div>
+          <div class="flex justify-between items-center pt-1 border-t border-surface-container">
+            <span class="text-on-surface-variant font-medium">試算表接收狀態</span>
+            <span class="inline-flex items-center gap-1 font-bold text-emerald-600">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> GAS 資料庫已成功接收
+            </span>
+          </div>
+        </div>
+        <p class="text-center text-[11px] text-on-surface-variant">
+          學務處將進行資格審核並寄發錄取通知信，校慶當日憑報名代碼報到領取背心。
+        </p>
+      `;
+      toggleModal('modal-success');
+    }
+
+    // ---------- [✓編修] & [✓取消] Handlers (對齊 BeClass 系統功能) ----------
+    function openEditModal() {
+      toggleModal('modal-edit-registration');
+    }
+
+    function openCancelModal() {
+      toggleModal('modal-cancel-registration');
+    }
+
+    function searchForEdit() {
+      const q = (document.getElementById('edit-search-query').value || '').trim().toLowerCase();
+      const resContainer = document.getElementById('edit-search-result');
+      if (!q) {
+        alert('請輸入手機號碼或 Email 進行檢索');
+        return;
+      }
+
+      let allReg = [];
+      try {
+        allReg = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG)) || [];
+      } catch(e) {}
+
+      const found = allReg.find(r => 
+        (r.phone && r.phone.toLowerCase().includes(q)) || 
+        (r.email && r.email.toLowerCase().includes(q)) ||
+        (r.id && r.id.toLowerCase().includes(q))
+      );
+
+      resContainer.classList.remove('hidden');
+      if (!found) {
+        resContainer.innerHTML = `
+          <div class="text-error font-medium flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[18px]">error</span>
+            未找到符合「${q}」的志工報名紀錄，請確認電話或信箱。
+          </div>
+        `;
+        return;
+      }
+
+      resContainer.innerHTML = `
+        <div class="flex items-center justify-between pb-2 border-b border-surface-container">
+          <span class="font-bold text-on-surface">報名代碼：${found.id}</span>
+          <span class="px-2 py-0.5 rounded bg-primary/10 text-primary font-bold">${found.status || '志工甄選'}</span>
+        </div>
+        <div class="space-y-2 pt-1">
+          <div>
+            <label class="block font-bold text-on-surface mb-1">學生姓名：</label>
+            <input type="text" id="edit-val-student" value="${found.name || found.leaderName || ''}" class="w-full h-9 px-2.5 rounded border border-surface-container-highest bg-surface-container-lowest text-on-surface">
+          </div>
+          <div>
+            <label class="block font-bold text-on-surface mb-1">現就讀學校 / 班級：</label>
+            <input type="text" id="edit-val-school" value="${found.schoolClass || ''}" class="w-full h-9 px-2.5 rounded border border-surface-container-highest bg-surface-container-lowest text-on-surface">
+          </div>
+          <div>
+            <label class="block font-bold text-on-surface mb-1">學生手機：</label>
+            <input type="tel" id="edit-val-phone" value="${found.phone || ''}" class="w-full h-9 px-2.5 rounded border border-surface-container-highest bg-surface-container-lowest text-on-surface">
+          </div>
+          <div>
+            <label class="block font-bold text-on-surface mb-1">Email：</label>
+            <input type="email" id="edit-val-email" value="${found.email || ''}" class="w-full h-9 px-2.5 rounded border border-surface-container-highest bg-surface-container-lowest text-on-surface">
+          </div>
+          <button type="button" onclick="saveEditedRegistration('${found.id}')" class="w-full py-2 mt-2 rounded-lg bg-emerald-700 text-white font-bold hover:bg-emerald-800 transition-all flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-[16px]">save</span>
+            儲存修改資料
+          </button>
+        </div>
+      `;
+    }
+
+    function saveEditedRegistration(id) {
+      const newStudent = document.getElementById('edit-val-student').value.trim();
+      const newSchool = document.getElementById('edit-val-school').value.trim();
+      const newPhone = document.getElementById('edit-val-phone').value.trim();
+      const newEmail = document.getElementById('edit-val-email').value.trim();
+
+      if (!newStudent || !newPhone) {
+        alert('學生姓名與聯絡電話不可為空！');
+        return;
+      }
+
+      let allReg = [];
+      try {
+        allReg = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG)) || [];
+        const idx = allReg.findIndex(r => r.id === id);
+        if (idx !== -1) {
+          allReg[idx].name = newStudent;
+          allReg[idx].leaderName = newStudent;
+          allReg[idx].schoolClass = newSchool;
+          allReg[idx].phone = newPhone;
+          allReg[idx].email = newEmail;
+          localStorage.setItem(STORAGE_KEY_ALL_REG, JSON.stringify(allReg));
+          alert(`志工報名代碼 ${id} 資料修改成功！`);
+          toggleModal('modal-edit-registration');
+        }
+      } catch(e) {
+        alert('儲存失敗：' + e.message);
+      }
+    }
+
+    function processCancelRegistration() {
+      const phone = (document.getElementById('cancel-search-phone').value || '').trim();
+      if (!phone) {
+        alert('請輸入報名登記之手機號碼！');
+        return;
+      }
+
+      if (!confirm(`確定要取消手機「${phone}」的志工服務申請嗎？`)) {
+        return;
+      }
+
+      let allReg = [];
+      try {
+        allReg = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG)) || [];
+        const originalLen = allReg.length;
+        allReg = allReg.filter(r => r.phone !== phone);
+        if (allReg.length < originalLen) {
+          localStorage.setItem(STORAGE_KEY_ALL_REG, JSON.stringify(allReg));
+          updateVolunteerCountUI();
+          alert(`已成功取消手機「${phone}」的志工報名申請，名額已釋出！`);
+          toggleModal('modal-cancel-registration');
+        } else {
+          alert(`查無此手機「${phone}」之志工報名紀錄，請再次確認。`);
+        }
+      } catch(e) {
+        alert('操作失敗：' + e.message);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      ensureVolunteerDataSeeded();
+      updateVolunteerCountUI();
+    });
+  </script>
+</body>
+</html>
