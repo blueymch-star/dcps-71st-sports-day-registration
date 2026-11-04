@@ -1175,30 +1175,60 @@
       }
     }
 
-    function processCancelRegistration() {
+    async function processCancelRegistration() {
       const phone = (document.getElementById('cancel-search-phone').value || '').trim();
       if (!phone) {
         alert('請輸入報名登記之手機號碼！');
         return;
       }
 
-      if (!confirm(`確定要取消手機「${phone}」的報名紀錄嗎？取消後名額將立即釋出給候補選手。`)) {
-        return;
-      }
-
+      const cleanPhone = phone.replace(/\D/g, '');
       let allReg = [];
       try {
         allReg = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS)) || [];
+      } catch(e) {}
+
+      // 檢索該選手
+      const target = allReg.find(r => {
+        const rp = String(r.phone || '').replace(/\D/g, '');
+        return rp === cleanPhone || (cleanPhone.length >= 8 && rp.endsWith(cleanPhone.slice(-8))) || r.phone === phone;
+      });
+
+      const playerName = target ? (target.name || target.leaderName || '選手') : '選手';
+      if (!confirm(`確定要取消【${playerName} / ${phone}】的大隊接力報名紀錄嗎？\n\n※ 系統將自動把您的資料移入【已取消報名】名冊備查，原席次名額將即時釋出給候補選手。`)) {
+        return;
+      }
+
+      // 發送同步取消請求至 Google 試算表後端 (移動至「已取消報名」工作表)
+      if (currentGasUrl && currentGasUrl.startsWith('http')) {
+        try {
+          fetch(currentGasUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'cancel',
+              regId: target ? target.id : '',
+              phone: phone,
+              name: playerName,
+              type: 'relay',
+              cancelReason: '選手自主線上取消'
+            })
+          }).catch(e => console.log('Cancel sync error:', e));
+        } catch(e) {}
+      }
+
+      try {
         const originalLen = allReg.length;
-        allReg = allReg.filter(r => r.phone !== phone);
-        if (allReg.length < originalLen) {
-          localStorage.setItem(STORAGE_KEY_REGISTRATIONS, JSON.stringify(allReg));
-          updateRelayCount();
-          alert(`已成功取消手機「${phone}」的報名登記，名額已釋出！`);
-          toggleModal('modal-cancel-registration');
-        } else {
-          alert(`查無此手機「${phone}」之報名紀錄，請再次核對。`);
-        }
+        allReg = allReg.filter(r => {
+          const rp = String(r.phone || '').replace(/\D/g, '');
+          return !(rp === cleanPhone || (cleanPhone.length >= 8 && rp.endsWith(cleanPhone.slice(-8))) || r.phone === phone);
+        });
+
+        localStorage.setItem(STORAGE_KEY_REGISTRATIONS, JSON.stringify(allReg));
+        updateRelayCount();
+        alert(`已成功取消【${playerName}】的報名登記！\n名額已順利釋出，相關資料已移至大會【已取消報名】工作表存查。`);
+        toggleModal('modal-cancel-registration');
       } catch(e) {
         alert('操作失敗：' + e.message);
       }

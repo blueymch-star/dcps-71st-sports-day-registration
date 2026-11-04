@@ -1330,30 +1330,60 @@
       }
     }
 
-    function processCancelRegistration() {
+    async function processCancelRegistration() {
       const phone = (document.getElementById('cancel-search-phone').value || '').trim();
       if (!phone) {
         alert('請輸入報名登記之聯絡電話！');
         return;
       }
 
-      if (!confirm(`確定要取消電話「${phone}」的親子趣味賽報名嗎？取消後正選/候補席次將釋出並自動遞補。`)) {
-        return;
-      }
-
+      const cleanPhone = phone.replace(/\D/g, '');
       let allReg = [];
       try {
         allReg = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG)) || [];
+      } catch(e) {}
+
+      // 檢索該組親子
+      const target = allReg.find(r => {
+        const rp = String(r.phone || '').replace(/\D/g, '');
+        return rp === cleanPhone || (cleanPhone.length >= 8 && rp.endsWith(cleanPhone.slice(-8))) || r.phone === phone;
+      });
+
+      const familyTitle = target ? (target.teamName || `${target.parentName || ''} 家長`) : '該組親子';
+      if (!confirm(`確定要取消【${familyTitle} / ${phone}】的親子趣味賽報名嗎？\n\n※ 系統將自動把您的資料移入【已取消報名】名冊備查，原正選/候補席次將即時釋出並依序遞補。`)) {
+        return;
+      }
+
+      // 發送同步取消請求至 Google 試算表後端 (移動至「已取消報名」工作表)
+      if (currentGasUrl && currentGasUrl.startsWith('http')) {
+        try {
+          fetch(currentGasUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'cancel',
+              regId: target ? target.id : '',
+              phone: phone,
+              name: target ? (target.parentName || target.studentName || '') : '',
+              type: 'family',
+              cancelReason: '家長自主線上取消'
+            })
+          }).catch(e => console.log('Cancel sync error:', e));
+        } catch(e) {}
+      }
+
+      try {
         const originalLen = allReg.length;
-        allReg = allReg.filter(r => r.phone !== phone);
-        if (allReg.length < originalLen) {
-          localStorage.setItem(STORAGE_KEY_ALL_REG, JSON.stringify(allReg));
-          updateQuotaUI();
-          alert(`已成功取消電話「${phone}」的報名登記，席位已順利釋出！`);
-          toggleModal('modal-cancel-registration');
-        } else {
-          alert(`查無此電話「${phone}」之報名紀錄，請再次核對。`);
-        }
+        allReg = allReg.filter(r => {
+          const rp = String(r.phone || '').replace(/\D/g, '');
+          return !(rp === cleanPhone || (cleanPhone.length >= 8 && rp.endsWith(cleanPhone.slice(-8))) || r.phone === phone);
+        });
+
+        localStorage.setItem(STORAGE_KEY_ALL_REG, JSON.stringify(allReg));
+        updateQuotaUI();
+        alert(`已成功取消【${familyTitle}】的報名登記！\n席位已順利釋出，相關資料已移至大會【已取消報名】工作表存查。`);
+        toggleModal('modal-cancel-registration');
       } catch(e) {
         alert('操作失敗：' + e.message);
       }

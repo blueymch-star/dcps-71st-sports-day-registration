@@ -23,6 +23,13 @@ function doPost(e) {
       data = e.parameter || {};
     }
 
+    // 取消報名並移動至「已取消報名」工作表
+    if (data.action === "cancel") {
+      var cancelRes = cancelAndMoveRegistration(ss, data);
+      return ContentService.createTextOutput(JSON.stringify(cancelRes))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     // 刪除操作
     if (data.action === "delete") {
       var delRes = deleteRegistrationById(ss, data.regId || data.id);
@@ -457,6 +464,13 @@ function doGet(e) {
   var params = e ? e.parameter || {} : {};
   var action = params.action || "";
 
+  // 0. 取消報名並移動至「已取消報名」工作表
+  if (action === "cancel") {
+    var cancelRes = cancelAndMoveRegistration(ss, params);
+    return ContentService.createTextOutput(JSON.stringify(cancelRes))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
   // 1. 刪除指定編號
   if (action === "delete") {
     var regId = params.regId || params.id;
@@ -498,6 +512,173 @@ function doGet(e) {
     volunteerCount: volunteerCount,
     serverTime: new Date()
   })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// 輔助函式：取消報名並將選手資料移動至「已取消報名」工作表
+function cancelAndMoveRegistration(ss, data) {
+  var regId = String(data.regId || data.id || "").trim();
+  var inputPhone = String(data.phone || "").trim().replace(/\D/g, "");
+  var inputName = String(data.name || "").trim().toLowerCase();
+  var cancelReason = String(data.cancelReason || "選手/家長自主線上取消").trim();
+  var cancelTimestamp = Utilities.formatDate(new Date(), "Asia/Taipei", "yyyy/MM/dd HH:mm:ss");
+
+  if (!regId && !inputPhone) {
+    return { result: "error", message: "請提供報名編號或登記電話以辦理取消" };
+  }
+
+  // 1. 準備或建立「已取消報名」工作表
+  var sheetCancel = ss.getSheetByName("已取消報名");
+  if (!sheetCancel) {
+    sheetCancel = ss.insertSheet("已取消報名");
+  }
+  if (sheetCancel.getLastRow() === 0) {
+    sheetCancel.appendRow([
+      "取消時間",
+      "原報名項目",
+      "報名編號",
+      "選手/代表姓名",
+      "聯絡電話",
+      "電子信箱",
+      "原所屬單位/班級/組別",
+      "額外資訊/家長資訊",
+      "原報名時間",
+      "取消方式/原因",
+      "狀態備註"
+    ]);
+    sheetCancel.getRange(1, 1, 1, 11).setBackground("#475569").setFontColor("#ffffff").setFontWeight("bold");
+  }
+
+  // 2. 檢索三張報名工作表
+  var targetSheets = [
+    { name: "大隊接力報名名冊", project: "薪傳大隊接力", phoneCol: 7, idCol: 1, nameCol: 3 },
+    { name: "親子趣味競賽名冊", project: "圈力衝刺親子趣味競賽", phoneCol: 4, idCol: 1, nameCol: 2 },
+    { name: "校慶服務志工名冊", project: "校慶服務志工", phoneCol: 4, idCol: 1, nameCol: 2 }
+  ];
+
+  var moved = false;
+  var movedRecord = null;
+  var fromSheetName = "";
+
+  for (var s = 0; s < targetSheets.length; s++) {
+    var conf = targetSheets[s];
+    var sheet = ss.getSheetByName(conf.name);
+    if (!sheet || sheet.getLastRow() <= 1) continue;
+
+    var rows = sheet.getDataRange().getValues();
+    for (var r = 1; r < rows.length; r++) {
+      var row = rows[r];
+      var rowId = String(row[conf.idCol] || "").trim();
+      var rowPhone = String(row[conf.phoneCol] || "").trim().replace(/\D/g, "");
+      var rowName = String(row[conf.nameCol] || "").trim().toLowerCase();
+
+      var isMatched = false;
+      if (regId && rowId && rowId.toLowerCase() === regId.toLowerCase()) {
+        isMatched = true;
+      } else if (inputPhone && rowPhone) {
+        if (inputPhone === rowPhone || (inputPhone.length >= 8 && rowPhone.endsWith(inputPhone.slice(-8)))) {
+          if (!inputName || rowName.includes(inputName) || inputName.includes(rowName)) {
+            isMatched = true;
+          }
+        }
+      }
+
+      if (isMatched) {
+        // 抓取並標準化該列資料
+        var origTime = formatDateVal(row[0]);
+        var originalId = rowId;
+        var personName = "";
+        var phoneVal = "";
+        var emailVal = "";
+        var orgOrGroup = "";
+        var extraInfo = "";
+
+        if (conf.name === "大隊接力報名名冊") {
+          personName = String(row[3] || "");
+          orgOrGroup = String(row[2] || "") + " / " + String(row[4] || "");
+          emailVal = String(row[5] || "");
+          phoneVal = cleanPhoneVal(row[7]);
+          extraInfo = "備註: " + String(row[9] || "無");
+        } else if (conf.name === "親子趣味競賽名冊") {
+          personName = String(row[5] || "") + " (學生) ＆ " + String(row[2] || "") + " (家長)";
+          emailVal = String(row[3] || "");
+          phoneVal = cleanPhoneVal(row[4]);
+          orgOrGroup = String(row[6] || "") + String(row[7] || "");
+          extraInfo = "全名: " + String(row[8] || "");
+        } else if (conf.name === "校慶服務志工名冊") {
+          personName = String(row[2] || "");
+          orgOrGroup = String(row[3] || "");
+          phoneVal = cleanPhoneVal(row[4]);
+          emailVal = String(row[7] || "");
+          extraInfo = "家長: " + String(row[6] || "") + " (" + cleanPhoneVal(row[5]) + ") / 組別: " + String(row[9] || "");
+        }
+
+        // 移入「已取消報名」工作表
+        sheetCancel.appendRow([
+          cancelTimestamp,
+          conf.project,
+          originalId,
+          personName,
+          phoneVal,
+          emailVal,
+          orgOrGroup,
+          extraInfo,
+          origTime,
+          cancelReason,
+          "已自主取消 (名額已釋出)"
+        ]);
+
+        var lastRowCancel = sheetCancel.getLastRow();
+        sheetCancel.getRange(lastRowCancel, 5).setNumberFormat('@'); // 電話設為純文字保留 0
+
+        // 從原工作表刪除該列 (釋出名額)
+        sheet.deleteRow(r + 1);
+
+        moved = true;
+        fromSheetName = conf.name;
+        movedRecord = {
+          regId: originalId,
+          project: conf.project,
+          name: personName,
+          phone: phoneVal,
+          email: emailVal,
+          fromSheet: fromSheetName
+        };
+
+        // 發送通知信給管理者備查
+        try {
+          var adminEmail = "stud03@ttps.hc.edu.tw";
+          var noticeBody = "大庄國小 71 週年校慶運動會 - 選手/家長自主取消報名通知：\n\n"
+            + "■ 取消項目：" + conf.project + "\n"
+            + "■ 報名編號：" + originalId + "\n"
+            + "■ 選手/代表：" + personName + "\n"
+            + "■ 聯絡電話：" + phoneVal + "\n"
+            + "■ 取消時間：" + cancelTimestamp + "\n"
+            + "■ 備註說明：此筆紀錄已自動由「" + fromSheetName + "」移至「已取消報名」工作表，原席次名額已即時釋出。\n\n"
+            + "71校慶大會資訊系統敬上";
+
+          MailApp.sendEmail({
+            to: adminEmail,
+            subject: "【71校慶運動會】選手自主取消報名通知（" + conf.project + " - " + personName + "）",
+            body: noticeBody,
+            name: "大庄71校慶報名系統"
+          });
+        } catch(mailErr) {
+          Logger.log("Cancel notice mail err: " + mailErr);
+        }
+
+        break;
+      }
+    }
+    if (moved) break;
+  }
+
+  return {
+    result: moved ? "success" : "not_found",
+    moved: moved,
+    record: movedRecord,
+    movedTo: "已取消報名",
+    message: moved ? ("已成功將編號 " + (movedRecord.regId) + " 資料移至【已取消報名】工作表，原名額已正式釋出！") : "在現有名冊中查無符合之報名紀錄"
+  };
 }
 
 // 輔助函式：根據報名編號刪除試算表資料列
