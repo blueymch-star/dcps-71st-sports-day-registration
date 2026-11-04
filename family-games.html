@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
   <meta content="mobile_tab" name="shell-type"/>
-  <title>圈力衝刺 親子趣味競賽報名 - 大庄國小 115 學年度 71 週年校慶</title>
+  <title>圈力衝刺 親子趣味競賽報名 - 大庄國小 115 學年度 71 週年校慶運動會</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -159,7 +159,7 @@
         <div class="flex flex-wrap items-center gap-space-xs">
           <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-on-primary font-label-sm text-label-sm tracking-wide shadow-sm">
             <span class="material-symbols-outlined text-[14px]">stars</span>
-            大庄國小 115 學年度 71 週年校慶
+            大庄國小 115 學年度 71 週年校慶運動會
           </span>
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-sm text-label-sm font-bold">
             親子趣味競賽
@@ -256,7 +256,7 @@
               <span class="font-label-sm text-label-sm text-primary-container bg-surface-container-high px-1.5 py-0.5 rounded font-bold">1 + 1 組成</span>
             </div>
             <span class="font-headline-md text-headline-md text-on-surface mt-1 font-bold">2人一組</span>
-            <span class="font-body-sm text-body-sm text-on-surface-variant">每組由 1 家長 + 1 學生組成</span>
+            <span class="font-body-sm text-body-sm text-on-surface-variant">每組由 1 位家長 + 1 位學生組成</span>
           </div>
           <!-- Card 2: Field Distance -->
           <div class="flex flex-col gap-1 p-3.5 rounded-xl bg-surface-container-lowest shadow-sm border border-surface-container">
@@ -374,7 +374,7 @@
             <div class="flex items-center gap-2 mb-1">
               <span class="w-2.5 h-6 rounded-full bg-tertiary"></span>
               <h3 class="font-headline-md text-headline-md font-bold text-on-surface">
-                大庄國小 115 學年度暨 71 週年校慶活動親子趣味競賽 - 圈力衝刺簡章報名表
+                大庄國小 115 學年度暨 71 週年校慶活動親子趣味競賽 - 圈力衝刺報名表
               </h3>
             </div>
             <p class="text-xs text-error font-medium">※ 標註紅星為必填欄位，報名截止時間：11/27 中午 12:00 止</p>
@@ -499,7 +499,7 @@
             <!-- Submit Button (Direct to GAS & LocalStorage) -->
             <button type="submit" id="submit-btn" class="w-full h-12 rounded-full bg-tertiary text-white font-label-lg text-label-lg font-bold shadow-lg shadow-tertiary/30 hover:bg-tertiary/95 active:scale-95 transition-all flex items-center justify-center gap-2 mt-4">
               <span class="material-symbols-outlined text-[20px]">how_to_reg</span>
-              <span id="submit-btn-text">確認送出報名 (同步寫入 GAS 試算表)</span>
+              <span id="submit-btn-text">確認送出報名</span>
             </button>
           </form>
 
@@ -848,7 +848,7 @@
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.className = 'w-full h-12 rounded-full bg-tertiary text-white font-label-lg text-label-lg font-bold shadow-lg shadow-tertiary/30 hover:bg-tertiary/95 active:scale-95 transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer';
-          submitBtnText.textContent = '確認送出報名 (同步寫入 GAS 試算表)';
+          submitBtnText.textContent = '確認送出報名 ';
         }
       } else if (count === 20) {
         if (dot) dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse';
