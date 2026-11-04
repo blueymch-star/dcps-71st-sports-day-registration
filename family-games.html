@@ -202,13 +202,13 @@
 
         <!-- Registration Countdown Alert Card (11/27 中午 12:00) -->
         <div class="flex items-center justify-between p-3.5 rounded-xl bg-secondary-fixed text-on-secondary-fixed shadow-sm border border-secondary/20">
-          <div class="flex items-center gap-2.5 min-w-0">
+          <div class="flex items-center gap-2.5 min-w-0 cursor-pointer" onclick="toggleModal('modal-closed-notice')" title="查看截止與承辦資訊">
             <div class="flex items-center justify-center w-8 h-8 rounded-full bg-secondary text-on-secondary shrink-0 shadow-sm">
               <span class="material-symbols-outlined text-[18px]">timer</span>
             </div>
             <div class="flex flex-col min-w-0">
               <span class="font-label-sm text-label-sm text-on-secondary-fixed-variant font-bold">報名截止倒數</span>
-              <span class="font-label-md text-label-md font-bold truncate">11/27 (五) 中午 12:00 止</span>
+              <span class="font-label-md text-label-md font-bold truncate">11/27 (五) 中午 12:00 止 (額滿即截止)</span>
             </div>
           </div>
           <button onclick="scrollToForm()" class="shrink-0 inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-secondary text-on-secondary font-label-md text-label-md shadow-sm active:scale-95 transition-transform font-bold">
@@ -495,7 +495,7 @@
             </div>
 
             <!-- Submit Button (Direct to GAS & LocalStorage) -->
-            <button type="submit" id="submit-btn" class="w-full h-12 rounded-full bg-tertiary text-white font-label-lg text-label-lg font-bold shadow-lg shadow-tertiary/30 hover:bg-tertiary/95 active:scale-95 transition-all flex items-center justify-center gap-2 mt-4">
+            <button type="submit" id="submit-btn" onclick="if(typeof isFamilyClosed === 'function' && isFamilyClosed()){ event.preventDefault(); toggleModal('modal-closed-notice'); }" class="w-full h-12 rounded-full bg-tertiary text-white font-label-lg text-label-lg font-bold shadow-lg shadow-tertiary/30 hover:bg-tertiary/95 active:scale-95 transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer">
               <span class="material-symbols-outlined text-[20px]">how_to_reg</span>
               <span id="submit-btn-text">確認送出報名</span>
             </button>
@@ -648,24 +648,100 @@
 
   <!-- Modal 2: 報名成功憑證卡彈窗 (Success Modal) -->
   <div id="modal-success" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-surface-container overflow-hidden flex flex-col">
-      <div class="p-5 bg-gradient-to-r from-tertiary to-emerald-700 text-white text-center flex flex-col items-center gap-1">
+    <div class="bg-surface-container-lowest w-full max-w-lg rounded-2xl shadow-2xl border border-surface-container overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="p-5 bg-gradient-to-r from-tertiary to-emerald-700 text-white text-center flex flex-col items-center gap-1 shrink-0">
         <span class="material-symbols-outlined text-5xl text-tertiary-fixed">check_circle</span>
         <h3 class="text-xl font-bold font-headline">親子趣味競賽報名成功！</h3>
         <p class="text-xs text-white/80" id="success-reg-id">編號：DC71-FAM-0000</p>
       </div>
 
-      <div class="p-5 flex flex-col gap-3 text-xs text-on-surface" id="success-reg-details">
+      <div class="p-5 flex flex-col gap-3.5 text-xs text-on-surface overflow-y-auto" id="success-reg-details">
         <!-- Injected by JS -->
       </div>
 
-      <div class="p-4 bg-surface-container flex gap-2">
+      <div class="p-4 bg-surface-container flex gap-2 shrink-0">
         <button onclick="location.href='index.html#registration-inquiry'" class="flex-1 py-2.5 rounded-xl bg-tertiary text-white text-xs font-bold shadow-md hover:bg-tertiary/95 flex items-center justify-center gap-1">
           <span class="material-symbols-outlined text-[18px]">badge</span>
           查看我的數位檢錄證
         </button>
-        <button onclick="toggleModal('modal-success')" class="px-4 py-2.5 rounded-xl bg-surface-container-high text-on-surface text-xs font-bold">
+        <button onclick="toggleModal('modal-success')" class="px-4 py-2.5 rounded-xl bg-surface-container-high text-on-surface text-xs font-bold hover:bg-surface-container-highest">
           完成關閉
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: 重複報名提示方塊 -->
+  <div id="modal-duplicate-notice" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-amber-300 overflow-hidden flex flex-col">
+      <div class="p-5 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-center flex flex-col items-center gap-1.5 shrink-0">
+        <span class="material-symbols-outlined text-5xl">warning</span>
+        <h3 class="text-xl font-bold font-headline">重複報名提示</h3>
+        <p class="text-xs text-amber-100">姓名相同・請勿重複送出</p>
+      </div>
+
+      <div class="p-5 flex flex-col gap-3.5 text-xs text-on-surface">
+        <div class="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-950 flex flex-col gap-2">
+          <p class="font-bold text-sm flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-600 text-[20px]">person_alert</span>
+            <span><strong id="duplicate-player-name" class="text-rose-600 font-extrabold text-base"></strong>已重複報名！</span>
+          </p>
+          <p class="leading-relaxed text-amber-900" id="duplicate-notice-msg">
+            名冊中已存在相同姓名的報名資料<span id="duplicate-reg-id-wrap" class="hidden">（報名代碼：<span id="duplicate-reg-id" class="font-mono font-bold text-amber-950"></span>）</span>。為確保全校每組親子公平參賽，請勿重複送出報名。
+          </p>
+        </div>
+
+        <div class="space-y-1.5 bg-surface-container-low p-3.5 rounded-xl border border-surface-container">
+          <div class="font-bold text-on-surface flex items-center gap-1">
+            <span class="material-symbols-outlined text-[16px] text-tertiary">edit_note</span>
+            若需更正原報名資料：
+          </div>
+          <p class="text-on-surface-variant leading-relaxed">
+            請點選表單下方【✓編修】功能輸入聯絡電話或 Email 進行資料修正，若有其它問題請洽活動承辦人員。
+          </p>
+        </div>
+      </div>
+
+      <div class="p-3.5 bg-surface-container flex gap-2 justify-end shrink-0">
+        <button onclick="toggleModal('modal-duplicate-notice')" class="px-5 py-2.5 rounded-xl bg-tertiary text-white text-xs font-bold shadow-md hover:bg-tertiary/95">
+          我知道了
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: 停止報名/報名截止提示方塊 -->
+  <div id="modal-closed-notice" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-rose-300 overflow-hidden flex flex-col">
+      <div class="p-6 bg-gradient-to-r from-rose-600 to-red-700 text-white text-center flex flex-col items-center gap-1.5 shrink-0">
+        <span class="material-symbols-outlined text-5xl">event_busy</span>
+        <h3 class="text-2xl font-black font-headline tracking-wide">報名截止</h3>
+        <p class="text-xs text-rose-100">圈力衝刺親子趣味競賽</p>
+      </div>
+
+      <div class="p-6 flex flex-col gap-4 text-center text-xs">
+        <div class="p-4 rounded-xl bg-rose-50 border border-rose-200 flex flex-col items-center gap-2">
+          <p class="text-base font-extrabold text-rose-900 leading-relaxed tracking-wide">
+            報名截止<br>
+            若有其它問題請洽活動承辦人員
+          </p>
+        </div>
+
+        <div class="space-y-1.5 bg-surface-container-low p-3.5 rounded-xl border border-surface-container text-left text-on-surface-variant">
+          <div class="font-bold text-on-surface flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px] text-tertiary">contacts</span>
+            活動承辦單位洽詢窗口：
+          </div>
+          <p>承辦單位：新竹市大庄國小 學務處體育組</p>
+          <p>聯絡電話：03-5384035 分機 607</p>
+          <p>承辦信箱：stud03@ttps.hc.edu.tw</p>
+          <p>服務時間：週一至週五 08:00 - 16:30</p>
+        </div>
+      </div>
+
+      <div class="p-3.5 bg-surface-container flex gap-2 justify-end shrink-0">
+        <button onclick="toggleModal('modal-closed-notice')" class="px-5 py-2.5 rounded-xl bg-surface-container-high text-on-surface text-xs font-bold hover:bg-surface-container-highest">
+          關閉
         </button>
       </div>
     </div>
@@ -774,6 +850,15 @@
     const MAX_WAITLIST_QUOTA = 2;  // 候補 2 組
     const MAX_TOTAL_QUOTA = 22;    // 總上限 22 組
 
+    // 截止時間：2026-11-27 12:00:00 (中午)
+    const FAMILY_DEADLINE = new Date('2026-11-27T12:00:00+08:00').getTime();
+
+    // 判斷是否停止報名 (時間截止或額滿)
+    function isFamilyClosed() {
+      const familyList = getFamilyRegistrations();
+      return (Date.now() >= FAMILY_DEADLINE) || (familyList.length >= MAX_TOTAL_QUOTA);
+    }
+
     // Get family registrations from storage
     function getFamilyRegistrations() {
       let all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG) || '[]');
@@ -815,7 +900,16 @@
       const submitBtn = document.getElementById('submit-btn');
       const submitBtnText = document.getElementById('submit-btn-text');
 
-      if (count < 20) {
+      if (Date.now() >= FAMILY_DEADLINE || count >= MAX_TOTAL_QUOTA) {
+        if (dot) dot.className = 'w-2.5 h-2.5 rounded-full bg-red-500';
+        if (title) title.textContent = count >= MAX_TOTAL_QUOTA ? '【名額全數額滿】正選 20 組及候補 2 組已滿' : '【報名已截止】已過報名收件時間';
+        if (remainText) remainText.textContent = `報名已截止`;
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.className = 'w-full h-12 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-label-lg text-label-lg font-bold flex items-center justify-center gap-2 mt-4 cursor-pointer shadow-lg shadow-rose-600/30';
+          submitBtnText.textContent = '報名截止 (若有其它問題請洽活動承辦人員)';
+        }
+      } else if (count < 20) {
         if (dot) dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse';
         if (title) title.textContent = '正選名額熱烈受理中';
         if (remainText) remainText.textContent = `尚餘 ${remainRegular} 組正選席次（外加候補 2 組）`;
@@ -841,15 +935,6 @@
           submitBtn.disabled = false;
           submitBtn.className = 'w-full h-12 rounded-full bg-amber-700 text-white font-label-lg text-label-lg font-bold shadow-lg shadow-amber-700/30 hover:bg-amber-800 active:scale-95 transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer';
           submitBtnText.textContent = '送出登記【候補第 2 順位・最後席次】';
-        }
-      } else {
-        if (dot) dot.className = 'w-2.5 h-2.5 rounded-full bg-red-500';
-        if (title) title.textContent = '【名額全數額滿】正選 20 組及候補 2 組已滿';
-        if (remainText) remainText.textContent = `報名已截止 (額滿)`;
-        if (submitBtn) {
-          submitBtn.disabled = true;
-          submitBtn.className = 'w-full h-12 rounded-full bg-slate-400 text-white font-label-lg text-label-lg font-bold flex items-center justify-center gap-2 mt-4 cursor-not-allowed opacity-80';
-          submitBtnText.textContent = '報名截止 (正選 20 組與候補 2 組已全數額滿)';
         }
       }
     }
@@ -922,13 +1007,9 @@
     async function handleOfficialFamilySubmit(e) {
       e.preventDefault();
 
-      const familyList = getFamilyRegistrations();
-      const currentCount = familyList.length;
-
-      // 檢查是否已達到正選 20 + 候補 2 的總限額 22 組
-      if (currentCount >= MAX_TOTAL_QUOTA) {
-        alert('抱歉！圈力衝刺親子趣味競賽正選 20 組及外加候補 2 組名額已全數額滿，系統已關閉登記。');
-        updateQuotaUI();
+      // 1. 審查：是否已停止報名 (時間截止或額滿)
+      if (isFamilyClosed()) {
+        toggleModal('modal-closed-notice');
         return;
       }
 
@@ -944,6 +1025,41 @@
         return;
       }
 
+      // 2. 審查：重複報名審查機制 (名字相同請跳出重複報名的字樣)
+      let allExisting = [];
+      try {
+        allExisting = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG) || '[]');
+      } catch (e) {}
+
+      const duplicateRecord = allExisting.find(r => 
+        (r.type === 'family' || (r.typeName && r.typeName.indexOf('趣味') !== -1)) &&
+        (
+          (studentName && r.studentName && r.studentName.trim().toLowerCase() === studentName.toLowerCase()) ||
+          (parentName && r.parentName && r.parentName.trim().toLowerCase() === parentName.toLowerCase())
+        )
+      );
+
+      if (duplicateRecord) {
+        const isStudent = duplicateRecord.studentName && duplicateRecord.studentName.trim().toLowerCase() === studentName.toLowerCase();
+        const dupLabel = isStudent ? `學生「${studentName}」` : `家長「${parentName}」`;
+        document.getElementById('duplicate-player-name').textContent = dupLabel;
+        const regIdWrap = document.getElementById('duplicate-reg-id-wrap');
+        const regIdEl = document.getElementById('duplicate-reg-id');
+        if (duplicateRecord.id) {
+          regIdEl.textContent = duplicateRecord.id;
+          regIdWrap.classList.remove('hidden');
+        } else {
+          regIdWrap.classList.add('hidden');
+        }
+        document.getElementById('duplicate-notice-msg').textContent = 
+          `趣味競賽名冊中已存在相同姓名的報名資料。系統已啟動重複報名審查機制，名字相同請勿重複報名！若需更正資料請利用【✓編修】功能或洽活動承辦人員。`;
+        toggleModal('modal-duplicate-notice');
+        return;
+      }
+
+      const familyList = getFamilyRegistrations();
+      const currentCount = familyList.length;
+
       // 精準判定錄取狀態：正選 1~20 組，候補 1 (第 21 組)，候補 2 (第 22 組)
       let admissionStatus = "";
       if (currentCount < MAX_REGULAR_QUOTA) {
@@ -958,7 +1074,7 @@
       const submitText = document.getElementById('submit-btn-text');
 
       submitBtn.disabled = true;
-      submitText.textContent = '資料傳輸中，寫入 GAS 試算表...';
+      submitText.textContent = '資料傳輸中，寫入 GAS 試算表與自動寄發通知...';
 
       const regId = 'DC71-FAM-' + Math.floor(1000 + Math.random() * 9000);
       const postPayload = {
@@ -975,7 +1091,7 @@
         timestamp: new Date().toISOString()
       };
 
-      // 1. Send to GAS
+      // 3. Send to GAS
       let gasSuccess = false;
       try {
         if (currentGasUrl && currentGasUrl.startsWith('http')) {
@@ -991,9 +1107,8 @@
         console.warn('GAS POST attempt:', err);
       }
 
-      // 2. Persist in LocalStorage
+      // 4. Persist in LocalStorage
       try {
-        const existing = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG) || '[]');
         const newRecord = {
           id: regId,
           type: 'family',
@@ -1013,8 +1128,8 @@
           gasStatus: gasSuccess ? '已同步雲端試算表' : '本機已暫存',
           date: new Date().toLocaleString()
         };
-        existing.unshift(newRecord);
-        localStorage.setItem(STORAGE_KEY_ALL_REG, JSON.stringify(existing));
+        allExisting.unshift(newRecord);
+        localStorage.setItem(STORAGE_KEY_ALL_REG, JSON.stringify(allExisting));
 
         // Confetti celebration
         confetti({ particleCount: 80, spread: 90, origin: { y: 0.55 } });
@@ -1023,10 +1138,15 @@
       // Update UI real-time
       updateQuotaUI();
 
-      // 3. Show Success Modal with status
+      // Reset button
+      submitBtn.disabled = false;
+      submitText.textContent = '確認送出報名';
+
+      // 5. Show Success Modal with 3 Rules and Email confirmation notice
       showSuccessModal({
         regId: regId,
         parentName: parentName,
+        parentEmail: parentEmail,
         parentPhone: parentPhone,
         studentName: studentName,
         studentGrade: studentGrade,
@@ -1042,6 +1162,7 @@
       const isWaitlist = info.status.indexOf('候補') !== -1;
 
       detailsEl.innerHTML = `
+        <!-- 組別資料卡片 -->
         <div class="p-3.5 rounded-xl bg-surface-container-low border border-surface-container space-y-2">
           <div class="flex justify-between items-center">
             <span class="text-on-surface-variant font-medium">競賽項目</span>
@@ -1059,7 +1180,7 @@
           </div>
           <div class="flex justify-between items-center">
             <span class="text-on-surface-variant font-medium">親子搭檔</span>
-            <span class="font-bold text-on-surface">${info.parentName} (家長) ＆ ${info.studentName} (學生)</span>
+            <span class="font-bold text-on-surface text-sm">${info.parentName} (家長) ＆ ${info.studentName} (學生)</span>
           </div>
           <div class="flex justify-between items-center">
             <span class="text-on-surface-variant font-medium">競賽地點</span>
@@ -1069,15 +1190,49 @@
             <span class="text-on-surface-variant font-medium">聯絡電話</span>
             <span class="font-bold text-on-surface">${info.parentPhone}</span>
           </div>
-          <div class="flex justify-between items-center pt-1 border-t border-surface-container">
-            <span class="text-on-surface-variant font-medium">試算表同步狀態</span>
+          <div class="flex justify-between items-center pt-2 border-t border-surface-container">
+            <span class="text-on-surface-variant font-medium">雲端試算表狀態</span>
             <span class="inline-flex items-center gap-1 font-bold text-emerald-600">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> GAS 資料庫已成功接收
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> 資料庫已成功接收
             </span>
           </div>
         </div>
+
+        <!-- 報名後自動發 Email 通知 -->
+        <div class="p-3.5 rounded-xl bg-blue-50/90 border border-blue-200 text-blue-950 space-y-1">
+          <div class="flex items-center gap-1.5 font-bold text-tertiary text-[12.5px]">
+            <span class="material-symbols-outlined text-[18px]">mark_email_read</span>
+            自動發送 Email 通知：報名者及寄給管理者
+          </div>
+          <p class="text-[11px] leading-relaxed text-blue-900">
+            大會已自動寄送報名確認信至您的信箱：<strong>${info.parentEmail || ''}</strong>，並已同步通報大會管理者信箱 (<code class="bg-white/80 px-1 py-0.5 rounded font-mono text-tertiary font-bold">stud03@ttps.hc.edu.tw</code>)。
+          </p>
+        </div>
+
+        <!-- 親子趣味競賽重要須知 (完整指定 3 點字樣) -->
+        <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-950 space-y-2">
+          <div class="flex items-center gap-1.5 font-bold text-amber-900 text-xs">
+            <span class="material-symbols-outlined text-[18px] text-amber-600">notification_important</span>
+            親子趣味競賽重要須知：
+          </div>
+          <div class="space-y-1.5 text-[11.5px] leading-relaxed text-on-surface pl-0.5">
+            <div class="flex items-start gap-1.5">
+              <span class="font-bold text-tertiary shrink-0">1.</span>
+              <span>報名經錄取後，比賽前會發下分組通知，請務必如期參加。</span>
+            </div>
+            <div class="flex items-start gap-1.5">
+              <span class="font-bold text-tertiary shrink-0">2.</span>
+              <span>報名的親子請在比賽前充分熱身，以利身體能在活動中舒展，避免運動傷害。</span>
+            </div>
+            <div class="flex items-start gap-1.5">
+              <span class="font-bold text-tertiary shrink-0">3.</span>
+              <span>報名完畢後，將校慶前1 週，將編排的組別及注意事項通知貴家長。</span>
+            </div>
+          </div>
+        </div>
+
         <p class="text-center text-[11px] ${isWaitlist ? 'text-amber-700 font-bold' : 'text-on-surface-variant'}">
-          ${isWaitlist ? '※ 您已登記為候補席位，若有正選隊伍異動或賽前唱名未到，將依順位依序遞補通知！' : '請妥善留存報名代碼，12/12 檢錄時向大會裁判出示即可。'}
+          ${isWaitlist ? '※ 您已登記為候補席位，若有正選隊伍異動或賽前唱名未到，將依順位依序遞補通知！' : '請妥善留存報名代碼，12/12 檢錄時向大會裁判出示即可。若有其它問題請洽活動承辦人員。'}
         </p>
       `;
       toggleModal('modal-success');
@@ -1206,8 +1361,50 @@
       }
     }
 
+    // ---------- Background Sync with GAS Cloud Spreadsheet ----------
+    async function syncLatestFamilyRegistrations() {
+      try {
+        if (currentGasUrl && currentGasUrl.startsWith('http')) {
+          const res = await fetch(`${currentGasUrl}?action=getAll`);
+          if (res.ok) {
+            const json = await res.json();
+            if (json && json.data && json.data.family && Array.isArray(json.data.family)) {
+              const existing = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_REG) || '[]');
+              const nonFamily = existing.filter(r => r.type !== 'family' && (!r.typeName || r.typeName.indexOf('趣味') === -1));
+
+              const remoteFamily = json.data.family.map(f => ({
+                id: f.id,
+                type: 'family',
+                typeName: '圈力衝刺 親子趣味競賽',
+                category: `趣味賽・${f.studentGrade || ''}${f.studentClass || ''}`,
+                teamName: `${f.studentGrade || ''}${f.studentClass || ''} ${f.studentName || ''} ＆ ${f.parentName || ''}`,
+                parentName: f.parentName,
+                studentName: f.studentName,
+                studentGrade: f.studentGrade,
+                studentClass: f.studentClass,
+                leaderName: `${f.parentName} (家長)`,
+                childName: `${f.studentName} (${f.studentGrade}${f.studentClass})`,
+                email: f.email,
+                phone: f.phone,
+                status: f.status,
+                session: '115/12/12 10:40-10:50 (本校操場中央草皮區)',
+                gasStatus: '已同步雲端試算表',
+                date: f.timestamp
+              }));
+
+              localStorage.setItem(STORAGE_KEY_ALL_REG, JSON.stringify([...remoteFamily, ...nonFamily]));
+              updateQuotaUI();
+            }
+          }
+        }
+      } catch (e) {
+        // Offline / fallback to local storage
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       updateQuotaUI();
+      syncLatestFamilyRegistrations();
       if (currentGasUrl !== DEFAULT_GAS_URL) {
         document.getElementById('gas-status-label').textContent = '已連接至自訂 GAS 試算表';
       }

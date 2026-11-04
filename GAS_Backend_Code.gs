@@ -67,16 +67,53 @@ function doPost(e) {
       }
 
       var regId = data.regId || ("DC71-FAM-" + Math.floor(1000 + Math.random() * 9000));
-      var parentName = data.parentName || data.name || "";
-      var email = data.email || "";
-      var phone = data.phone || "";
-      var studentName = data.studentName || data.childName || "";
+      var parentName = (data.parentName || data.name || "").trim();
+      var email = (data.email || "").trim();
+      var phone = (data.phone || "").trim();
+      var studentName = (data.studentName || data.childName || "").trim();
       var studentGrade = data.studentGrade || "";
       var studentClass = data.studentClass || "";
       var combinedTitle = studentGrade + studentClass + " " + studentName + " ＆ " + parentName + " (家長)";
 
-      // 計算目前總報名數，名額上限：正選 20 組、外加候補 2 組 (總計 22 組)
+      // 1. 重複報名審查機制 (學生姓名或家長姓名相同檢查)
+      var allFamRows = sheetFamily.getDataRange().getValues();
+      for (var f = 1; f < allFamRows.length; f++) {
+        var existingParent = String(allFamRows[f][2] || "").trim();
+        var existingStudent = String(allFamRows[f][5] || "").trim();
+
+        if (studentName && existingStudent && existingStudent.toLowerCase() === studentName.toLowerCase()) {
+          return ContentService.createTextOutput(JSON.stringify({
+            result: "duplicate",
+            type: "family",
+            duplicateField: "student",
+            name: studentName,
+            existingId: String(allFamRows[f][1] || ""),
+            message: "學生姓名「" + studentName + "」已重複報名！"
+          })).setMimeType(ContentService.MimeType.JSON);
+        }
+
+        if (parentName && existingParent && existingParent.toLowerCase() === parentName.toLowerCase()) {
+          return ContentService.createTextOutput(JSON.stringify({
+            result: "duplicate",
+            type: "family",
+            duplicateField: "parent",
+            name: parentName,
+            existingId: String(allFamRows[f][1] || ""),
+            message: "家長姓名「" + parentName + "」已重複報名！"
+          })).setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+
+      // 2. 額滿停止報名檢查 (上限：正選 20 組、外加候補 2 組，總計 22 組)
       var totalFamilyRows = Math.max(0, sheetFamily.getLastRow() - 1);
+      if (totalFamilyRows >= 22) {
+        return ContentService.createTextOutput(JSON.stringify({
+          result: "closed",
+          type: "family",
+          message: "報名截止\n若有其它問題請洽活動承辦人員"
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+
       var familyStatus = "";
       if (totalFamilyRows < 20) {
         familyStatus = "正選 (第 " + (totalFamilyRows + 1) + " 組)";
@@ -84,8 +121,6 @@ function doPost(e) {
         familyStatus = "候補 1 (第 1 順位候補)";
       } else if (totalFamilyRows === 21) {
         familyStatus = "候補 2 (第 2 順位候補)";
-      } else {
-        familyStatus = "額滿未錄取 (已超額截止)";
       }
 
       sheetFamily.appendRow([
@@ -101,13 +136,77 @@ function doPost(e) {
         familyStatus
       ]);
 
+      // 3. 自動發 Email 通知：報名者及寄給管理者 (stud03@ttps.hc.edu.tw)
+      var emailNoticeSent = false;
+      try {
+        var adminEmail = "stud03@ttps.hc.edu.tw";
+        var famSubject = "【大庄國小 71 週年校慶】圈力衝刺親子趣味競賽 - 報名確認通知 (" + studentName + " ＆ " + parentName + " / " + regId + ")";
+        var rulesText = 
+          "1. 報名經錄取後，比賽前會發下分組通知，請務必如期參加。\n" +
+          "2. 報名的親子請在比賽前充分熱身，以利身體能在活動中舒展，避免運動傷害。\n" +
+          "3. 報名完畢後，將校慶前1 週，將編排的組別及注意事項通知貴家長。";
+
+        var famEmailBody = 
+          "親愛的家長 " + parentName + " 您好：\n\n" +
+          "感謝您與貴子弟報名參加【新竹市大庄國小 71 週年校慶運動會 - 圈力衝刺親子趣味競賽】！\n" +
+          "大會已成功登錄您的報名資料：\n\n" +
+          "========================================\n" +
+          "【報名資料確認】\n" +
+          "報名編號：" + regId + "\n" +
+          "家長姓名：" + parentName + "\n" +
+          "學生姓名：" + studentName + " (" + studentGrade + " " + studentClass + ")\n" +
+          "聯絡電話：" + phone + "\n" +
+          "錄取狀態：" + familyStatus + "\n" +
+          "活動時間：115年12月12日 (六) 10:40 ～ 10:50\n" +
+          "活動地點：本校操場中央草皮區\n" +
+          "登記時間：" + timestamp + "\n" +
+          "========================================\n\n" +
+          "【親子趣味競賽重要須知】\n" +
+          rulesText + "\n\n" +
+          "若有其它問題請洽活動承辦人員 (大庄國小學務處體育組 03-5384035 分機 607 / Email: " + adminEmail + ")\n\n" +
+          "新竹市大庄國小 71 週年校慶運動會籌備委員會 敬啟";
+
+        // 寄給報名者
+        if (email && email.indexOf("@") !== -1) {
+          MailApp.sendEmail({
+            to: email,
+            subject: famSubject,
+            body: famEmailBody
+          });
+        }
+
+        // 寄給管理者
+        MailApp.sendEmail({
+          to: adminEmail,
+          subject: "[管理者副本通知] 親子趣味賽新報名：" + studentName + " ＆ " + parentName + " (" + regId + ")",
+          body: "【大庄國小 71 週年校慶 - 親子趣味競賽新報名通知】\n\n" +
+                "有新組別完成線上登記，摘要如下：\n" +
+                "----------------------------------------\n" +
+                "報名編號：" + regId + "\n" +
+                "家長姓名：" + parentName + "\n" +
+                "學生姓名：" + studentName + " (" + studentGrade + " " + studentClass + ")\n" +
+                "聯絡電話：" + phone + "\n" +
+                "電子郵件：" + email + "\n" +
+                "錄取狀態：" + familyStatus + "\n" +
+                "登記時間：" + timestamp + "\n" +
+                "----------------------------------------\n\n" +
+                "系統已自動寄發 3 點參賽須知信件至該家長信箱。\n" +
+                "若有其它問題請洽活動承辦人員。"
+        });
+
+        emailNoticeSent = true;
+      } catch (famMailErr) {
+        Logger.log("親子賽發送 Email 失敗: " + famMailErr);
+      }
+
       return ContentService.createTextOutput(JSON.stringify({
         result: "success",
         type: "family",
         regId: regId,
         status: familyStatus,
         currentCount: totalFamilyRows + 1,
-        message: "親子趣味競賽報名已成功寫入 Google 試算表！"
+        emailNoticeSent: emailNoticeSent,
+        message: "親子趣味競賽報名已成功寫入 Google 試算表，並已發送 Email 通知！"
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
