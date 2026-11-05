@@ -475,10 +475,17 @@
         const resp = await fetch(GAS_URL + '?action=getAll', { method: 'GET', mode: 'cors' });
         if (resp.ok) {
           const res = await resp.json();
-          if (res && res.data) {
-            cloudData = res.data;
-            mergeCloudDataToLocal(cloudData);
-            if (showToastAlert) showToast('已成功從 Google 試算表同步最新名單！', true);
+          if (res) {
+            if (typeof res.lineTokenSet !== 'undefined') {
+              window.cloudLineTokenSet = res.lineTokenSet;
+              localStorage.setItem('dachuang_71_token_saved', res.lineTokenSet ? 'true' : 'false');
+              updateLineTokenBadge(res.lineTokenSet);
+            }
+            if (res.data) {
+              cloudData = res.data;
+              mergeCloudDataToLocal(cloudData);
+              if (showToastAlert) showToast('已成功從 Google 試算表同步最新名單！', true);
+            }
           }
         }
       } catch (err) {
@@ -1118,9 +1125,53 @@
       }
     }
 
+    function updateLineTokenBadge(isSet) {
+      const badge = document.getElementById('line-token-badge');
+      if (!badge) return;
+      if (isSet) {
+        badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/25 text-emerald-300 border border-emerald-400/40 inline-flex items-center gap-1';
+        badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> 機器人推播就緒 (Token 啟用中)';
+      } else {
+        badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 inline-flex items-center gap-1';
+        badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> 尚未設定 Token';
+      }
+    }
+
     function openLineConfigModal() {
       const storedLiff = localStorage.getItem('dachuang_71_liff_id') || (window.DACHUANG_LINE ? window.DACHUANG_LINE.liffId : '2012386503-guV8Oien');
       document.getElementById('cfg-liff-id').value = storedLiff;
+      
+      const tokenInput = document.getElementById('cfg-line-token');
+      const tokenStatusBox = document.getElementById('cfg-token-status-box');
+      const isSet = (typeof window.cloudLineTokenSet !== 'undefined') ? window.cloudLineTokenSet : (localStorage.getItem('dachuang_71_token_saved') === 'true');
+
+      if (tokenStatusBox) {
+        if (isSet) {
+          tokenStatusBox.innerHTML = `
+            <div class="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between text-xs text-emerald-800">
+              <span class="flex items-center gap-1.5 font-bold">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                雲端長期權杖：已安全儲存啟用中
+              </span>
+              <span class="text-[11px] text-emerald-600 font-medium">無需每次重複輸入</span>
+            </div>
+          `;
+          tokenInput.value = '';
+          tokenInput.placeholder = '●●●●●●●●●●●●●●●● 已安全保全於雲端 (若欲更換再重新輸入覆蓋)';
+        } else {
+          tokenStatusBox.innerHTML = `
+            <div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between text-xs text-amber-800">
+              <span class="flex items-center gap-1.5 font-bold">
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                尚未設定長期權杖
+              </span>
+              <span class="text-[11px] text-amber-700">請貼上後點擊儲存設定</span>
+            </div>
+          `;
+          tokenInput.placeholder = '請在此貼上 LINE Developers 後台核發之長期權杖';
+        }
+      }
+
       document.getElementById('modal-line-config').classList.remove('hidden');
     }
 
@@ -1147,6 +1198,9 @@
           });
           const res = await resp.json();
           if (res.result === 'success') {
+            window.cloudLineTokenSet = true;
+            localStorage.setItem('dachuang_71_token_saved', 'true');
+            updateLineTokenBadge(true);
             alert('✅ LINE Channel Access Token 與 LIFF ID 已成功儲存！');
             closeLineConfigModal();
             fetchFromGoogleSheet();
@@ -1338,6 +1392,7 @@
       </div>
 
       <div class="p-6 space-y-4 text-xs">
+        <div id="cfg-token-status-box"></div>
         <div>
           <label class="font-bold text-on-surface block mb-1">LINE Channel Access Token (長期權杖)：</label>
           <input type="password" id="cfg-line-token" placeholder="請在此貼上 LINE Developers 後台核發之長期權杖" class="w-full px-3.5 py-2.5 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-mono focus:ring-2 focus:ring-emerald-500 outline-none text-[11px]"/>
