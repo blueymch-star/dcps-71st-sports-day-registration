@@ -1,63 +1,60 @@
 # 專案進度交接與狀態筆記 (Handoff)
 
 **專案名稱**：第 71 屆大庄校慶運動會線上報名入口系統  
-**記錄時間**：2026-11-05 08:30  
-**目前狀態**：全系統核心功能、後台管理、Google Sheets 雲端資料庫雙向串接、取消報名移轉封存與候補釋出、個資遮罩防護與電話號碼保全、**LINE 官方機器人（Messaging API）智慧推播與 LIFF 一鍵自動授權連動機制（方案 A）** 全面開發與部署完竣（GAS Version 8）。
+**記錄時間**：2026-11-05 10:40  
+**目前狀態**：全系統核心功能、後台管理、Google Sheets 雲端資料庫雙向串接、取消報名移轉封存與候補釋出、個資遮罩防護與電話號碼保全、**GitHub 儲存庫建立與 GitHub Pages 上線**、**Vercel 正式生產環境上線（正式網址已配置完成）**。
 
 ---
 
-## 📌 本次完成重點：LINE 官方機器人智慧推播與 LIFF 自動授權（方案 A）
+## 🌐 正式線上部署網址清單
 
-1. **前端 LINE LIFF 模組建置 ([`line-liff.js`](file:///c:/Users/User/Documents/2026%20校慶運動會/line-liff.js))**：
-   - 封裝 LINE LIFF SDK 初始化、自動識別是否處於 LINE App 環境或已授權登入。
-   - 報名者透過手機相機或 LINE 掃描聯絡簿 QR Code 點開網頁時，自動取得 `lineUserId` 與 `lineDisplayName`。
-   - 在表單上方提供自適應「LINE 連動狀態通知列」：
-     - 若在 LINE 內開啟：顯示 `🟢 已連動 LINE：[暱稱]`，提示報名完成將由機器人發送收執單，錄取與賽前通知亦直達手機。
-     - 若在一般瀏覽器開啟：友善顯示「一般瀏覽器報名模式」，不阻擋填寫。
-   - 表單送出時，自動注入 `lineUserId` 與 `lineDisplayName` 至 Google 試算表。
+| 平台 | 網址 | 備註 |
+| :--- | :--- | :--- |
+| **Vercel 正式站** | **`https://dcps-71st-sports-day-registration.vercel.app`** | 亞太極速 CDN，具備資安標頭防護，產製宣傳單 QR Code 首選！ |
+| **GitHub Pages** | **`https://blueymch-star.github.io/dcps-71st-sports-day-registration/`** | GitHub 官方原生靜態託管備援站 |
+| **GitHub 儲存庫** | **`https://github.com/blueymch-star/dcps-71st-sports-day-registration`** | 原始碼集中託管，推送代碼後 Vercel 會自動重新部署 |
+| **GAS 雲端後端** | `https://script.google.com/macros/s/AKfycbzl7zf48nxLH2_BPzEL0T48NNR8EI0SO_ROErJ0cDszftJphDOJ1lG-OTfrsxERv-h57A/exec` | Version 9（支援試算表分流、取消移轉、LINE/Email 推播） |
 
-2. **後端 Google Apps Script 擴充與版本升級（clasp Version 8）**：
-   - 在 [`GAS_Backend_Code.gs`](file:///c:/Users/User/Documents/2026%20校慶運動會/GAS_Backend_Code.gs) 中新增 LINE Messaging API 核心推播函式 `sendLinePush()`。
-   - **自動維護試算表表頭**：`ensureLineColumns()` 自動在「親子趣味競賽名冊」、「大隊接力報名名冊」、「校慶服務志工名冊」末端增設 `LINE_USER_ID`、`LINE暱稱`、`通知狀態` 三個欄位，完全相容舊有資料。
-   - **三階段專屬 Flex Message 卡片產生器**：
-     - **第 1 階段：報名完成數位收執單**（表單送出寫入試算表當下，GAS 立即推播收執卡片）。
-     - **第 2 階段：正式錄取出賽通知書**（含檢錄時間、場地、提醒攜帶健保卡）。
-     - **第 3 階段：賽前行前提醒與廣播**（自訂標題、公告內文、天候與穿著叮嚀）。
-   - 提供安全儲存長期權杖之 `Script Properties` 機制（`setLineToken`）與管理員連線測試 API（`testLinePush`）。
-   - 透過 clasp 部署更新至 **Version 8**，維持現有 Web App URL 不變。
+---
 
-3. **後台管理系統擴充 ([`admin.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/admin.html))**：
-   - 新增 **【LINE 官方機器人推播廣播中心】** 控制面板，即時顯示 LINE 連動人數統計與 Messaging API 狀態。
-   - 新增 **【發送錄取通知】** 彈窗：可選取特定項目或全體正選名單，一鍵發送精美錄取卡片，並即時回填試算表通知狀態。
-   - 新增 **【發送賽前通知】** 彈窗：提供預設範本與自訂內文編輯器，賽前一鍵群發廣播給全體選手。
-   - 新增 **【LINE 設定 / 測試連線】** 彈窗：可設定 Channel Access Token、LIFF ID，並可輸入 LINE User ID 即時發送測試訊息驗證連線。
-   - 各組別報名名冊表格新增 **「LINE 狀態」** 欄位（顯示綠燈暱稱標籤或純網頁標籤）。
+## 📌 本次完成重點
+
+1. **部署至 GitHub (GitHub CLI)**：
+   - 建立公開儲存庫 `blueymch-star/dcps-71st-sports-day-registration`。
+   - 將本地所有 Commit 推送至 `main` 分支。
+   - 透過 GitHub API 自動啟用 **GitHub Pages** 服務（Branch: `main`, Path: `/`）。
+
+2. **發布至 Vercel (Vercel MCP)**：
+   - 專案名稱正式命名為 **`dcps-71st-sports-day-registration`**。
+   - 成功連結 GitHub 儲存庫 `blueymch-star/dcps-71st-sports-day-registration`，建置狀態：`READY`。
+   - 自動指派並驗證正式生產別名：**`https://dcps-71st-sports-day-registration.vercel.app`**（HTTP 200 OK）。
+
+3. **資安防護與隱私強化完竣**：
+   - 移除前端硬編碼之管理員明文密碼，全面實施 SHA-256 單向雜湊防護，並支援本地端自訂修改密碼。
+   - `.clasp.json` 與敏感憑證已從 Git 追蹤中剔除，絕不外流。
+   - 配置 [vercel.json](file:///c:/Users/User/Documents/2026%20校慶運動會/vercel.json) 資安標頭，全面防範跨站攻擊與點擊劫持。
 
 ---
 
 ## 🧭 目前專案檔案結構
 
 - [`index.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/index.html)：大會首頁門戶 ＆ 雙重核驗個資去識別化查詢 ＆ 後台入口（密碼：`183618`）
-- [`admin.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/admin.html)：大會後台管理系統（名冊檢視、同步刪除、CSV 匯出、LINE 推播廣播中心、錄取/賽前發送）
-- [`relay.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/relay.html)：薪傳大隊接力報名專頁（含 LIFF 連動與即時收執單）
-- [`family-games.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/family-games.html)：圈力衝刺親子趣味賽報名專頁（含 LIFF 連動與即時收執單）
-- [`volunteers.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/volunteers.html)：校慶熱血志工招募專頁（含 LIFF 連動與即時收執單）
-- [`line-liff.js`](file:///c:/Users/User/Documents/2026%20校慶運動會/line-liff.js)：LINE LIFF 核心智慧連動前端模組
-- [`GAS_Backend_Code.gs`](file:///c:/Users/User/Documents/2026%20校慶運動會/GAS_Backend_Code.gs)：Google Apps Script 後端代碼（LINE Messaging API 推播、試算表分流、Email 通知、部署至 Version 8）
+- [`admin.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/admin.html)：大會後台管理系統（名冊檢視、同步刪除、CSV 匯出、密碼修改、LINE 廣播中心）
 - [`relay.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/relay.html)：薪傳大隊接力報名專頁（自動組別判定、重複審查、移轉至「已取消報名」工作表退選機制）
 - [`family-games.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/family-games.html)：圈力衝刺親子趣味賽報名專頁（22組額滿鎖定、重複審查、移轉至「已取消報名」工作表退選機制）
 - [`volunteers.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/volunteers.html)：校慶熱血志工招募專頁（20人額滿鎖定、校友優先審查、移轉至「已取消報名」工作表退選機制）
 - [`dynamic-island.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/dynamic-island.html)：71校慶動態島 (3D/互動島)
-- [`GAS_Backend_Code.gs`](file:///c:/Users/User/Documents/2026%20校慶運動會/GAS_Backend_Code.gs)：Google 試算表 Web App 接收代碼（已部署 Version 7，支援寫入、移轉至「已取消報名」、自動通知信）
+- [`line-liff.js`](file:///c:/Users/User/Documents/2026%20校慶運動會/line-liff.js)：LINE LIFF 核心智慧連動前端模組
+- [`GAS_Backend_Code.gs`](file:///c:/Users/User/Documents/2026%20校慶運動會/GAS_Backend_Code.gs)：Google Apps Script 後端代碼（LINE Messaging API 推播、試算表分流、Email 通知、部署至 Version 9）
+- [`vercel.json`](file:///c:/Users/User/Documents/2026%20校慶運動會/vercel.json)：Vercel 部署設定檔（資安標頭、乾淨路徑）
 - [`appsscript.json`](file:///c:/Users/User/Documents/2026%20校慶運動會/appsscript.json)：Apps Script 部署設定檔
-- [`.clasp.json`](file:///c:/Users/User/Documents/2026%20校慶運動會/.clasp.json)：clasp 專案連線設定
-- [`line-liff.js`](file:///c:/Users/User/Documents/2026%20校慶運動會/line-liff.js)：LINE LIFF 智慧連動模組（預留擴充）
+- [`.clasp.json`](file:///c:/Users/User/Documents/2026%20校慶運動會/.clasp.json)：clasp 專案連線設定（本機保留，已受 `.gitignore` 保護）
 
 ---
 
 ## 💡 下一步建議
 
-1. **實機掃碼測試**：
+1. **宣傳單 / 聯絡簿 QR Code 產製**：
+   - 建議使用正式網址 **`https://dcps-71st-sports-day-registration.vercel.app`** 產製 QR Code，印製於全校學生聯絡簿通知單與活動海報。
+2. **實機掃碼演練**：
    - 以手機實際測試各頁面填表、Email 接收確認信、取消退選後移至「已取消報名」工作表與名額釋出等完整流程。
-2. **靜態網站正式發布**：
-   - 可透過 GitHub Pages 或 Netlify 進行公開網址部署，產出活動海報用 QR Code。
