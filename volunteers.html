@@ -617,15 +617,35 @@
         <span class="text-[10px] sm:text-[11px] whitespace-nowrap">熱血志工</span>
       </a>
 
-      <!-- Tab 5: 71動態島 -->
-      <a href="dynamic-island.html" class="flex-1 max-w-[80px] flex flex-col items-center justify-center gap-1 h-12 text-on-surface-variant hover:text-primary transition-all active:scale-95">
+      <!-- Tab 5: 71動態島 (開發中) -->
+      <button type="button" onclick="toggleModal('modal-not-open')" class="flex-1 max-w-[80px] flex flex-col items-center justify-center gap-1 h-12 text-on-surface-variant hover:text-primary transition-all active:scale-95 cursor-pointer">
         <span class="material-symbols-outlined text-[22px] sm:text-[24px]">campaign</span>
         <span class="text-[10px] sm:text-[11px] whitespace-nowrap">71動態島</span>
-      </a>
+      </button>
     </div>
   </nav>
 
   <!-- ==================== MODALS ==================== -->
+
+  <!-- Modal: 目前尚未開放提示方塊 (Dynamic Island Coming Soon) -->
+  <div id="modal-not-open" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-sm rounded-3xl shadow-2xl border border-surface-container overflow-hidden p-6 flex flex-col gap-4 text-center">
+      <div class="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 mx-auto flex items-center justify-center text-amber-600 shadow-inner">
+        <span class="material-symbols-outlined text-[36px]">construction</span>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <h3 class="font-headline font-bold text-lg text-on-surface">目前尚未開放</h3>
+        <p class="text-xs text-on-surface-variant leading-relaxed">
+          「71 校慶動態島」3D 浮空全景地圖與五力試煉護照目前正在全力籌備開發中，即將隆重登場，敬請期待！
+        </p>
+      </div>
+      <div class="pt-2">
+        <button onclick="toggleModal('modal-not-open')" class="w-full py-2.5 rounded-xl bg-primary text-white font-bold text-xs shadow-md active:scale-95 transition-all cursor-pointer">
+          我知道了
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal 1: GAS Config -->
   <div id="modal-gas-config" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">

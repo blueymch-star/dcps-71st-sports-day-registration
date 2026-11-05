@@ -692,11 +692,36 @@
       </a>
 
       <!-- Tab 5: 71動態島 (Current) -->
-      <a href="dynamic-island.html" class="flex-1 max-w-[80px] flex flex-col items-center justify-center gap-1 h-12 text-primary font-bold transition-all active:scale-95">
+      <button type="button" onclick="toggleModal('modal-not-open')" class="flex-1 max-w-[80px] flex flex-col items-center justify-center gap-1 h-12 text-primary font-bold transition-all active:scale-95 cursor-pointer">
         <span class="material-symbols-outlined text-[22px] sm:text-[24px]">campaign</span>
         <span class="text-[10px] sm:text-[11px] whitespace-nowrap">71動態島</span>
-      </a>
+      </button>
     </div></nav>
+
+  
+  <!-- Modal: 目前尚未開放提示方塊 (Dynamic Island Coming Soon) -->
+  <div id="modal-not-open" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+    <div class="bg-surface-container-lowest w-full max-w-sm rounded-3xl shadow-2xl border border-surface-container overflow-hidden p-6 flex flex-col gap-5 text-center animate-bounce-short">
+      <div class="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 mx-auto flex items-center justify-center text-amber-600 shadow-inner">
+        <span class="material-symbols-outlined text-[36px]">construction</span>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <h3 class="font-headline font-bold text-xl text-on-surface">目前尚未開放</h3>
+        <p class="text-xs text-on-surface-variant leading-relaxed">
+          「71 校慶動態島」3D 浮空全景地圖與五力試煉護照目前正在全力籌備開發中，即將隆重登場，敬請期待！
+        </p>
+      </div>
+      <div class="flex flex-col gap-2 pt-2">
+        <a href="index.html" class="w-full py-2.5 rounded-xl bg-primary text-white font-bold text-xs shadow-md active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+          <span class="material-symbols-outlined text-[16px]">home</span>
+          <span>返回大會首頁</span>
+        </a>
+        <button onclick="toggleModal('modal-not-open')" class="w-full py-2 rounded-xl border border-surface-container-highest text-on-surface-variant text-xs font-semibold hover:bg-surface-container active:scale-95 transition-all">
+          暫時預覽頁面
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Notification Modal -->
   <div id="modal-notifications" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
