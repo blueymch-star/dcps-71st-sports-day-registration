@@ -12,6 +12,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Space+Grotesk:wght@600;700&amp;family=Noto+Sans+TC:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
   
+  <!-- LINE LIFF SDK & 智慧連動模組 -->
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="line-liff.js"></script>
+  
   <style>
     @layer base {
       html, body {
@@ -270,6 +274,11 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- LINE LIFF 智慧連動狀態條 -->
+      <div class="px-gutter pt-space-sm">
+        <div id="line-status-banner"></div>
       </div>
 
       <!-- Form Container -->
@@ -886,6 +895,13 @@
       });
     });
 
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+      });
+    }
+
     // Modal helpers
     function toggleModal(id) {
       const m = document.getElementById(id);
@@ -1049,6 +1065,7 @@
       submitBtn.disabled = true;
       submitText.textContent = '資料同步送出至 Google 試算表中...';
 
+      const lineInfo = (window.DACHUANG_LINE && window.DACHUANG_LINE.getPayload) ? window.DACHUANG_LINE.getPayload() : {};
       const regId = 'DC71-VOL-' + Math.floor(1000 + Math.random() * 9000);
 
       const payload = {
@@ -1062,6 +1079,8 @@
         email: email,
         isAlumni: isAlumni,
         serviceRoles: rolesString,
+        lineUserId: lineInfo.lineUserId || '',
+        lineDisplayName: lineInfo.lineDisplayName || '',
         date: new Date().toISOString()
       };
 
@@ -1134,6 +1153,8 @@
         phoneSelf: phoneSelf,
         isAlumni: isAlumni,
         roles: rolesString,
+        lineUserId: lineInfo.lineUserId || '',
+        lineDisplayName: lineInfo.lineDisplayName || '',
         gasSuccess: gasSuccess
       });
     }
@@ -1172,6 +1193,20 @@
             </span>
           </div>
         </div>
+
+        <!-- LINE 官方機器人即時推播狀態卡 -->
+        <div class="p-3 rounded-lg ${info.lineUserId ? 'bg-[#06C755]/10 border border-[#06C755]/30 text-emerald-950' : 'bg-surface-container-low border border-surface-container text-on-surface'} space-y-1">
+          <div class="flex items-center gap-1.5 font-bold ${info.lineUserId ? 'text-[#06C755]' : 'text-on-surface-variant'} text-[12px]">
+            <span class="material-symbols-outlined text-[16px]">${info.lineUserId ? 'check_circle' : 'info'}</span>
+            LINE 官方推播連動：${info.lineUserId ? '已連動 (' + escapeHtml(info.lineDisplayName || '已認證') + ')' : '一般網頁模式'}
+          </div>
+          <p class="text-[11px] leading-relaxed text-on-surface-variant">
+            ${info.lineUserId 
+              ? '🎉 <strong>LINE 志工報名確認卡已即時推播至您的 LINE 聊天室！</strong> 錄取結果與行前講習通知亦將直達此裝置。' 
+              : '提示：若由手機相機或 LINE 掃描聯絡簿 QR Code 點開，系統可直接連動 LINE 機器人自動發送卡片通知。'}
+          </p>
+        </div>
+
         <div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/30 text-[11px] text-on-surface space-y-1">
           <p class="font-bold text-primary">※ 報名後續叮嚀與通知：</p>
           <p>1. 審核錄取後，將於校慶前一週於本報名網站公告並發送 Email 錄取通知。</p>

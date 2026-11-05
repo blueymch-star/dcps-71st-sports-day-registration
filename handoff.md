@@ -1,53 +1,49 @@
 # 專案進度交接與狀態筆記 (Handoff)
 
 **專案名稱**：第 71 屆大庄校慶運動會線上報名入口系統  
-**記錄時間**：2026-11-05 08:17  
-**目前狀態**：全系統核心功能、後台管理、Google Sheets 雲端資料庫雙向串接、取消報名移轉封存與候補釋出、個資遮罩防護與電話號碼保全、clasp 自動化部署均已驗證完成並正式上線（GAS Version 7）。
+**記錄時間**：2026-11-05 08:30  
+**目前狀態**：全系統核心功能、後台管理、Google Sheets 雲端資料庫雙向串接、取消報名移轉封存與候補釋出、個資遮罩防護與電話號碼保全、**LINE 官方機器人（Messaging API）智慧推播與 LIFF 一鍵自動授權連動機制（方案 A）** 全面開發與部署完竣（GAS Version 8）。
 
 ---
 
-## 📌 本次完成重點
+## 📌 本次完成重點：LINE 官方機器人智慧推播與 LIFF 自動授權（方案 A）
 
-1. **取消報名自動移轉至【已取消報名】工作表（方案 A 增強版）**：
-   - 選手或家長於報名表下方點擊 `[✓取消]` 並輸入手機號碼確認後，系統不直接刪除資料，而是自動移轉至 Google 試算表全新開設的「**已取消報名**」工作表。
-   - 保留原報名時間、標記取消時間與原因（狀態：`已自主取消 (名額已釋出)`），且聯絡電話格式自動設為純文字 `@` 以保全開頭 `0`。
-   - 原工作表（大隊接力／親子趣味／服務志工）中該列資料整行刪除，組別與席次名額**即時釋出**供後續選手報名或候補遞補。
-   - 取消成功時，系統自動向體育組管理者信箱（`stud03@ttps.hc.edu.tw`）寄送備存通知信。
+1. **前端 LINE LIFF 模組建置 ([`line-liff.js`](file:///c:/Users/User/Documents/2026%20校慶運動會/line-liff.js))**：
+   - 封裝 LINE LIFF SDK 初始化、自動識別是否處於 LINE App 環境或已授權登入。
+   - 報名者透過手機相機或 LINE 掃描聯絡簿 QR Code 點開網頁時，自動取得 `lineUserId` 與 `lineDisplayName`。
+   - 在表單上方提供自適應「LINE 連動狀態通知列」：
+     - 若在 LINE 內開啟：顯示 `🟢 已連動 LINE：[暱稱]`，提示報名完成將由機器人發送收執單，錄取與賽前通知亦直達手機。
+     - 若在一般瀏覽器開啟：友善顯示「一般瀏覽器報名模式」，不阻擋填寫。
+   - 表單送出時，自動注入 `lineUserId` 與 `lineDisplayName` 至 Google 試算表。
 
-2. **Google Apps Script 雲端直接部署（clasp Version 7）**：
-   - 使用官方 `clasp` 工具直接將最新後端代碼 [`GAS_Backend_Code.gs`](file:///c:/Users/User/Documents/2026%20校慶運動會/GAS_Backend_Code.gs) 推送至 Google Apps Script 雲端。
-   - 重新部署現有 Web App（ID：`AKfycbzl7zf48nxLH2_BPzEL0T48NNR8EI0SO_ROErJ0cDszftJphDOJ1lG-OTfrsxERv-h57A`），版本更新至 **Version 7**，固定前端 URL，伺服器連線狀態為 `online`。
+2. **後端 Google Apps Script 擴充與版本升級（clasp Version 8）**：
+   - 在 [`GAS_Backend_Code.gs`](file:///c:/Users/User/Documents/2026%20校慶運動會/GAS_Backend_Code.gs) 中新增 LINE Messaging API 核心推播函式 `sendLinePush()`。
+   - **自動維護試算表表頭**：`ensureLineColumns()` 自動在「親子趣味競賽名冊」、「大隊接力報名名冊」、「校慶服務志工名冊」末端增設 `LINE_USER_ID`、`LINE暱稱`、`通知狀態` 三個欄位，完全相容舊有資料。
+   - **三階段專屬 Flex Message 卡片產生器**：
+     - **第 1 階段：報名完成數位收執單**（表單送出寫入試算表當下，GAS 立即推播收執卡片）。
+     - **第 2 階段：正式錄取出賽通知書**（含檢錄時間、場地、提醒攜帶健保卡）。
+     - **第 3 階段：賽前行前提醒與廣播**（自訂標題、公告內文、天候與穿著叮嚀）。
+   - 提供安全儲存長期權杖之 `Script Properties` 機制（`setLineToken`）與管理員連線測試 API（`testLinePush`）。
+   - 透過 clasp 部署更新至 **Version 8**，維持現有 Web App URL 不變。
 
-3. **首頁報名查詢：雙重身分核驗 ＋ 個資去識別化**：
-   - 首頁報名查詢頁面改為「**真實姓名**」＋「**聯絡電話號碼**」雙重核驗機制，兩者皆符合才能查詢，徹底防止他人任意窺探他人資料。
-   - 預設隱藏所有報名紀錄，僅顯示身分核驗安全指引。
-   - 查詢結果全面實施去識別化遮罩（姓名：`陳○宏`、`王○`；電話：`0933-***-710`；隊伍與跑者名冊姓名同步遮罩），同時保留數位通關憑證 QR Code 供檢錄報到。
-
-4. **去除各報名頁面最上方列的 GAS 資料庫設定按鈕**：
-   - 乾淨移除 [`relay.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/relay.html)、[`family-games.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/family-games.html)、[`volunteers.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/volunteers.html) 最上方導覽列易引發使用者混淆的 GAS 設定齒輪／膠囊按鈕。
-   - 頂部導覽列全面統一只保留「大會通知」與「報名查詢」捷徑。
-
-5. **志工報名頁面（volunteers.html）全面淨化**：
-   - 移除所有假測試資料與自動注入邏輯，輸入欄位預設皆為空白，報名人數校正為 `0 / 20 人 (0%)`。
-   - 補齊重複報名審查機制（同名即時阻擋彈窗）及報名截止提示方塊。
-
----
-
-## ⚠️ 踩坑經驗與注意事項 (Pitfalls)
-
-1. **Google Sheets 純數字字串吃 0 問題**：
-   - 寫入電話時使用 `@` 格式與單引號 `'` 前綴，確保無論在雲端試算表或本機 CSV 匯出時，開頭 `0` 均完整保存。
-2. **clasp 重新部署更新**：
-   - 執行 `npx @google/clasp create-deployment -i <deploymentId> -d "<說明>"`，可在維持既有 Web App 網址不變的情況下更新版本，避免前端重新設定 URL。
-3. **取消報名雙向同步**：
-   - 取消操作不僅要更新前端 LocalStorage 的剩餘名額，還必須以 `action: "cancel"` POST 通知 GAS 移轉試算表工作表，避免雲端與本地名額不一致。
+3. **後台管理系統擴充 ([`admin.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/admin.html))**：
+   - 新增 **【LINE 官方機器人推播廣播中心】** 控制面板，即時顯示 LINE 連動人數統計與 Messaging API 狀態。
+   - 新增 **【發送錄取通知】** 彈窗：可選取特定項目或全體正選名單，一鍵發送精美錄取卡片，並即時回填試算表通知狀態。
+   - 新增 **【發送賽前通知】** 彈窗：提供預設範本與自訂內文編輯器，賽前一鍵群發廣播給全體選手。
+   - 新增 **【LINE 設定 / 測試連線】** 彈窗：可設定 Channel Access Token、LIFF ID，並可輸入 LINE User ID 即時發送測試訊息驗證連線。
+   - 各組別報名名冊表格新增 **「LINE 狀態」** 欄位（顯示綠燈暱稱標籤或純網頁標籤）。
 
 ---
 
 ## 🧭 目前專案檔案結構
 
 - [`index.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/index.html)：大會首頁門戶 ＆ 雙重核驗個資去識別化查詢 ＆ 後台入口（密碼：`183618`）
-- [`admin.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/admin.html)：大會後台管理系統（名冊檢視、同步刪除、試算表直連、CSV 匯出、電話保留 0）
+- [`admin.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/admin.html)：大會後台管理系統（名冊檢視、同步刪除、CSV 匯出、LINE 推播廣播中心、錄取/賽前發送）
+- [`relay.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/relay.html)：薪傳大隊接力報名專頁（含 LIFF 連動與即時收執單）
+- [`family-games.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/family-games.html)：圈力衝刺親子趣味賽報名專頁（含 LIFF 連動與即時收執單）
+- [`volunteers.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/volunteers.html)：校慶熱血志工招募專頁（含 LIFF 連動與即時收執單）
+- [`line-liff.js`](file:///c:/Users/User/Documents/2026%20校慶運動會/line-liff.js)：LINE LIFF 核心智慧連動前端模組
+- [`GAS_Backend_Code.gs`](file:///c:/Users/User/Documents/2026%20校慶運動會/GAS_Backend_Code.gs)：Google Apps Script 後端代碼（LINE Messaging API 推播、試算表分流、Email 通知、部署至 Version 8）
 - [`relay.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/relay.html)：薪傳大隊接力報名專頁（自動組別判定、重複審查、移轉至「已取消報名」工作表退選機制）
 - [`family-games.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/family-games.html)：圈力衝刺親子趣味賽報名專頁（22組額滿鎖定、重複審查、移轉至「已取消報名」工作表退選機制）
 - [`volunteers.html`](file:///c:/Users/User/Documents/2026%20校慶運動會/volunteers.html)：校慶熱血志工招募專頁（20人額滿鎖定、校友優先審查、移轉至「已取消報名」工作表退選機制）

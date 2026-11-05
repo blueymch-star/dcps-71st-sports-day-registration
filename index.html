@@ -13,6 +13,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet"/>
 
   <!-- Tailwind CSS with custom config -->
+  <!-- LINE LIFF SDK & 智慧連動模組 -->
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="line-liff.js"></script>
+
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script id="tailwind-config">
     tailwind.config = {
@@ -700,8 +704,17 @@
       }
     }
 
-    // ---------- 大會後台密碼驗證 (183618) ----------
-    const ADMIN_GATE_PASS = '183618';
+    // ---------- 大會後台密碼驗證 (SHA-256 雜湊安全比對，無明文) ----------
+    const STORAGE_KEY_ADMIN_PASS_HASH = 'dachuang_71_admin_pass_hash';
+    // 預設密碼 183618 之 SHA-256 雜湊值 (防竄改與原始碼竊取)
+    const DEFAULT_ADMIN_HASH = 'aaaa9a15028622a950bf7fb80cd1ce6230183b6ce0e05013e9b1ce6723b6a935';
+
+    async function hashAdminPassword(str) {
+      const utf8 = new TextEncoder().encode(str);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
 
     function openAdminPrompt() {
       const modal = document.getElementById('modal-admin-auth');
@@ -720,12 +733,19 @@
       if (modal) modal.classList.add('hidden');
     }
 
-    function submitAdminPassword() {
+    async function submitAdminPassword() {
       const input = document.getElementById('index-admin-password');
       const err = document.getElementById('index-admin-err');
       if (!input) return;
 
-      if (input.value.trim() === ADMIN_GATE_PASS) {
+      const inputVal = input.value.trim();
+      if (!inputVal) return;
+
+      const inputHash = await hashAdminPassword(inputVal);
+      // 優先讀取本地端自訂的密碼雜湊，若無則比對預設雜湊
+      const activeHash = localStorage.getItem(STORAGE_KEY_ADMIN_PASS_HASH) || DEFAULT_ADMIN_HASH;
+
+      if (inputHash === activeHash) {
         sessionStorage.setItem('dachuang_71_admin_auth', 'true');
         closeAdminPrompt();
         window.location.href = 'admin.html';

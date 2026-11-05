@@ -2,8 +2,34 @@
  * 第 71 屆大庄校慶運動會 - 官方統一報名系統 GAS 後端程式碼
  * （支援「庄情薪傳大隊接力」、「圈力衝刺親子趣味競賽」與「校慶服務志工」自動分流寫入、查詢、刪除與名冊管理）
  * 
+ * 擴充功能：LINE Messaging API 智慧推播核心
+ * - 報名成功即時推播數位收執單 (Flex Message)
+ * - 管理員一鍵推播錄取通知 (Flex Message)
+ * - 管理員賽前行前提醒與大會廣播 (Flex Message)
+ * 
  * 試算表名稱：71大庄校慶運動會薪傳接力親子競賽熱血志工報名表
  */
+
+// ==========================================
+// LINE 官方帳號 Messaging API 設定
+// ==========================================
+var DEFAULT_LINE_ACCESS_TOKEN = "YOUR_LINE_CHANNEL_ACCESS_TOKEN";
+
+function getLineToken() {
+  var prop = PropertiesService.getScriptProperties().getProperty("LINE_CHANNEL_ACCESS_TOKEN");
+  if (prop && prop.trim().length > 10) {
+    return prop.trim();
+  }
+  return DEFAULT_LINE_ACCESS_TOKEN;
+}
+
+function setLineToken(token) {
+  if (token && token.trim()) {
+    PropertiesService.getScriptProperties().setProperty("LINE_CHANNEL_ACCESS_TOKEN", token.trim());
+    return { result: "success", message: "LINE Channel Access Token 已成功儲存至 Script Properties！" };
+  }
+  return { result: "error", message: "Token 不能為空" };
+}
 
 function doPost(e) {
   var lock = LockService.getScriptLock();
@@ -11,6 +37,7 @@ function doPost(e) {
 
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
+    ensureLineColumns(ss);
     
     var data;
     if (e.postData && e.postData.contents) {
@@ -21,6 +48,31 @@ function doPost(e) {
       }
     } else {
       data = e.parameter || {};
+    }
+
+    // 0. LINE 專案 Token 管理與推播操作
+    if (data.action === "updateLineToken" || data.action === "saveLineToken") {
+      var tokenRes = setLineToken(data.token);
+      return ContentService.createTextOutput(JSON.stringify(tokenRes))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (data.action === "sendAdmissionNotice" || data.action === "sendAdmissionNotices") {
+      var admRes = sendAdmissionNotices(ss, data);
+      return ContentService.createTextOutput(JSON.stringify(admRes))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (data.action === "sendPreGameNotice" || data.action === "sendCustomNotice") {
+      var preRes = sendPreGameNotices(ss, data);
+      return ContentService.createTextOutput(JSON.stringify(preRes))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (data.action === "testLinePush") {
+      var testRes = testLinePushToUser(data.testUserId || data.userId);
+      return ContentService.createTextOutput(JSON.stringify(testRes))
+        .setMimeType(ContentService.MimeType.JSON);
     }
 
     // 取消報名並移動至「已取消報名」工作表
@@ -47,6 +99,11 @@ function doPost(e) {
     var formType = data.type || (data.parentName ? "family" : "relay");
     var timestamp = Utilities.formatDate(new Date(), "Asia/Taipei", "yyyy/MM/dd HH:mm:ss");
 
+    // 獲取前端 LIFF 傳入之 LINE 識別資訊
+    var lineUserId = String(data.lineUserId || "").trim();
+    var lineDisplayName = String(data.lineDisplayName || "").trim();
+    var lineNoticeStatus = lineUserId ? "連動完成" : "未連動 LINE";
+
     // ==========================================
     // 分流 1：親子趣味競賽（圈力衝刺）
     // ==========================================
@@ -68,9 +125,12 @@ function doPost(e) {
           "學生年級",
           "學生班級",
           "全名組合",
-          "錄取狀態"
+          "錄取狀態",
+          "LINE_USER_ID",
+          "LINE暱稱",
+          "通知狀態"
         ]);
-        sheetFamily.getRange(1, 1, 1, 10).setBackground("#004f35").setFontColor("#ffffff").setFontWeight("bold");
+        sheetFamily.getRange(1, 1, 1, 13).setBackground("#004f35").setFontColor("#ffffff").setFontWeight("bold");
       }
 
       var regId = data.regId || ("DC71-FAM-" + Math.floor(1000 + Math.random() * 9000));
@@ -130,6 +190,28 @@ function doPost(e) {
         familyStatus = "候補 2 (第 2 順位候補)";
       }
 
+      // LINE 即時推播收執單
+      if (lineUserId && lineUserId.startsWith("U")) {
+        try {
+          var flexFam = createRegistrationReceiptFlex({
+            projectName: "圈力衝刺 親子趣味競賽",
+            regId: regId,
+            name: parentName + " ＆ " + studentName,
+            subInfo: studentGrade + " " + studentClass,
+            status: familyStatus,
+            themeColor: "#004f35"
+          });
+          var pushFamRes = sendLinePush(lineUserId, flexFam);
+          if (pushFamRes.success) {
+            lineNoticeStatus = "已推播收執單 (" + Utilities.formatDate(new Date(), "Asia/Taipei", "MM/dd HH:mm") + ")";
+          } else {
+            lineNoticeStatus = "推播失敗: " + (pushFamRes.error || pushFamRes.code);
+          }
+        } catch (lFamErr) {
+          lineNoticeStatus = "LINE異常: " + lFamErr;
+        }
+      }
+
       sheetFamily.appendRow([
         timestamp,
         regId,
@@ -140,7 +222,10 @@ function doPost(e) {
         studentGrade,
         studentClass,
         combinedTitle,
-        familyStatus
+        familyStatus,
+        lineUserId,
+        lineDisplayName,
+        lineNoticeStatus
       ]);
       var lastRowFam = sheetFamily.getLastRow();
       sheetFamily.getRange(lastRowFam, 5).setNumberFormat('@');
@@ -166,6 +251,7 @@ function doPost(e) {
           "學生姓名：" + studentName + " (" + studentGrade + " " + studentClass + ")\n" +
           "聯絡電話：" + phone + "\n" +
           "錄取狀態：" + familyStatus + "\n" +
+          "LINE 連動狀態：" + (lineUserId ? ("已連動 (" + lineDisplayName + ")") : "未連動") + "\n" +
           "活動時間：115年12月12日 (六) 10:40 ～ 10:50\n" +
           "活動地點：本校操場中央草皮區\n" +
           "登記時間：" + timestamp + "\n" +
@@ -201,6 +287,7 @@ function doPost(e) {
                 "聯絡電話：" + phone + "\n" +
                 "電子郵件：" + email + "\n" +
                 "錄取狀態：" + familyStatus + "\n" +
+                "LINE 狀態：" + lineNoticeStatus + "\n" +
                 "登記時間：" + timestamp + "\n" +
                 "----------------------------------------\n\n" +
                 "系統已自動寄發 3 點參賽須知信件至該家長信箱。\n" +
@@ -218,8 +305,10 @@ function doPost(e) {
         regId: regId,
         status: familyStatus,
         currentCount: totalFamilyRows + 1,
+        lineUserId: lineUserId,
+        lineNoticeStatus: lineNoticeStatus,
         emailNoticeSent: emailNoticeSent,
-        message: "親子趣味競賽報名已成功寫入 Google 試算表，並已發送 Email 通知！"
+        message: "親子趣味競賽報名已成功寫入 Google 試算表！" + (lineUserId ? "（LINE 報名卡片已即時推播）" : "")
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
@@ -244,9 +333,12 @@ function doPost(e) {
           "Email",
           "是否為校友",
           "希望服務組別",
-          "錄取狀態"
+          "錄取狀態",
+          "LINE_USER_ID",
+          "LINE暱稱",
+          "通知狀態"
         ]);
-        sheetVol.getRange(1, 1, 1, 11).setBackground("#fd761a").setFontColor("#ffffff").setFontWeight("bold");
+        sheetVol.getRange(1, 1, 1, 14).setBackground("#fd761a").setFontColor("#ffffff").setFontWeight("bold");
       }
 
       var volRegId = data.regId || ("DC71-VOL-" + Math.floor(1000 + Math.random() * 9000));
@@ -255,6 +347,28 @@ function doPost(e) {
       var volStatus = isAlumni.indexOf("是") !== -1 ? "優先錄取 (校友)" : "審核中";
       if (currentVolRows >= 20) {
         volStatus = "候補 (第 " + (currentVolRows - 20 + 1) + " 順位)";
+      }
+
+      // LINE 即時推播收執單
+      if (lineUserId && lineUserId.startsWith("U")) {
+        try {
+          var flexVol = createRegistrationReceiptFlex({
+            projectName: "校慶熱血服務志工",
+            regId: volRegId,
+            name: data.studentName || "",
+            subInfo: (data.schoolClass || "") + "・" + (data.serviceRoles || "綜合支援組"),
+            status: volStatus,
+            themeColor: "#fd761a"
+          });
+          var pushVolRes = sendLinePush(lineUserId, flexVol);
+          if (pushVolRes.success) {
+            lineNoticeStatus = "已推播收執單 (" + Utilities.formatDate(new Date(), "Asia/Taipei", "MM/dd HH:mm") + ")";
+          } else {
+            lineNoticeStatus = "推播失敗: " + (pushVolRes.error || pushVolRes.code);
+          }
+        } catch (lVolErr) {
+          lineNoticeStatus = "LINE異常: " + lVolErr;
+        }
       }
 
       sheetVol.appendRow([
@@ -268,7 +382,10 @@ function doPost(e) {
         data.email || "",
         isAlumni,
         data.serviceRoles || "",
-        volStatus
+        volStatus,
+        lineUserId,
+        lineDisplayName,
+        lineNoticeStatus
       ]);
       var lastRowVol = sheetVol.getLastRow();
       sheetVol.getRange(lastRowVol, 5).setNumberFormat('@');
@@ -280,7 +397,9 @@ function doPost(e) {
         regId: volRegId,
         status: volStatus,
         currentCount: currentVolRows + 1,
-        message: "志工報名已成功寫入 Google 試算表！"
+        lineUserId: lineUserId,
+        lineNoticeStatus: lineNoticeStatus,
+        message: "志工報名已成功寫入 Google 試算表！" + (lineUserId ? "（LINE 報名卡片已即時推播）" : "")
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
@@ -303,9 +422,12 @@ function doPost(e) {
         "出生年次 (民國)",
         "行動電話",
         "校友畢業年度",
-        "錄取狀態"
+        "錄取狀態",
+        "LINE_USER_ID",
+        "LINE暱稱",
+        "通知狀態"
       ]);
-      sheetRelay.getRange(1, 1, 1, 10).setBackground("#1d4ed8").setFontColor("#ffffff").setFontWeight("bold");
+      sheetRelay.getRange(1, 1, 1, 13).setBackground("#1d4ed8").setFontColor("#ffffff").setFontWeight("bold");
     }
 
     var relayRegId = data.regId || ("DC71-RELAY-" + Math.floor(1000 + Math.random() * 9000));
@@ -349,6 +471,28 @@ function doPost(e) {
       status = "候補 (第 " + (currentGroupCount - maxQuota + 1) + " 順位)";
     }
 
+    // LINE 即時推播收執單
+    if (lineUserId && lineUserId.startsWith("U")) {
+      try {
+        var flexRelay = createRegistrationReceiptFlex({
+          projectName: "庄情薪傳大隊接力賽",
+          regId: relayRegId,
+          name: name,
+          subInfo: category + "・" + (gender || "選手"),
+          status: status,
+          themeColor: "#1d4ed8"
+        });
+        var pushRelayRes = sendLinePush(lineUserId, flexRelay);
+        if (pushRelayRes.success) {
+          lineNoticeStatus = "已推播收執單 (" + Utilities.formatDate(new Date(), "Asia/Taipei", "MM/dd HH:mm") + ")";
+        } else {
+          lineNoticeStatus = "推播失敗: " + (pushRelayRes.error || pushRelayRes.code);
+        }
+      } catch (lRelayErr) {
+        lineNoticeStatus = "LINE異常: " + lRelayErr;
+      }
+    }
+
     sheetRelay.appendRow([
       timestamp,
       relayRegId,
@@ -359,7 +503,10 @@ function doPost(e) {
       birthYear,
       formatPhoneForSheet(phoneRelay),
       gradYear,
-      status
+      status,
+      lineUserId,
+      lineDisplayName,
+      lineNoticeStatus
     ]);
     var lastRowRelay = sheetRelay.getLastRow();
     sheetRelay.getRange(lastRowRelay, 8).setNumberFormat('@');
@@ -390,6 +537,7 @@ function doPost(e) {
         "行動電話：" + phoneRelay + "\n" +
         "校友畢業年度：" + (gradYear === "0" ? "非校友 (填0)" : "民國 " + gradYear + " 年") + "\n" +
         "錄取狀態：" + status + "\n" +
+        "LINE 連動狀態：" + (lineUserId ? ("已連動 (" + lineDisplayName + ")") : "未連動") + "\n" +
         "登記時間：" + timestamp + "\n" +
         "========================================\n\n" +
         "【大隊接力重要須知】\n" +
@@ -426,6 +574,7 @@ function doPost(e) {
               "行動電話：" + phoneRelay + "\n" +
               "電子郵件：" + emailRelay + "\n" +
               "錄取狀態：" + status + "\n" +
+              "LINE 狀態：" + lineNoticeStatus + "\n" +
               "登記時間：" + timestamp + "\n" +
               "----------------------------------------\n\n" +
               "系統已同步寄發 5 點參賽須知信件給選手。\n" +
@@ -443,8 +592,10 @@ function doPost(e) {
       regId: relayRegId,
       status: status,
       currentCount: currentGroupCount + 1,
+      lineUserId: lineUserId,
+      lineNoticeStatus: lineNoticeStatus,
       emailNoticeSent: emailNoticeSent,
-      message: "大隊接力報名已成功寫入 Google 試算表，並已發送 Email 通知！"
+      message: "大隊接力報名已成功寫入 Google 試算表！" + (lineUserId ? "（LINE 報名卡片已即時推播）" : "")
     })).setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
@@ -461,6 +612,8 @@ function doPost(e) {
 function doGet(e) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   fixExistingPhones(ss);
+  ensureLineColumns(ss);
+
   var params = e ? e.parameter || {} : {};
   var action = params.action || "";
 
@@ -492,6 +645,7 @@ function doGet(e) {
     return ContentService.createTextOutput(JSON.stringify({
       status: "online",
       data: allData,
+      lineTokenSet: (getLineToken() !== DEFAULT_LINE_ACCESS_TOKEN),
       serverTime: new Date()
     })).setMimeType(ContentService.MimeType.JSON);
   }
@@ -510,8 +664,553 @@ function doGet(e) {
     familyCount: familyCount,
     relayCount: relayCount,
     volunteerCount: volunteerCount,
+    lineTokenSet: (getLineToken() !== DEFAULT_LINE_ACCESS_TOKEN),
     serverTime: new Date()
   })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// ==========================================
+// LINE 核心推播函式與 Flex 卡片產生器
+// ==========================================
+
+function sendLinePush(userId, messages) {
+  if (!userId || !userId.startsWith("U")) {
+    return { success: false, error: "無效之 LINE User ID" };
+  }
+  var token = getLineToken();
+  if (!token || token === DEFAULT_LINE_ACCESS_TOKEN) {
+    return { success: false, error: "尚未設定 LINE_CHANNEL_ACCESS_TOKEN" };
+  }
+
+  var url = "https://api.line.me/v2/bot/message/push";
+  var payload = {
+    to: userId,
+    messages: Array.isArray(messages) ? messages : [messages]
+  };
+
+  try {
+    var response = UrlFetchApp.fetch(url, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    });
+    var resCode = response.getResponseCode();
+    var resText = response.getContentText();
+    return {
+      success: resCode === 200,
+      code: resCode,
+      response: resText
+    };
+  } catch (err) {
+    return { success: false, error: err.toString() };
+  }
+}
+
+// 產生「報名完成收執單」Flex Message
+function createRegistrationReceiptFlex(data) {
+  var altText = "【大庄71校慶】報名成功收執單 (" + data.projectName + " - " + data.name + ")";
+  var bubble = {
+    "type": "bubble",
+    "size": "mega",
+    "header": {
+      "type": "box",
+      "layout": "vertical",
+      "backgroundColor": data.themeColor || "#004f35",
+      "paddingAll": "18px",
+      "contents": [
+        {
+          "type": "text",
+          "text": "第 71 屆大庄國小校慶運動會",
+          "color": "#ffffff",
+          "size": "xs",
+          "weight": "bold"
+        },
+        {
+          "type": "text",
+          "text": "🎉 報名登記完成收執單",
+          "color": "#ffffff",
+          "size": "xl",
+          "weight": "bold",
+          "margin": "sm"
+        }
+      ]
+    },
+    "body": {
+      "type": "box",
+      "layout": "vertical",
+      "spacing": "md",
+      "contents": [
+        {
+          "type": "box",
+          "layout": "horizontal",
+          "contents": [
+            { "type": "text", "text": "報名項目", "color": "#666666", "size": "sm", "flex": 3 },
+            { "type": "text", "text": String(data.projectName || ""), "weight": "bold", "color": "#111111", "size": "sm", "flex": 7 }
+          ]
+        },
+        {
+          "type": "box",
+          "layout": "horizontal",
+          "contents": [
+            { "type": "text", "text": "報名編號", "color": "#666666", "size": "sm", "flex": 3 },
+            { "type": "text", "text": String(data.regId || ""), "weight": "bold", "color": data.themeColor || "#004f35", "size": "sm", "flex": 7 }
+          ]
+        },
+        {
+          "type": "box",
+          "layout": "horizontal",
+          "contents": [
+            { "type": "text", "text": "選手姓名", "color": "#666666", "size": "sm", "flex": 3 },
+            { "type": "text", "text": String(data.name || ""), "weight": "bold", "color": "#111111", "size": "sm", "flex": 7 }
+          ]
+        },
+        {
+          "type": "box",
+          "layout": "horizontal",
+          "contents": [
+            { "type": "text", "text": "參賽組別", "color": "#666666", "size": "sm", "flex": 3 },
+            { "type": "text", "text": String(data.subInfo || ""), "color": "#333333", "size": "sm", "flex": 7 }
+          ]
+        },
+        {
+          "type": "box",
+          "layout": "horizontal",
+          "contents": [
+            { "type": "text", "text": "錄取狀態", "color": "#666666", "size": "sm", "flex": 3 },
+            { "type": "text", "text": String(data.status || "正選"), "weight": "bold", "color": data.status.indexOf("候補") !== -1 ? "#d97706" : "#059669", "size": "sm", "flex": 7 }
+          ]
+        },
+        {
+          "type": "separator",
+          "margin": "lg"
+        },
+        {
+          "type": "text",
+          "text": "📌 溫馨提醒：本官方帳號已自動鎖定您的報名資料，後續錄取公告與賽前行前提醒將直接在此推播給您！",
+          "size": "xs",
+          "color": "#777777",
+          "wrap": true,
+          "margin": "md"
+        }
+      ]
+    }
+  };
+  return {
+    type: "flex",
+    altText: altText,
+    contents: bubble
+  };
+}
+
+// 產生「錄取通知書」Flex Message
+function createAdmissionFlex(data) {
+  var altText = "【大庄71校慶】🏆 恭喜正式錄取通知 (" + data.projectName + " - " + data.name + ")";
+  var bubble = {
+    "type": "bubble",
+    "size": "mega",
+    "header": {
+      "type": "box",
+      "layout": "vertical",
+      "backgroundColor": "#0284c7",
+      "paddingAll": "18px",
+      "contents": [
+        {
+          "type": "text",
+          "text": "第 71 屆大庄國小校慶運動會",
+          "color": "#ffffff",
+          "size": "xs",
+          "weight": "bold"
+        },
+        {
+          "type": "text",
+          "text": "🏆 正式錄取出賽通知",
+          "color": "#ffffff",
+          "size": "xl",
+          "weight": "bold",
+          "margin": "sm"
+        }
+      ]
+    },
+    "body": {
+      "type": "box",
+      "layout": "vertical",
+      "spacing": "md",
+      "contents": [
+        {
+          "type": "text",
+          "text": "恭喜 " + data.name + " 選手正式錄取！",
+          "weight": "bold",
+          "size": "md",
+          "color": "#0369a1"
+        },
+        {
+          "type": "box",
+          "layout": "horizontal",
+          "contents": [
+            { "type": "text", "text": "報名項目", "color": "#666666", "size": "sm", "flex": 3 },
+            { "type": "text", "text": String(data.projectName || ""), "weight": "bold", "color": "#111111", "size": "sm", "flex": 7 }
+          ]
+        },
+        {
+          "type": "box",
+          "layout": "horizontal",
+          "contents": [
+            { "type": "text", "text": "報名編號", "color": "#666666", "size": "sm", "flex": 3 },
+            { "type": "text", "text": String(data.regId || ""), "weight": "bold", "color": "#0284c7", "size": "sm", "flex": 7 }
+          ]
+        },
+        {
+          "type": "box",
+          "layout": "horizontal",
+          "contents": [
+            { "type": "text", "text": "競賽日期", "color": "#666666", "size": "sm", "flex": 3 },
+            { "type": "text", "text": "115年12月12日 (六)", "weight": "bold", "color": "#111111", "size": "sm", "flex": 7 }
+          ]
+        },
+        {
+          "type": "box",
+          "layout": "horizontal",
+          "contents": [
+            { "type": "text", "text": "檢錄地點", "color": "#666666", "size": "sm", "flex": 3 },
+            { "type": "text", "text": String(data.location || "本校操場"), "weight": "bold", "color": "#111111", "size": "sm", "flex": 7 }
+          ]
+        },
+        {
+          "type": "box",
+          "layout": "horizontal",
+          "contents": [
+            { "type": "text", "text": "檢錄時間", "color": "#666666", "size": "sm", "flex": 3 },
+            { "type": "text", "text": String(data.checkinTime || "賽前20分鐘"), "weight": "bold", "color": "#b91c1c", "size": "sm", "flex": 7 }
+          ]
+        },
+        {
+          "type": "separator",
+          "margin": "lg"
+        },
+        {
+          "type": "text",
+          "text": "⚠️ 重要叮嚀：請攜帶健保卡或學生證於檢錄時間準時報到；如臨時不克出席請儘早洽主辦單位，以利候補選手遞補。",
+          "size": "xs",
+          "color": "#666666",
+          "wrap": true,
+          "margin": "md"
+        }
+      ]
+    }
+  };
+  return {
+    type: "flex",
+    altText: altText,
+    contents: bubble
+  };
+}
+
+// 產生「賽前行前提醒」Flex Message
+function createPreGameFlex(data) {
+  var altText = "【大庄71校慶】📢 " + (data.noticeTitle || "賽前行前提醒通知");
+  var bubble = {
+    "type": "bubble",
+    "size": "mega",
+    "header": {
+      "type": "box",
+      "layout": "vertical",
+      "backgroundColor": "#7c3aed",
+      "paddingAll": "18px",
+      "contents": [
+        {
+          "type": "text",
+          "text": "第 71 屆大庄國小校慶運動會",
+          "color": "#ffffff",
+          "size": "xs",
+          "weight": "bold"
+        },
+        {
+          "type": "text",
+          "text": "📢 賽前行前提醒通知",
+          "color": "#ffffff",
+          "size": "xl",
+          "weight": "bold",
+          "margin": "sm"
+        }
+      ]
+    },
+    "body": {
+      "type": "box",
+      "layout": "vertical",
+      "spacing": "md",
+      "contents": [
+        {
+          "type": "text",
+          "text": String(data.noticeTitle || "運動會即將盛大登場！"),
+          "weight": "bold",
+          "size": "lg",
+          "color": "#6d28d9",
+          "wrap": true
+        },
+        {
+          "type": "text",
+          "text": String(data.noticeContent || "親愛的選手您好，校慶運動會即將展開，請備齊所需裝備並準時到場！"),
+          "size": "sm",
+          "color": "#333333",
+          "wrap": true,
+          "margin": "md"
+        },
+        {
+          "type": "separator",
+          "margin": "lg"
+        },
+        {
+          "type": "text",
+          "text": "👟 穿著叮嚀：請著運動服及抓地力良好之運動球鞋，並自備水壺、毛巾及健保卡。\n🚗 交通提醒：校內不開放停車，請盡量搭乘大眾運輸或提早步行前往。",
+          "size": "xs",
+          "color": "#666666",
+          "wrap": true,
+          "margin": "md"
+        }
+      ]
+    }
+  };
+  return {
+    type: "flex",
+    altText: altText,
+    contents: bubble
+  };
+}
+
+// 批次推播「錄取通知」
+function sendAdmissionNotices(ss, params) {
+  var targetCategory = params.category || "all";
+  var regId = params.regId || "";
+  var token = getLineToken();
+  if (!token || token === DEFAULT_LINE_ACCESS_TOKEN) {
+    return { result: "error", message: "尚未設定 LINE_CHANNEL_ACCESS_TOKEN，請先至後台或 Script Properties 填入！" };
+  }
+
+  var results = { sent: 0, skippedNoLine: 0, failed: 0, details: [] };
+  var sheets = [];
+  if (targetCategory === "all" || targetCategory === "relay") {
+    sheets.push({ name: "大隊接力報名名冊", project: "庄情薪傳大隊接力", idCol: 1, nameCol: 3, statusCol: 9, lineIdCol: 10, lineNameCol: 11, noticeCol: 12, location: "綜合球場", checkinTime: "11:40 ～ 11:50" });
+  }
+  if (targetCategory === "all" || targetCategory === "family") {
+    sheets.push({ name: "親子趣味競賽名冊", project: "圈力衝刺親子趣味競賽", idCol: 1, nameCol: 5, statusCol: 9, lineIdCol: 10, lineNameCol: 11, noticeCol: 12, location: "本校操場中央草皮區", checkinTime: "10:20 ～ 10:30" });
+  }
+  if (targetCategory === "all" || targetCategory === "volunteer") {
+    sheets.push({ name: "校慶服務志工名冊", project: "校慶服務志工", idCol: 1, nameCol: 2, statusCol: 10, lineIdCol: 11, lineNameCol: 12, noticeCol: 13, location: "志工大會服務處", checkinTime: "07:50 ～ 08:00" });
+  }
+
+  for (var s = 0; s < sheets.length; s++) {
+    var conf = sheets[s];
+    var sheet = ss.getSheetByName(conf.name);
+    if (!sheet || sheet.getLastRow() <= 1) continue;
+
+    var rows = sheet.getDataRange().getValues();
+    for (var r = 1; r < rows.length; r++) {
+      var row = rows[r];
+      var rowId = String(row[conf.idCol] || "").trim();
+      var personName = String(row[conf.nameCol] || "").trim();
+      var status = String(row[conf.statusCol] || "").trim();
+      var lineUserId = String(row[conf.lineIdCol] || "").trim();
+
+      if (regId && rowId !== regId) continue;
+      if (!regId) {
+        var isAccepted = (status.indexOf("正選") !== -1 || status.indexOf("錄取") !== -1 || status.indexOf("優先") !== -1) && status.indexOf("候補") === -1;
+        if (!isAccepted) continue;
+      }
+
+      if (!lineUserId || !lineUserId.startsWith("U")) {
+        results.skippedNoLine++;
+        continue;
+      }
+
+      var flex = createAdmissionFlex({
+        projectName: conf.project,
+        regId: rowId,
+        name: personName,
+        status: status,
+        location: conf.location,
+        checkinTime: conf.checkinTime
+      });
+
+      var pushRes = sendLinePush(lineUserId, flex);
+      if (pushRes.success) {
+        results.sent++;
+        var updateTime = Utilities.formatDate(new Date(), "Asia/Taipei", "MM/dd HH:mm");
+        sheet.getRange(r + 1, conf.noticeCol + 1).setValue("已推播錄取通知 (" + updateTime + ")");
+        results.details.push({ id: rowId, name: personName, status: "sent" });
+      } else {
+        results.failed++;
+        results.details.push({ id: rowId, name: personName, status: "failed", error: pushRes.error });
+      }
+    }
+  }
+
+  return {
+    result: "success",
+    sentCount: results.sent,
+    skippedCount: results.skippedNoLine,
+    failedCount: results.failed,
+    message: "錄取通知推播完成！成功發送 " + results.sent + " 則，略過未連動 LINE 者 " + results.skippedNoLine + " 名。"
+  };
+}
+
+// 批次推播「賽前行前通知」
+function sendPreGameNotices(ss, params) {
+  var targetCategory = params.category || "all";
+  var title = params.noticeTitle || "第 71 屆大庄校慶運動會賽前行前提醒";
+  var content = params.noticeContent || "校慶運動會即將展開，敬請各位選手提早到場進行熱身，並穿著抓地力良好之運動鞋！";
+  var token = getLineToken();
+  if (!token || token === DEFAULT_LINE_ACCESS_TOKEN) {
+    return { result: "error", message: "尚未設定 LINE_CHANNEL_ACCESS_TOKEN" };
+  }
+
+  var results = { sent: 0, skippedNoLine: 0, failed: 0 };
+  var sheets = [];
+  if (targetCategory === "all" || targetCategory === "relay") {
+    sheets.push({ name: "大隊接力報名名冊", lineIdCol: 10, noticeCol: 12 });
+  }
+  if (targetCategory === "all" || targetCategory === "family") {
+    sheets.push({ name: "親子趣味競賽名冊", lineIdCol: 10, noticeCol: 12 });
+  }
+  if (targetCategory === "all" || targetCategory === "volunteer") {
+    sheets.push({ name: "校慶服務志工名冊", lineIdCol: 11, noticeCol: 13 });
+  }
+
+  for (var s = 0; s < sheets.length; s++) {
+    var conf = sheets[s];
+    var sheet = ss.getSheetByName(conf.name);
+    if (!sheet || sheet.getLastRow() <= 1) continue;
+
+    var rows = sheet.getDataRange().getValues();
+    for (var r = 1; r < rows.length; r++) {
+      var row = rows[r];
+      var lineUserId = String(row[conf.lineIdCol] || "").trim();
+
+      if (!lineUserId || !lineUserId.startsWith("U")) {
+        results.skippedNoLine++;
+        continue;
+      }
+
+      var flex = createPreGameFlex({
+        noticeTitle: title,
+        noticeContent: content
+      });
+
+      var pushRes = sendLinePush(lineUserId, flex);
+      if (pushRes.success) {
+        results.sent++;
+        var updateTime = Utilities.formatDate(new Date(), "Asia/Taipei", "MM/dd HH:mm");
+        sheet.getRange(r + 1, conf.noticeCol + 1).setValue("已推播賽前通知 (" + updateTime + ")");
+      } else {
+        results.failed++;
+      }
+    }
+  }
+
+  return {
+    result: "success",
+    sentCount: results.sent,
+    skippedCount: results.skippedNoLine,
+    failedCount: results.failed,
+    message: "賽前通知推播完成！成功發送 " + results.sent + " 則，略過未連動 LINE 者 " + results.skippedNoLine + " 名。"
+  };
+}
+
+// 測試推播給管理員
+function testLinePushToUser(userId) {
+  if (!userId || !userId.startsWith("U")) {
+    return { result: "error", message: "請輸入有效的 LINE User ID（以 U 開頭之 33 碼字串）" };
+  }
+  var testFlex = {
+    "type": "flex",
+    "altText": "【大庄71校慶】連線測試成功！",
+    "contents": {
+      "type": "bubble",
+      "header": {
+        "type": "box",
+        "layout": "vertical",
+        "backgroundColor": "#059669",
+        "contents": [
+          { "type": "text", "text": "✅ LINE 機器人連線成功", "color": "#ffffff", "weight": "bold", "size": "lg" }
+        ]
+      },
+      "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          { "type": "text", "text": "恭喜！您的大庄校慶 LINE Messaging API 已成功串接！", "wrap": true, "size": "sm" },
+          { "type": "text", "text": "測試時間：" + Utilities.formatDate(new Date(), "Asia/Taipei", "yyyy/MM/dd HH:mm:ss"), "size": "xs", "color": "#888888", "margin": "md" }
+        ]
+      }
+    }
+  };
+  var pushRes = sendLinePush(userId, testFlex);
+  if (pushRes.success) {
+    return { result: "success", message: "測試訊息已成功推播至指定裝置！" };
+  } else {
+    return { result: "error", message: "推播失敗：" + (pushRes.error || pushRes.response) };
+  }
+}
+
+// 自動維護工作表 LINE 欄位
+function ensureLineColumns(ss) {
+  try {
+    // 1. 親子趣味競賽名冊
+    var sFamily = ss.getSheetByName("親子趣味競賽名冊");
+    if (sFamily) {
+      if (sFamily.getLastRow() === 0) {
+        sFamily.appendRow(["報名時間", "報名編號", "家長姓名", "電郵信箱", "聯絡電話", "學生姓名", "學生年級", "學生班級", "全名組合", "錄取狀態", "LINE_USER_ID", "LINE暱稱", "通知狀態"]);
+        sFamily.getRange(1, 1, 1, 13).setBackground("#004f35").setFontColor("#ffffff").setFontWeight("bold");
+      } else {
+        var hf = sFamily.getRange(1, 1, 1, Math.max(13, sFamily.getLastColumn())).getValues()[0];
+        if (hf.indexOf("LINE_USER_ID") === -1) {
+          sFamily.getRange(1, 11).setValue("LINE_USER_ID");
+          sFamily.getRange(1, 12).setValue("LINE暱稱");
+          sFamily.getRange(1, 13).setValue("通知狀態");
+          sFamily.getRange(1, 11, 1, 3).setBackground("#004f35").setFontColor("#ffffff").setFontWeight("bold");
+        }
+      }
+    }
+
+    // 2. 校慶服務志工名冊
+    var sVol = ss.getSheetByName("校慶服務志工名冊");
+    if (sVol) {
+      if (sVol.getLastRow() === 0) {
+        sVol.appendRow(["報名時間", "報名編號", "學生姓名", "現就讀學校班級", "學生手機", "家長手機", "家長姓名與關係", "Email", "是否為校友", "希望服務組別", "錄取狀態", "LINE_USER_ID", "LINE暱稱", "通知狀態"]);
+        sVol.getRange(1, 1, 1, 14).setBackground("#fd761a").setFontColor("#ffffff").setFontWeight("bold");
+      } else {
+        var hv = sVol.getRange(1, 1, 1, Math.max(14, sVol.getLastColumn())).getValues()[0];
+        if (hv.indexOf("LINE_USER_ID") === -1) {
+          sVol.getRange(1, 12).setValue("LINE_USER_ID");
+          sVol.getRange(1, 13).setValue("LINE暱稱");
+          sVol.getRange(1, 14).setValue("通知狀態");
+          sVol.getRange(1, 12, 1, 3).setBackground("#fd761a").setFontColor("#ffffff").setFontWeight("bold");
+        }
+      }
+    }
+
+    // 3. 大隊接力報名名冊
+    var sRelay = ss.getSheetByName("大隊接力報名名冊");
+    if (sRelay) {
+      if (sRelay.getLastRow() === 0) {
+        sRelay.appendRow(["報名時間", "報名編號", "參賽組別", "姓名", "性別", "Email", "出生年次 (民國)", "行動電話", "校友畢業年度", "錄取狀態", "LINE_USER_ID", "LINE暱稱", "通知狀態"]);
+        sRelay.getRange(1, 1, 1, 13).setBackground("#1d4ed8").setFontColor("#ffffff").setFontWeight("bold");
+      } else {
+        var hr = sRelay.getRange(1, 1, 1, Math.max(13, sRelay.getLastColumn())).getValues()[0];
+        if (hr.indexOf("LINE_USER_ID") === -1) {
+          sRelay.getRange(1, 11).setValue("LINE_USER_ID");
+          sRelay.getRange(1, 12).setValue("LINE暱稱");
+          sRelay.getRange(1, 13).setValue("通知狀態");
+          sRelay.getRange(1, 11, 1, 3).setBackground("#1d4ed8").setFontColor("#ffffff").setFontWeight("bold");
+        }
+      }
+    }
+  } catch(e) {
+    Logger.log("ensureLineColumns err: " + e);
+  }
 }
 
 // 輔助函式：取消報名並將選手資料移動至「已取消報名」工作表
@@ -526,7 +1225,6 @@ function cancelAndMoveRegistration(ss, data) {
     return { result: "error", message: "請提供報名編號或登記電話以辦理取消" };
   }
 
-  // 1. 準備或建立「已取消報名」工作表
   var sheetCancel = ss.getSheetByName("已取消報名");
   if (!sheetCancel) {
     sheetCancel = ss.insertSheet("已取消報名");
@@ -548,7 +1246,6 @@ function cancelAndMoveRegistration(ss, data) {
     sheetCancel.getRange(1, 1, 1, 11).setBackground("#475569").setFontColor("#ffffff").setFontWeight("bold");
   }
 
-  // 2. 檢索三張報名工作表
   var targetSheets = [
     { name: "大隊接力報名名冊", project: "薪傳大隊接力", phoneCol: 7, idCol: 1, nameCol: 3 },
     { name: "親子趣味競賽名冊", project: "圈力衝刺親子趣味競賽", phoneCol: 4, idCol: 1, nameCol: 2 },
@@ -583,68 +1280,56 @@ function cancelAndMoveRegistration(ss, data) {
       }
 
       if (isMatched) {
-        // 抓取並標準化該列資料
-        var origTime = formatDateVal(row[0]);
-        var originalId = rowId;
-        var personName = "";
-        var phoneVal = "";
+        fromSheetName = conf.name;
+        var originalId = String(row[conf.idCol] || "");
+        var originalRegTime = formatDateVal(row[0]);
+        var personName = String(row[conf.nameCol] || "");
+        var phoneVal = cleanPhoneVal(row[conf.phoneCol]);
         var emailVal = "";
-        var orgOrGroup = "";
+        var unitInfo = "";
         var extraInfo = "";
 
         if (conf.name === "大隊接力報名名冊") {
-          personName = String(row[3] || "");
-          orgOrGroup = String(row[2] || "") + " / " + String(row[4] || "");
+          unitInfo = String(row[2] || "");
           emailVal = String(row[5] || "");
-          phoneVal = cleanPhoneVal(row[7]);
-          extraInfo = "備註: " + String(row[9] || "無");
+          extraInfo = "出生年次：" + String(row[6] || "") + "，校友年次：" + String(row[8] || "");
         } else if (conf.name === "親子趣味競賽名冊") {
-          personName = String(row[5] || "") + " (學生) ＆ " + String(row[2] || "") + " (家長)";
+          unitInfo = String(row[6] || "") + String(row[7] || "");
           emailVal = String(row[3] || "");
-          phoneVal = cleanPhoneVal(row[4]);
-          orgOrGroup = String(row[6] || "") + String(row[7] || "");
-          extraInfo = "全名: " + String(row[8] || "");
+          extraInfo = "學生姓名：" + String(row[5] || "") + "，全名組合：" + String(row[8] || "");
         } else if (conf.name === "校慶服務志工名冊") {
-          personName = String(row[2] || "");
-          orgOrGroup = String(row[3] || "");
-          phoneVal = cleanPhoneVal(row[4]);
+          unitInfo = String(row[3] || "");
           emailVal = String(row[7] || "");
-          extraInfo = "家長: " + String(row[6] || "") + " (" + cleanPhoneVal(row[5]) + ") / 組別: " + String(row[9] || "");
+          extraInfo = "家長電話：" + cleanPhoneVal(row[5]) + "，組別：" + String(row[9] || "");
         }
 
-        // 移入「已取消報名」工作表
         sheetCancel.appendRow([
           cancelTimestamp,
           conf.project,
           originalId,
           personName,
-          phoneVal,
+          formatPhoneForSheet(phoneVal),
           emailVal,
-          orgOrGroup,
+          unitInfo,
           extraInfo,
-          origTime,
+          originalRegTime,
           cancelReason,
-          "已自主取消 (名額已釋出)"
+          "名額已釋出"
         ]);
+        var cancelLastRow = sheetCancel.getLastRow();
+        sheetCancel.getRange(cancelLastRow, 5).setNumberFormat('@');
 
-        var lastRowCancel = sheetCancel.getLastRow();
-        sheetCancel.getRange(lastRowCancel, 5).setNumberFormat('@'); // 電話設為純文字保留 0
-
-        // 從原工作表刪除該列 (釋出名額)
         sheet.deleteRow(r + 1);
 
         moved = true;
-        fromSheetName = conf.name;
         movedRecord = {
           regId: originalId,
-          project: conf.project,
           name: personName,
-          phone: phoneVal,
-          email: emailVal,
-          fromSheet: fromSheetName
+          project: conf.project,
+          fromSheet: fromSheetName,
+          cancelTime: cancelTimestamp
         };
 
-        // 發送通知信給管理者備查
         try {
           var adminEmail = "stud03@ttps.hc.edu.tw";
           var noticeBody = "大庄國小 71 週年校慶運動會 - 選手/家長自主取消報名通知：\n\n"
@@ -757,7 +1442,10 @@ function getAllRegistrations(ss) {
         birthYear: String(r[6]),
         phone: cleanPhoneVal(r[7]),
         gradYear: String(r[8]),
-        status: String(r[9])
+        status: String(r[9]),
+        lineUserId: String(r[10] || ""),
+        lineDisplayName: String(r[11] || ""),
+        lineStatus: String(r[12] || "")
       });
     }
   }
@@ -778,7 +1466,10 @@ function getAllRegistrations(ss) {
         studentGrade: String(f[6]),
         studentClass: String(f[7]),
         combinedTitle: String(f[8]),
-        status: String(f[9])
+        status: String(f[9]),
+        lineUserId: String(f[10] || ""),
+        lineDisplayName: String(f[11] || ""),
+        lineStatus: String(f[12] || "")
       });
     }
   }
@@ -800,7 +1491,10 @@ function getAllRegistrations(ss) {
         email: String(v[7]),
         isAlumni: String(v[8]),
         serviceRoles: String(v[9]),
-        status: String(v[10])
+        status: String(v[10]),
+        lineUserId: String(v[11] || ""),
+        lineDisplayName: String(v[12] || ""),
+        lineStatus: String(v[13] || "")
       });
     }
   }
@@ -821,11 +1515,9 @@ function formatPhoneForSheet(val) {
   if (val === null || val === undefined) return "";
   var str = String(val).trim();
   if (!str) return "";
-  // 若為 9 碼電話（如 912345678），補上開頭 0
   if (/^9\d{8}$/.test(str)) {
     str = "0" + str;
   }
-  // 在 Google 試算表中，單引號開頭 ' 表示強制為文字格式，試算表會完整保留開頭 0 且在介面上不顯示單引號
   if (str.charAt(0) !== "'") {
     return "'" + str;
   }
@@ -848,7 +1540,6 @@ function cleanPhoneVal(val) {
 // 輔助函式：自動修復 Google 試算表中既有遺失開頭 0 的電話欄位，並將格式設為純文字
 function fixExistingPhones(ss) {
   try {
-    // 1. 親子賽 (Col 5)
     var sFamily = ss.getSheetByName("親子趣味競賽名冊");
     if (sFamily && sFamily.getLastRow() > 1) {
       var numRows = sFamily.getLastRow() - 1;
@@ -869,7 +1560,6 @@ function fixExistingPhones(ss) {
       if (changed) range.setValues(vals);
     }
 
-    // 2. 接力賽 (Col 8)
     var sRelay = ss.getSheetByName("大隊接力報名名冊");
     if (sRelay && sRelay.getLastRow() > 1) {
       var numRowsR = sRelay.getLastRow() - 1;
@@ -890,7 +1580,6 @@ function fixExistingPhones(ss) {
       if (changedR) rangeR.setValues(valsR);
     }
 
-    // 3. 志工 (Col 5, 6)
     var sVol = ss.getSheetByName("校慶服務志工名冊");
     if (sVol && sVol.getLastRow() > 1) {
       var numRowsV = sVol.getLastRow() - 1;
@@ -917,7 +1606,7 @@ function fixExistingPhones(ss) {
   }
 }
 
-// 輔助函式：供管理者在 Apps Script 編輯器點擊執行，完成「首次寄信權限授權」
+// 測試寄信授權
 function testSendEmail() {
   var target = "stud03@ttps.hc.edu.tw";
   MailApp.sendEmail({

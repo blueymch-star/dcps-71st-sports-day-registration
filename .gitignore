@@ -12,3 +12,16 @@ Desktop.ini
 *.njsproj
 *.sln
 *.sw?
+
+# Security & Secrets (密鑰與部署憑證排除)
+.env
+.env.*
+*.env
+.clasp.json
+.clasprc.json
+.vercel/
+
+# Temporary / Scratch scripts
+scratch/
+test_*.js
+verify_*.js

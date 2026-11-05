@@ -10,6 +10,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet"/>
   
+  <!-- LINE LIFF SDK & 智慧連動模組 -->
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="line-liff.js"></script>
+  
   <style>
     @layer base {
       html, body { width: 100vw; margin: 0; padding: 0; background-color: #faf8ff; }
@@ -395,6 +399,9 @@
                 <span class="text-emerald-800 font-bold" id="quota-remain-text">計算中...</span>
               </div>
             </div>
+
+            <!-- LINE LIFF 智慧連動狀態條 -->
+            <div id="line-status-banner" class="mt-3"></div>
           </div>
 
           <!-- Exact Form Layout as in Provided Image -->
@@ -840,6 +847,13 @@
     const DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbzl7zf48nxLH2_BPzEL0T48NNR8EI0SO_ROErJ0cDszftJphDOJ1lG-OTfrsxERv-h57A/exec';
     let currentGasUrl = localStorage.getItem(STORAGE_KEY_GAS_URL) || DEFAULT_GAS_URL;
 
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+      });
+    }
+
     const STORAGE_KEY_ALL_REG = 'dachuang_71_registrations';
     const MAX_REGULAR_QUOTA = 20;   // 正選 20 組
     const MAX_WAITLIST_QUOTA = 2;  // 候補 2 組
@@ -1074,6 +1088,7 @@
       submitBtn.disabled = true;
       submitText.textContent = '資料傳輸中，寫入 GAS 試算表與自動寄發通知...';
 
+      const lineInfo = (window.DACHUANG_LINE && window.DACHUANG_LINE.getPayload) ? window.DACHUANG_LINE.getPayload() : {};
       const regId = 'DC71-FAM-' + Math.floor(1000 + Math.random() * 9000);
       const postPayload = {
         type: 'family',
@@ -1086,6 +1101,8 @@
         studentClass: studentClass,
         admissionStatus: admissionStatus,
         location: '本校操場中央草皮區',
+        lineUserId: lineInfo.lineUserId || '',
+        lineDisplayName: lineInfo.lineDisplayName || '',
         timestamp: new Date().toISOString()
       };
 
@@ -1150,6 +1167,8 @@
         studentGrade: studentGrade,
         studentClass: studentClass,
         status: admissionStatus,
+        lineUserId: lineInfo.lineUserId || '',
+        lineDisplayName: lineInfo.lineDisplayName || '',
         gasSuccess: gasSuccess
       });
     }
@@ -1204,6 +1223,19 @@
           </div>
           <p class="text-[11px] leading-relaxed text-blue-900">
             大會已自動寄送報名確認信至您的信箱：<strong>${info.parentEmail || ''}</strong>，並已同步通報大會管理者信箱 (<code class="bg-white/80 px-1 py-0.5 rounded font-mono text-tertiary font-bold">stud03@ttps.hc.edu.tw</code>)。
+          </p>
+        </div>
+
+        <!-- LINE 官方機器人即時推播狀態卡 -->
+        <div class="p-3.5 rounded-xl ${info.lineUserId ? 'bg-[#06C755]/10 border border-[#06C755]/30 text-emerald-950' : 'bg-surface-container-low border border-surface-container text-on-surface'} space-y-1">
+          <div class="flex items-center gap-1.5 font-bold ${info.lineUserId ? 'text-[#06C755]' : 'text-on-surface-variant'} text-[12.5px]">
+            <span class="material-symbols-outlined text-[18px]">${info.lineUserId ? 'check_circle' : 'info'}</span>
+            LINE 官方推播連動：${info.lineUserId ? '已連動 (' + escapeHtml(info.lineDisplayName || '已認證') + ')' : '一般網頁模式'}
+          </div>
+          <p class="text-[11px] leading-relaxed text-on-surface-variant">
+            ${info.lineUserId 
+              ? '🎉 <strong>LINE 數位報名收執單已即時推播至您的 LINE 聊天室！</strong> 後續錄取通知與賽前行前提醒亦將直達此裝置。' 
+              : '提示：若由手機相機或 LINE 掃描聯絡簿 QR Code 點開，系統可直接連動 LINE 機器人自動發送卡片通知。'}
           </p>
         </div>
 

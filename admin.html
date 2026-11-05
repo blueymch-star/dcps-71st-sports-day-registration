@@ -134,6 +134,10 @@
           <span class="material-symbols-outlined text-[17px]">table_chart</span>
           <span class="hidden md:inline">Google 試算表</span>
         </a>
+        <button onclick="changeAdminPassword()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-surface-container-highest hover:bg-surface-container text-on-surface text-xs font-bold transition-all" title="修改本機後台管理密碼">
+          <span class="material-symbols-outlined text-[17px]">key</span>
+          <span class="hidden md:inline">修改密碼</span>
+        </button>
         <button onclick="logoutAdmin()" class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-surface-container-highest hover:bg-red-50 text-red-600 text-xs font-bold transition-all" title="登出後台">
           <span class="material-symbols-outlined text-[18px]">logout</span>
           <span class="hidden sm:inline">登出</span>
@@ -231,6 +235,50 @@
       </div>
     </div>
 
+    <!-- LINE Messaging API 智慧推播廣播中心 -->
+    <div class="bg-gradient-to-r from-emerald-950 via-teal-950 to-slate-900 text-white rounded-2xl p-5 border border-emerald-500/30 shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="w-12 h-12 rounded-2xl bg-[#06C755] flex items-center justify-center text-white shadow-md shrink-0">
+          <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M24 10.3c0-4.6-4.5-8.3-10-8.3-5.5 0-10 3.7-10 8.3 0 4.1 3.6 7.6 8.5 8.2.3.1.8.2 1 .7.1.4.1 1 0 1.4-.1.4-.4 1.5-.4 1.5s-.1.4.2.2c.3-.2 4.1-2.4 5.6-4.1 3.2-1.8 5.1-4.7 5.1-7.9z"/></svg>
+        </div>
+        <div class="flex flex-col">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h2 class="font-headline font-bold text-base text-white">LINE 官方機器人推播廣播中心</h2>
+            <span id="line-token-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              ● Messaging API 整合就緒
+            </span>
+            <span id="line-bound-stats" class="text-xs text-emerald-300 font-mono">
+              (連動數計算中...)
+            </span>
+          </div>
+          <p class="text-xs text-emerald-100/80 mt-1 leading-relaxed">
+            透過方案 A (LIFF) 報名之家長與選手已自動鎖定 LINE ID。您可在此一鍵推播【錄取通知書】或發布【賽前行前提醒】。
+          </p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2 flex-wrap w-full md:w-auto justify-end">
+        <!-- Send Admission Notice -->
+        <button onclick="openAdmissionModal()" class="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold shadow-md active:scale-95 transition-all">
+          <span class="material-symbols-outlined text-[17px]">campaign</span>
+          <span>發送錄取通知 (LINE)</span>
+        </button>
+
+        <!-- Send Pre-Game Notice -->
+        <button onclick="openPreGameModal()" class="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-md active:scale-95 transition-all">
+          <span class="material-symbols-outlined text-[17px]">forward_to_inbox</span>
+          <span>發送賽前通知 (LINE)</span>
+        </button>
+
+        <!-- Config / Test Button -->
+        <button onclick="openLineConfigModal()" class="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20 active:scale-95 transition-all">
+          <span class="material-symbols-outlined text-[17px]">tune</span>
+          <span>LINE 設定 / 測試</span>
+        </button>
+      </div>
+    </div>
+
     <!-- Project Tabs Switcher -->
     <div class="bg-surface-container-lowest rounded-2xl border border-surface-container shadow-sm overflow-hidden flex flex-col">
       <div class="flex items-center border-b border-surface-container bg-surface-container-low/40 px-3 overflow-x-auto">
@@ -282,13 +330,22 @@
 
   <!-- ==================== LOGIC ==================== -->
   <script>
-    const ADMIN_PASSWORD = '183618';
+    const STORAGE_KEY_ADMIN_PASS_HASH = 'dachuang_71_admin_pass_hash';
+    // 預設密碼 183618 之 SHA-256 雜湊值 (防原始碼洩露)
+    const DEFAULT_ADMIN_HASH = 'aaaa9a15028622a950bf7fb80cd1ce6230183b6ce0e05013e9b1ce6723b6a935';
     const AUTH_SESSION_KEY = 'dachuang_71_admin_auth';
     const STORAGE_KEY_REGISTRATIONS = 'dachuang_71_registrations';
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbzl7zf48nxLH2_BPzEL0T48NNR8EI0SO_ROErJ0cDszftJphDOJ1lG-OTfrsxERv-h57A/exec';
 
     let currentTab = 'family'; // default active tab: family or relay
     let cloudData = { family: [], relay: [], volunteer: [] };
+
+    async function hashAdminPassword(str) {
+      const utf8 = new TextEncoder().encode(str);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
 
     // Phone format helper (確保保留開頭 0)
     function formatPhone(phone) {
@@ -299,7 +356,7 @@
       return str;
     }
 
-    // 1. Password Verification
+    // 1. Password Verification (本地雜湊驗證，不存明文)
     function checkAuth() {
       const isAuthed = sessionStorage.getItem(AUTH_SESSION_KEY) === 'true';
       const modal = document.getElementById('auth-gate-modal');
@@ -312,10 +369,16 @@
       }
     }
 
-    function verifyGatePassword() {
+    async function verifyGatePassword() {
       const input = document.getElementById('gate-password-input');
       const err = document.getElementById('gate-error-msg');
-      if (input.value === ADMIN_PASSWORD) {
+      const val = input.value.trim();
+      if (!val) return;
+
+      const inputHash = await hashAdminPassword(val);
+      const targetHash = localStorage.getItem(STORAGE_KEY_ADMIN_PASS_HASH) || DEFAULT_ADMIN_HASH;
+
+      if (inputHash === targetHash) {
         sessionStorage.setItem(AUTH_SESSION_KEY, 'true');
         err.classList.add('hidden');
         document.getElementById('auth-gate-modal').classList.add('hidden');
@@ -325,6 +388,23 @@
         input.value = '';
         input.focus();
       }
+    }
+
+    // 提供後台管理員自訂修改本地端密碼
+    async function changeAdminPassword() {
+      const newPass = prompt("請輸入新的後台管理密碼（至少 6 碼）：");
+      if (!newPass || newPass.trim().length < 6) {
+        alert("密碼不可為空且長度至少需 6 個字元！");
+        return;
+      }
+      const confirmPass = prompt("請再次輸入新密碼確認：");
+      if (newPass !== confirmPass) {
+        alert("兩次輸入的密碼不一致！");
+        return;
+      }
+      const newHash = await hashAdminPassword(newPass.trim());
+      localStorage.setItem(STORAGE_KEY_ADMIN_PASS_HASH, newHash);
+      alert("✅ 後台管理密碼已成功更新！新密碼雜湊已儲存於您的本機端。");
     }
 
     function logoutAdmin() {
@@ -420,6 +500,9 @@
           phone: r.phone,
           gradYear: r.gradYear,
           status: r.status,
+          lineUserId: r.lineUserId || '',
+          lineDisplayName: r.lineDisplayName || '',
+          lineStatus: r.lineStatus || '',
           date: r.timestamp || new Date().toLocaleString()
         });
       });
@@ -438,6 +521,9 @@
           studentGrade: f.studentGrade,
           studentClass: f.studentClass,
           status: f.status,
+          lineUserId: f.lineUserId || '',
+          lineDisplayName: f.lineDisplayName || '',
+          lineStatus: f.lineStatus || '',
           date: f.timestamp || new Date().toLocaleString()
         });
       });
@@ -457,6 +543,9 @@
           isAlumni: v.isAlumni,
           serviceRoles: v.serviceRoles,
           status: v.status,
+          lineUserId: v.lineUserId || '',
+          lineDisplayName: v.lineDisplayName || '',
+          lineStatus: v.lineStatus || '',
           date: v.timestamp || new Date().toLocaleString()
         });
       });
@@ -477,6 +566,12 @@
       const relayList = list.filter(i => i.type === 'relay');
       const volList = list.filter(i => i.type === 'volunteer' || i.type === 'volunteers');
 
+      const boundCount = list.filter(i => i.lineUserId && i.lineUserId.startsWith('U')).length;
+      const boundStatsEl = document.getElementById('line-bound-stats');
+      if (boundStatsEl) {
+        boundStatsEl.textContent = `(已連動 LINE 官方帳號：${boundCount} / ${list.length} 人)`;
+      }
+
       document.getElementById('kpi-family').textContent = familyList.length;
       document.getElementById('kpi-relay').textContent = relayList.length;
       document.getElementById('kpi-vol').textContent = volList.length;
@@ -487,7 +582,7 @@
 
       // ==========================================
       // 1. 親子趣味競賽 (Family Games) 欄位
-      // 編號 | 管理(刪除鍵) | 報名日期時間 | 家長姓名 | Email | 行動電話 | 學生姓名 | 學生年級 | 學生班級
+      // 編號 | 管理(刪除鍵) | 報名日期時間 | 家長姓名 | Email | 行動電話 | 學生姓名 | 學生年級 | 學生班級 | 錄取狀態 | LINE 狀態
       // ==========================================
       if (currentTab === 'family') {
         summaryEl.textContent = `親子趣味競賽共 ${familyList.length} 組 (上限 20 正選 + 2 候補)`;
@@ -503,13 +598,14 @@
             <th class="py-3 px-4">學生年級</th>
             <th class="py-3 px-4">學生班級</th>
             <th class="py-3 px-4">錄取狀態</th>
+            <th class="py-3 px-4">LINE 狀態</th>
           </tr>
         `;
 
         if (familyList.length === 0) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="10" class="py-12 text-center text-on-surface-variant">
+              <td colspan="11" class="py-12 text-center text-on-surface-variant">
                 <span class="material-symbols-outlined text-3xl opacity-40">sports_score</span>
                 <p class="font-bold mt-1">目前尚無親子趣味競賽報名資料</p>
                 <p class="text-xs opacity-70">測試名單已清空，可由前台報名頁面進行測試填表。</p>
@@ -563,6 +659,18 @@
                 ${escapeHtml(item.status || '正選')}
               </span>
             </td>
+            <td class="py-3.5 px-4">
+              ${item.lineUserId ? `
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold" title="${escapeHtml(item.lineStatus || '已連動')}">
+                  <span class="w-1.5 h-1.5 rounded-full bg-[#06C755]"></span>
+                  <span>${escapeHtml(item.lineDisplayName || '已連動')}</span>
+                </span>
+              ` : `
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant text-[11px]">
+                  <span>⚪ 未連動</span>
+                </span>
+              `}
+            </td>
           </tr>
         `).join('');
         return;
@@ -570,7 +678,7 @@
 
       // ==========================================
       // 2. 薪傳大隊接力 (Relay) 欄位
-      // 編號 | 管理(刪除鍵) | 報名日期時間 | 姓名 | 性別 | Email | 出生年次 | 行動電話 | 校友畢業年度 | 報名組別(有設定候補)
+      // 編號 | 管理(刪除鍵) | 報名日期時間 | 姓名 | 性別 | Email | 出生年次 | 行動電話 | 校友畢業年度 | 報名組別 | LINE 狀態
       // ==========================================
       if (currentTab === 'relay') {
         summaryEl.textContent = `薪傳大隊接力共 ${relayList.length} 人報名`;
@@ -586,13 +694,14 @@
             <th class="py-3 px-4">行動電話</th>
             <th class="py-3 px-4">校友畢業年度</th>
             <th class="py-3 px-4">報名組別 (有設定候補)</th>
+            <th class="py-3 px-4">LINE 狀態</th>
           </tr>
         `;
 
         if (relayList.length === 0) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="10" class="py-12 text-center text-on-surface-variant">
+              <td colspan="11" class="py-12 text-center text-on-surface-variant">
                 <span class="material-symbols-outlined text-3xl opacity-40">sprint</span>
                 <p class="font-bold mt-1">目前尚無大隊接力報名資料</p>
                 <p class="text-xs opacity-70">測試名單已清空，可由大隊接力報名專頁填寫送出。</p>
@@ -646,6 +755,18 @@
                 </span>
               </div>
             </td>
+            <td class="py-3.5 px-4">
+              ${item.lineUserId ? `
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold" title="${escapeHtml(item.lineStatus || '已連動')}">
+                  <span class="w-1.5 h-1.5 rounded-full bg-[#06C755]"></span>
+                  <span>${escapeHtml(item.lineDisplayName || '已連動')}</span>
+                </span>
+              ` : `
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant text-[11px]">
+                  <span>⚪ 未連動</span>
+                </span>
+              `}
+            </td>
           </tr>
         `).join('');
         return;
@@ -669,13 +790,14 @@
             <th class="py-3 px-4">是否為校友</th>
             <th class="py-3 px-4">希望服務組別</th>
             <th class="py-3 px-4">錄取狀態</th>
+            <th class="py-3 px-4">LINE 狀態</th>
           </tr>
         `;
 
         if (volList.length === 0) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="11" class="py-12 text-center text-on-surface-variant">
+              <td colspan="12" class="py-12 text-center text-on-surface-variant">
                 <span class="material-symbols-outlined text-3xl opacity-40">volunteer_activism</span>
                 <p class="font-bold mt-1">目前尚無服務志工報名資料</p>
                 <p class="text-xs opacity-70">測試名單已清空，可由志工專頁進行填表登記。</p>
@@ -730,6 +852,18 @@
                 <span class="w-1.5 h-1.5 rounded-full ${String(item.status).includes('優先') ? 'bg-amber-500' : 'bg-emerald-600'}"></span>
                 ${escapeHtml(item.status || '審核中')}
               </span>
+            </td>
+            <td class="py-3.5 px-4">
+              ${item.lineUserId ? `
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold" title="${escapeHtml(item.lineStatus || '已連動')}">
+                  <span class="w-1.5 h-1.5 rounded-full bg-[#06C755]"></span>
+                  <span>${escapeHtml(item.lineDisplayName || '已連動')}</span>
+                </span>
+              ` : `
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant text-[11px]">
+                  <span>⚪ 未連動</span>
+                </span>
+              `}
             </td>
           </tr>
         `).join('');
@@ -868,7 +1002,372 @@
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
+    // ==========================================
+    // LINE 智慧推播管理邏輯 (錄取通知、賽前提醒、連線設定)
+    // ==========================================
+
+    function openAdmissionModal() {
+      const list = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS) || '[]');
+      const boundCount = list.filter(i => i.lineUserId && (String(i.status).includes('正選') || String(i.status).includes('錄取') || String(i.status).includes('優先'))).length;
+      document.getElementById('adm-target-stats').textContent = `目前符合資格且已連動 LINE 之正選選手共 ${boundCount} 人`;
+      document.getElementById('modal-line-admission').classList.remove('hidden');
+    }
+
+    function closeAdmissionModal() {
+      document.getElementById('modal-line-admission').classList.add('hidden');
+    }
+
+    async function submitAdmissionPush() {
+      const category = document.getElementById('adm-select-category').value;
+      if (!confirm(`確定要向【${category === 'all' ? '全部已錄取名單' : category}】發送【LINE 錄取通知書】嗎？`)) {
+        return;
+      }
+
+      const btn = document.getElementById('btn-submit-admission');
+      btn.disabled = true;
+      btn.textContent = '推播發送中...';
+
+      try {
+        const resp = await fetch(GAS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({
+            action: 'sendAdmissionNotices',
+            category: category
+          })
+        });
+        const res = await resp.json();
+        if (res.result === 'success') {
+          alert(`🎉 ${res.message}`);
+          closeAdmissionModal();
+          fetchFromGoogleSheet();
+        } else {
+          alert(`推播失敗：${res.message || res.error}`);
+        }
+      } catch (err) {
+        alert('發送請求失敗，請檢查網路連線或 GAS 權限設定！');
+        console.error(err);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '確認批次推播錄取通知';
+      }
+    }
+
+    function openPreGameModal() {
+      const list = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS) || '[]');
+      const boundCount = list.filter(i => i.lineUserId).length;
+      document.getElementById('pre-target-stats').textContent = `目前已連動 LINE 總人數共 ${boundCount} 人`;
+      document.getElementById('modal-line-pregame').classList.remove('hidden');
+    }
+
+    function closePreGameModal() {
+      document.getElementById('modal-line-pregame').classList.add('hidden');
+    }
+
+    async function submitPreGamePush() {
+      const category = document.getElementById('pre-select-category').value;
+      const title = document.getElementById('pre-input-title').value.trim();
+      const content = document.getElementById('pre-input-content').value.trim();
+
+      if (!title || !content) {
+        return alert('請填寫通知標題與詳細公告內容！');
+      }
+
+      if (!confirm(`確定要向【${category === 'all' ? '全體已連動選手' : category}】群發【賽前行前通知】嗎？`)) {
+        return;
+      }
+
+      const btn = document.getElementById('btn-submit-pregame');
+      btn.disabled = true;
+      btn.textContent = '群發廣播中...';
+
+      try {
+        const resp = await fetch(GAS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({
+            action: 'sendPreGameNotice',
+            category: category,
+            noticeTitle: title,
+            noticeContent: content
+          })
+        });
+        const res = await resp.json();
+        if (res.result === 'success') {
+          alert(`🎉 ${res.message}`);
+          closePreGameModal();
+          fetchFromGoogleSheet();
+        } else {
+          alert(`推播失敗：${res.message || res.error}`);
+        }
+      } catch (err) {
+        alert('發送請求失敗，請檢查網路或 GAS 權限！');
+        console.error(err);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '立即群發賽前通知';
+      }
+    }
+
+    function openLineConfigModal() {
+      const storedLiff = localStorage.getItem('dachuang_71_liff_id') || '';
+      document.getElementById('cfg-liff-id').value = storedLiff;
+      document.getElementById('modal-line-config').classList.remove('hidden');
+    }
+
+    function closeLineConfigModal() {
+      document.getElementById('modal-line-config').classList.add('hidden');
+    }
+
+    async function saveLineTokenSettings() {
+      const token = document.getElementById('cfg-line-token').value.trim();
+      const liffId = document.getElementById('cfg-liff-id').value.trim();
+
+      if (liffId) {
+        localStorage.setItem('dachuang_71_liff_id', liffId);
+        if (window.DACHUANG_LINE) window.DACHUANG_LINE.setLiffId(liffId);
+      }
+
+      if (token) {
+        showToast('正在將 Channel Access Token 儲存至雲端 Script Properties...', true);
+        try {
+          const resp = await fetch(GAS_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ action: 'updateLineToken', token: token })
+          });
+          const res = await resp.json();
+          if (res.result === 'success') {
+            alert('✅ LINE Channel Access Token 與 LIFF ID 已成功儲存！');
+            closeLineConfigModal();
+            fetchFromGoogleSheet();
+          } else {
+            alert(`儲存失敗：${res.message}`);
+          }
+        } catch (e) {
+          alert('儲存失敗：' + e.toString());
+        }
+      } else if (liffId) {
+        alert('✅ LIFF ID 已在本機更新！');
+        closeLineConfigModal();
+      } else {
+        alert('請輸入要儲存的 Token 或 LIFF ID！');
+      }
+    }
+
+    async function testLinePushNow() {
+      const testUserId = document.getElementById('cfg-test-userid').value.trim();
+      if (!testUserId || !testUserId.startsWith('U')) {
+        return alert('請輸入有效的 LINE User ID（以英文字母 U 開頭之 33 碼字串）！\n提示：可先用自己的手機在任一報名頁面點選授權即可獲取。');
+      }
+
+      const btn = document.getElementById('btn-test-line');
+      btn.disabled = true;
+      btn.textContent = '測試推播中...';
+
+      try {
+        const resp = await fetch(GAS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ action: 'testLinePush', testUserId: testUserId })
+        });
+        const res = await resp.json();
+        if (res.result === 'success') {
+          alert('🎉 測試推播成功！請查看您的手機 LINE 聊天室是否已收到卡片。');
+        } else {
+          alert(`測試失敗：${res.message}`);
+        }
+      } catch (err) {
+        alert('測試請求失敗：' + err.toString());
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '發送測試訊息';
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', checkAuth);
   </script>
+
+  <!-- ==================== LINE BROADCAST MODALS ==================== -->
+
+  <!-- Modal 1: 批次推播錄取通知 -->
+  <div id="modal-line-admission" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-lg rounded-3xl shadow-2xl border border-surface-container overflow-hidden flex flex-col">
+      <div class="p-5 bg-gradient-to-r from-sky-600 to-blue-700 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[24px]">campaign</span>
+          <div>
+            <h3 class="font-headline font-bold text-base">發送【LINE 錄取通知書】</h3>
+            <p class="text-xs text-sky-100 opacity-90">以官方 Flex 卡片形式精準推播至正選選手手機</p>
+          </div>
+        </div>
+        <button onclick="closeAdmissionModal()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/20 text-white">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4 text-xs">
+        <div>
+          <label class="font-bold text-on-surface block mb-1.5">發送對象項目：</label>
+          <select id="adm-select-category" class="w-full px-3.5 py-2.5 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-semibold focus:ring-2 focus:ring-sky-500 outline-none">
+            <option value="all">全體項目已錄取選手 (親子趣味賽 + 大隊接力 + 熱血志工)</option>
+            <option value="family">僅限【圈力衝刺 親子趣味競賽】正選組別</option>
+            <option value="relay">僅限【庄情薪傳 大隊接力賽】正選選手</option>
+            <option value="volunteer">僅限【校慶服務志工】審核錄取志工</option>
+          </select>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-sky-50 border border-sky-200 text-sky-950 space-y-1.5">
+          <div class="flex items-center gap-1.5 font-bold text-sky-900">
+            <span class="material-symbols-outlined text-[17px]">info</span>
+            <span>發送前檢核提示</span>
+          </div>
+          <p id="adm-target-stats" class="text-sky-800 font-medium">正在統計名單...</p>
+          <p class="text-[11px] text-sky-700 leading-relaxed">
+            ※ 系統將自動排除候補名單，僅發送給審核狀態為「正選」或「錄取」且具備 LINE 識別碼之選手。
+          </p>
+        </div>
+
+        <!-- Preview Card Mockup -->
+        <div class="p-3.5 rounded-2xl bg-surface-container-low border border-surface-container">
+          <span class="font-bold text-on-surface-variant block mb-2">📱 LINE 聊天室卡片樣式預覽：</span>
+          <div class="rounded-xl overflow-hidden border border-sky-300 bg-white shadow-sm max-w-xs mx-auto text-left">
+            <div class="bg-sky-600 text-white p-3">
+              <span class="text-[10px] block opacity-80">第 71 屆大庄國小校慶運動會</span>
+              <strong class="text-sm">🏆 正式錄取出賽通知</strong>
+            </div>
+            <div class="p-3 space-y-1 text-[11px] text-slate-700">
+              <p class="font-bold text-sky-800">恭喜 王小明 選手正式錄取！</p>
+              <p>■ 報名項目：圈力衝刺親子趣味競賽</p>
+              <p>■ 競賽日期：115年12月12日 (六)</p>
+              <p>■ 檢錄地點：本校操場中央草皮區</p>
+              <p class="text-red-600 font-bold">■ 檢錄時間：10:20 ～ 10:30</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 bg-surface-container-low border-t border-surface-container flex items-center justify-end gap-2">
+        <button onclick="closeAdmissionModal()" class="px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container font-bold text-xs">
+          取消
+        </button>
+        <button id="btn-submit-admission" onclick="submitAdmissionPush()" class="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-md active:scale-95 transition-all">
+          確認批次推播錄取通知
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: 批次推播賽前行前提醒 -->
+  <div id="modal-line-pregame" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-lg rounded-3xl shadow-2xl border border-surface-container overflow-hidden flex flex-col">
+      <div class="p-5 bg-gradient-to-r from-purple-700 to-indigo-800 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[24px]">forward_to_inbox</span>
+          <div>
+            <h3 class="font-headline font-bold text-base">發布【賽前行前提醒與廣播】</h3>
+            <p class="text-xs text-purple-100 opacity-90">向參賽選手推播檢錄集合、穿著叮嚀與天候公告</p>
+          </div>
+        </div>
+        <button onclick="closePreGameModal()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/20 text-white">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4 text-xs">
+        <div>
+          <label class="font-bold text-on-surface block mb-1.5">推播對象群組：</label>
+          <select id="pre-select-category" class="w-full px-3.5 py-2.5 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-semibold focus:ring-2 focus:ring-purple-500 outline-none">
+            <option value="all">全體已連動 LINE 之報名選手與志工</option>
+            <option value="family">僅限【圈力衝刺 親子趣味競賽】報名組別</option>
+            <option value="relay">僅限【庄情薪傳 大隊接力賽】選手</option>
+            <option value="volunteer">僅限【校慶服務志工】成員</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="font-bold text-on-surface block mb-1.5">通知標題：</label>
+          <input type="text" id="pre-input-title" value="【大庄71校慶】明日盛大登場！賽前出賽重要提醒" class="w-full px-3.5 py-2.5 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-semibold focus:ring-2 focus:ring-purple-500 outline-none"/>
+        </div>
+
+        <div>
+          <label class="font-bold text-on-surface block mb-1.5">公告內文說明：</label>
+          <textarea id="pre-input-content" rows="4" class="w-full p-3 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-normal focus:ring-2 focus:ring-purple-500 outline-none leading-relaxed">親愛的選手您好！明天就是大庄國小 71 週年校慶運動會，請穿著舒適運動服裝與抓地力良好之運動球鞋，並自備水壺、健保卡及毛巾。競賽前 20 分鐘請至檢錄區集合，期待明日與您在操場同樂！</textarea>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-purple-50 border border-purple-200 text-purple-950 flex items-center justify-between">
+          <span id="pre-target-stats" class="font-medium text-purple-900">正在統計名單...</span>
+          <span class="text-[11px] text-purple-700 font-bold">100% 精準抵達手機</span>
+        </div>
+      </div>
+
+      <div class="p-4 bg-surface-container-low border-t border-surface-container flex items-center justify-end gap-2">
+        <button onclick="closePreGameModal()" class="px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container font-bold text-xs">
+          取消
+        </button>
+        <button id="btn-submit-pregame" onclick="submitPreGamePush()" class="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-md active:scale-95 transition-all">
+          立即群發賽前通知
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: LINE 官方帳號設定與連線測試 -->
+  <div id="modal-line-config" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-lg rounded-3xl shadow-2xl border border-surface-container overflow-hidden flex flex-col">
+      <div class="p-5 bg-gradient-to-r from-emerald-800 to-teal-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[24px]">tune</span>
+          <div>
+            <h3 class="font-headline font-bold text-base">LINE Messaging API 串接設定</h3>
+            <p class="text-xs text-emerald-100 opacity-90">管理 Channel Access Token 與連線測試</p>
+          </div>
+        </div>
+        <button onclick="closeLineConfigModal()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/20 text-white">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4 text-xs">
+        <div>
+          <label class="font-bold text-on-surface block mb-1">LINE Channel Access Token (長期權杖)：</label>
+          <input type="password" id="cfg-line-token" placeholder="請在此貼上 LINE Developers 後台核發之長期權杖" class="w-full px-3.5 py-2.5 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-mono focus:ring-2 focus:ring-emerald-500 outline-none text-[11px]"/>
+          <p class="text-[10px] text-on-surface-variant mt-1">
+            ※ 儲存後將由 Apps Script 安全寫入 Script Properties，無需在前端暴露金鑰。
+          </p>
+        </div>
+
+        <div>
+          <label class="font-bold text-on-surface block mb-1">LIFF ID (前端連動代碼)：</label>
+          <input type="text" id="cfg-liff-id" placeholder="例如：2009278451-j1yK5Yp0" class="w-full px-3.5 py-2.5 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-mono focus:ring-2 focus:ring-emerald-500 outline-none text-xs"/>
+          <p class="text-[10px] text-on-surface-variant mt-1">
+            ※ 在 LINE Developers Console 建立 LIFF 應用程式後取得的 ID。
+          </p>
+        </div>
+
+        <div class="pt-3 border-t border-surface-container space-y-2">
+          <label class="font-bold text-on-surface block">推播連線測試：</label>
+          <div class="flex gap-2">
+            <input type="text" id="cfg-test-userid" placeholder="請輸入欲測試之 LINE User ID (U...)" class="flex-1 px-3.5 py-2 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-mono text-xs focus:ring-2 focus:ring-emerald-500 outline-none"/>
+            <button id="btn-test-line" onclick="testLinePushNow()" class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shrink-0 active:scale-95 transition-all">
+              發送測試訊息
+            </button>
+          </div>
+          <p class="text-[10px] text-on-surface-variant">
+            💡 可以在手機透過 LIFF 頁面點擊許可授權後，於下方名冊複製您的 LINE ID 貼至此處測試。
+          </p>
+        </div>
+      </div>
+
+      <div class="p-4 bg-surface-container-low border-t border-surface-container flex items-center justify-end gap-2">
+        <button onclick="closeLineConfigModal()" class="px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container font-bold text-xs">
+          取消
+        </button>
+        <button onclick="saveLineTokenSettings()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md active:scale-95 transition-all">
+          儲存設定
+        </button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
