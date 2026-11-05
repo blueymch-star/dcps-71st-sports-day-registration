@@ -157,7 +157,7 @@
   </header>
 
   <!-- ==================== MAIN CONTENT ==================== -->
-  <main class="flex-1 flex flex-col relative w-full pt-16 pb-28 sm:pb-32 bg-surface max-w-4xl mx-auto">
+  <main class="flex-1 flex flex-col relative w-full pt-16 pb-36 sm:pb-40 bg-surface max-w-4xl mx-auto">
     <div class="flex flex-col w-full">
 
       <!-- Hero & Celebration Banner Section -->
@@ -188,39 +188,39 @@
         </div>
 
         <!-- Quick Info Pill Strip (活動地點更新為：本校操場中央草皮區) -->
-        <div class="grid grid-cols-2 gap-space-xs pt-1">
-          <div class="flex items-center gap-2 p-2.5 rounded-xl bg-surface-container-lowest shadow-sm border border-surface-container">
-            <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-surface-container text-primary">
-              <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+          <div class="flex items-center gap-2.5 p-3 rounded-xl bg-surface-container-lowest shadow-sm border border-surface-container">
+            <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-surface-container text-primary shrink-0">
+              <span class="material-symbols-outlined text-[20px]">calendar_today</span>
             </div>
             <div class="flex flex-col min-w-0">
-              <span class="font-label-sm text-label-sm text-on-surface-variant">活動時間</span>
-              <span class="font-label-md text-label-md text-on-surface truncate font-bold">115/12/12 10:40-10:50</span>
+              <span class="font-label-sm text-[11px] text-on-surface-variant font-medium">活動時間</span>
+              <span class="text-xs sm:text-sm text-on-surface font-bold leading-tight">115/12/12 (六) 10:40 - 10:50</span>
             </div>
           </div>
-          <div class="flex items-center gap-2 p-2.5 rounded-xl bg-surface-container-lowest shadow-sm border border-surface-container">
-            <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800">
-              <span class="material-symbols-outlined text-[18px]">grass</span>
+          <div class="flex items-center gap-2.5 p-3 rounded-xl bg-surface-container-lowest shadow-sm border border-surface-container">
+            <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-emerald-100 text-emerald-800 shrink-0">
+              <span class="material-symbols-outlined text-[20px]">grass</span>
             </div>
             <div class="flex flex-col min-w-0">
-              <span class="font-label-sm text-label-sm text-on-surface-variant">活動地點</span>
-              <span class="font-label-md text-label-md text-emerald-900 truncate font-bold">本校操場中央草皮區</span>
+              <span class="font-label-sm text-[11px] text-on-surface-variant font-medium">活動地點</span>
+              <span class="text-xs sm:text-sm text-emerald-900 font-bold leading-tight">本校操場中央草皮區</span>
             </div>
           </div>
         </div>
 
         <!-- Registration Countdown Alert Card (11/27 中午 12:00) -->
-        <div class="flex items-center justify-between p-3.5 rounded-xl bg-secondary-fixed text-on-secondary-fixed shadow-sm border border-secondary/20">
-          <div class="flex items-center gap-2.5 min-w-0 cursor-pointer" onclick="toggleModal('modal-closed-notice')" title="查看截止與承辦資訊">
-            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-secondary text-on-secondary shrink-0 shadow-sm">
-              <span class="material-symbols-outlined text-[18px]">timer</span>
+        <div class="flex items-center justify-between p-3.5 rounded-xl bg-secondary-fixed text-on-secondary-fixed shadow-sm border border-secondary/20 gap-2">
+          <div class="flex items-center gap-2.5 min-w-0 cursor-pointer flex-1" onclick="toggleModal('modal-closed-notice')" title="查看截止與承辦資訊">
+            <div class="flex items-center justify-center w-9 h-9 rounded-full bg-secondary text-on-secondary shrink-0 shadow-sm">
+              <span class="material-symbols-outlined text-[19px]">timer</span>
             </div>
             <div class="flex flex-col min-w-0">
-              <span class="font-label-sm text-label-sm text-on-secondary-fixed-variant font-bold">報名截止倒數</span>
-              <span class="font-label-md text-label-md font-bold truncate">11/27 (五) 中午 12:00 止 (額滿即截止)</span>
+              <span class="font-label-sm text-[11px] text-on-secondary-fixed-variant font-bold">報名截止倒數</span>
+              <span class="text-xs sm:text-sm font-bold leading-tight">11/27 (五) 中午 12:00 截止 (額滿即止)</span>
             </div>
           </div>
-          <button onclick="scrollToForm()" class="shrink-0 inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-secondary text-on-secondary font-label-md text-label-md shadow-sm active:scale-95 transition-transform font-bold">
+          <button onclick="scrollToForm()" class="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-secondary text-on-secondary text-xs shadow-sm active:scale-95 transition-transform font-bold">
             即刻報名
             <span class="material-symbols-outlined text-[14px]">arrow_downward</span>
           </button>
@@ -302,12 +302,18 @@
             <img alt="大庄國小親子趣味競賽圈力衝刺場地示意圖，包含蹲下預備線、起點線、敏捷圈前進路徑、10公尺標示與折返線交通錐" class="w-full h-auto object-contain rounded-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAftCLfYhgO_4pZU9dyzVVTnrVUmifJLp5890tuxiFtypS6ZtohMiujcwlvpSFsrgoWHx_P_qD5M_6eqqPPzpzJKopCElaMbNSG9wynKQkyxuJ3NcDkLixc_gIUrFOAhmm5RtzrlkOTYKvv0qnaWX09Gs52WutK4W4ZbCBH6dIwaWn7X6hHzrl_NFIkN7PjWeF5qJsAgF1i1BJEqSzHOfU3lgGyRROX1k4KBTpF7u9rylk8lLzL2e8Q"/>
           </div>
 
-          <div class="p-3 bg-surface-container-low flex flex-col gap-2 border-t border-surface-container">
-            <div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant font-medium">
-              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-secondary-container"></span>橙色箭頭：去程 (10公尺)</span>
-              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span>藍色箭頭：回程 (10公尺)</span>
+          <div class="p-3.5 bg-surface-container-low flex flex-col gap-2.5 border-t border-surface-container">
+            <div class="flex flex-col gap-1.5 text-xs text-on-surface-variant font-medium">
+              <div class="flex items-center gap-2 p-2 rounded-lg bg-surface-container-lowest border border-secondary-container/20 shadow-2xs">
+                <span class="w-3 h-3 rounded-full bg-secondary-container shrink-0 shadow-xs"></span>
+                <span class="text-on-surface font-bold text-xs sm:text-sm">橘色箭頭：去程（10 公尺）</span>
+              </div>
+              <div class="flex items-center gap-2 p-2 rounded-lg bg-surface-container-lowest border border-primary-container/20 shadow-2xs">
+                <span class="w-3 h-3 rounded-full bg-primary-container shrink-0 shadow-xs"></span>
+                <span class="text-on-surface font-bold text-xs sm:text-sm">藍色箭頭：回程（10 公尺）</span>
+              </div>
             </div>
-            <p class="font-body-sm text-body-sm text-on-surface-variant">
+            <p class="text-xs text-on-surface-variant leading-relaxed pt-0.5">
               ※ 比賽於<strong>操場中央草皮區</strong>進行；接力交接須完全越過「起點線」方可交棒。
             </p>
           </div>
@@ -317,12 +323,19 @@
         <div class="flex flex-col gap-space-sm">
           <!-- Step 1: Outbound (去程) -->
           <div class="flex flex-col p-4 rounded-xl bg-surface-container-lowest shadow-sm relative overflow-hidden border border-surface-container">
-            <div class="absolute -right-2 -bottom-3 text-secondary-fixed/40 font-headline-display text-4xl select-none pointer-events-none font-bold">01</div>
-            <div class="flex items-center gap-2 mb-2">
-              <span class="flex items-center justify-center w-6 h-6 rounded-full bg-secondary-container text-on-secondary font-headline-sm text-[12px] font-bold">1</span>
-              <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">去程衝刺：家長擺圈・孩子躍進</h3>
-              <span class="ml-auto font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-bold">去程 10M</span>
+            <div class="absolute -right-2 -bottom-3 text-secondary-fixed/30 font-headline-display text-4xl select-none pointer-events-none font-bold">01</div>
+            <div class="flex items-center justify-between gap-2 mb-1.5">
+              <div class="inline-flex items-center gap-1.5">
+                <span class="flex items-center justify-center w-5 h-5 rounded-full bg-secondary-container text-on-secondary text-[11px] font-bold">1</span>
+                <span class="text-xs font-bold text-secondary uppercase tracking-wider">第一階段</span>
+              </div>
+              <span class="shrink-0 px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed text-xs font-bold shadow-xs whitespace-nowrap">
+                去程 10 公尺
+              </span>
             </div>
+            <h3 class="text-base sm:text-headline-sm text-on-surface font-bold mb-1.5 leading-snug">
+              去程衝刺：家長擺圈・孩子躍進
+            </h3>
             <p class="font-body-md text-body-md text-on-surface leading-relaxed">
               家長負責手持並依序移動 2 個敏捷圈向前鋪路，孩子必須<strong class="text-secondary font-bold">「雙腳跳進圈圈內」</strong>協力前推。
             </p>
@@ -330,12 +343,19 @@
 
           <!-- Step 2: Turn Around (折返) -->
           <div class="flex flex-col p-4 rounded-xl bg-surface-container-lowest shadow-sm relative overflow-hidden border border-surface-container">
-            <div class="absolute -right-2 -bottom-3 text-primary-fixed/40 font-headline-display text-4xl select-none pointer-events-none font-bold">02</div>
-            <div class="flex items-center gap-2 mb-2">
-              <span class="flex items-center justify-center w-6 h-6 rounded-full bg-primary-container text-on-primary font-headline-sm text-[12px] font-bold">2</span>
-              <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">折返關鍵：繞過交通錐・攻守互換</h3>
-              <span class="ml-auto font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-bold">折返點</span>
+            <div class="absolute -right-2 -bottom-3 text-primary-fixed/30 font-headline-display text-4xl select-none pointer-events-none font-bold">02</div>
+            <div class="flex items-center justify-between gap-2 mb-1.5">
+              <div class="inline-flex items-center gap-1.5">
+                <span class="flex items-center justify-center w-5 h-5 rounded-full bg-primary-container text-on-primary text-[11px] font-bold">2</span>
+                <span class="text-xs font-bold text-primary uppercase tracking-wider">第二階段</span>
+              </div>
+              <span class="shrink-0 px-2.5 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed text-xs font-bold shadow-xs whitespace-nowrap">
+                折返點
+              </span>
             </div>
+            <h3 class="text-base sm:text-headline-sm text-on-surface font-bold mb-1.5 leading-snug">
+              折返關鍵：繞過交通錐・攻守互換
+            </h3>
             <p class="font-body-md text-body-md text-on-surface leading-relaxed">
               前進達 10 公尺處，親子二人必須完全<strong class="text-primary font-bold">「繞過交通錐外圍」</strong>方可踏上折返線！抵達後立即攻守互換角色。
             </p>
@@ -343,12 +363,19 @@
 
           <!-- Step 3: Return & Tag (回程與接力) -->
           <div class="flex flex-col p-4 rounded-xl bg-surface-container-lowest shadow-sm relative overflow-hidden border border-surface-container">
-            <div class="absolute -right-2 -bottom-3 text-tertiary-fixed/40 font-headline-display text-4xl select-none pointer-events-none font-bold">03</div>
-            <div class="flex items-center gap-2 mb-2">
-              <span class="flex items-center justify-center w-6 h-6 rounded-full bg-tertiary text-on-tertiary font-headline-sm text-[12px] font-bold">3</span>
-              <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">回程接力：孩子鋪路・家長躍進</h3>
-              <span class="ml-auto font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-bold">回程 10M</span>
+            <div class="absolute -right-2 -bottom-3 text-tertiary-fixed/30 font-headline-display text-4xl select-none pointer-events-none font-bold">03</div>
+            <div class="flex items-center justify-between gap-2 mb-1.5">
+              <div class="inline-flex items-center gap-1.5">
+                <span class="flex items-center justify-center w-5 h-5 rounded-full bg-tertiary text-on-tertiary text-[11px] font-bold">3</span>
+                <span class="text-xs font-bold text-tertiary uppercase tracking-wider">第三階段</span>
+              </div>
+              <span class="shrink-0 px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-xs font-bold shadow-xs whitespace-nowrap">
+                回程 10 公尺
+              </span>
             </div>
+            <h3 class="text-base sm:text-headline-sm text-on-surface font-bold mb-1.5 leading-snug">
+              回程接力：孩子鋪路・家長躍進
+            </h3>
             <p class="font-body-md text-body-md text-on-surface leading-relaxed">
               回程改由孩子為家長移動敏捷圈，家長雙腳跳進圈內折返起跑線！最快完成之組別獲勝。
             </p>
@@ -555,6 +582,20 @@
               </p>
             </div>
           </div>
+
+          <!-- 活動承辦單位洽詢窗口卡片 -->
+          <div class="p-4 rounded-xl bg-surface-container-low border border-surface-container text-xs text-on-surface-variant shadow-sm space-y-2 mt-1">
+            <div class="font-bold text-on-surface flex items-center gap-1.5 text-sm text-tertiary">
+              <span class="material-symbols-outlined text-[18px]">contacts</span>
+              <span>活動承辦單位洽詢窗口</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1 text-[12px]">
+              <p><span class="font-bold text-on-surface">承辦單位：</span>新竹市大庄國小 學務處體育組</p>
+              <p><span class="font-bold text-on-surface">聯絡電話：</span>03-5384035 分機 607</p>
+              <p><span class="font-bold text-on-surface">承辦信箱：</span>stud03@ttps.hc.edu.tw</p>
+              <p><span class="font-bold text-on-surface">服務時間：</span>週一至週五 08:00 - 16:30</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -742,21 +783,6 @@
           <div class="font-bold text-on-surface flex items-center gap-1.5">
             <span class="material-symbols-outlined text-[16px] text-tertiary">contacts</span>
             活動承辦單位洽詢窗口：
-          </div>
-          <p>承辦單位：新竹市大庄國小 學務處體育組</p>
-          <p>聯絡電話：03-5384035 分機 607</p>
-          <p>承辦信箱：stud03@ttps.hc.edu.tw</p>
-          <p>服務時間：週一至週五 08:00 - 16:30</p>
-        </div>
-      </div>
-
-      <div class="p-3.5 bg-surface-container flex gap-2 justify-end shrink-0">
-        <button onclick="toggleModal('modal-closed-notice')" class="px-5 py-2.5 rounded-xl bg-surface-container-high text-on-surface text-xs font-bold hover:bg-surface-container-highest">
-          關閉
-        </button>
-      </div>
-    </div>
-  </div>
           </div>
           <p>承辦單位：新竹市大庄國小 學務處體育組</p>
           <p>聯絡電話：03-5384035 分機 607</p>
