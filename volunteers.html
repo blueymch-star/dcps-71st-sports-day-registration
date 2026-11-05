@@ -190,23 +190,33 @@
 
       <!-- Quota & Urgency Status Island (即時依照資料庫報名人數呈現) -->
       <div class="px-gutter pt-space-md pb-space-xs">
-        <div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-2.5 border border-outline-variant/30">
-          <div class="flex items-center justify-between gap-space-sm">
-            <div class="flex items-center gap-space-sm min-w-0">
-              <span class="flex-shrink-0 w-10 h-10 rounded-full bg-secondary-container text-on-secondary flex items-center justify-center">
+        <div class="bg-surface-container-lowest rounded-xl p-3.5 sm:p-space-md shadow-sm flex flex-col gap-2.5 border border-outline-variant/30">
+          <!-- 頂部：標題與主辦單位 -->
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="flex-shrink-0 w-10 h-10 rounded-full bg-secondary-container text-on-secondary flex items-center justify-center shadow-xs">
                 <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">how_to_reg</span>
               </span>
               <div class="flex flex-col min-w-0">
-                <div class="flex items-center gap-space-xs flex-wrap">
-                  <span class="font-headline-sm text-headline-sm text-on-surface truncate font-bold">志工甄選開放中</span>
-                  <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold tracking-wide" id="quota-badge-volunteers">限定 20 人，剩餘 20 名</span>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="font-headline-sm text-sm sm:text-headline-sm text-on-surface font-bold">志工甄選開放中</span>
+                  <span class="font-label-sm text-[11px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold tracking-wide shrink-0" id="quota-badge-volunteers">限定 20 人，剩餘 20 名</span>
                 </div>
-                <span class="font-body-sm text-body-sm text-on-surface-variant truncate">甄選錄取順序：1. 畢業校友優先 2. 表單報名順序</span>
               </div>
             </div>
-            <div class="flex-shrink-0 text-right">
-              <span class="font-label-sm text-label-sm text-secondary font-bold uppercase tracking-wider block">主辦單位</span>
-              <span class="font-headline-sm text-headline-sm text-primary font-bold">大庄國小學務處</span>
+            <div class="flex-shrink-0 text-right pl-2">
+              <span class="text-[10px] text-secondary font-bold uppercase tracking-wider block">主辦單位</span>
+              <span class="text-xs sm:text-sm text-primary font-bold">大庄國小學務處</span>
+            </div>
+          </div>
+
+          <!-- 錄取順序說明條 (手機端全寬完整呈現，字樣不截斷) -->
+          <div class="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-container-low border border-surface-container text-xs text-on-surface-variant flex-wrap">
+            <span class="material-symbols-outlined text-[16px] text-primary shrink-0">rule</span>
+            <span class="font-bold text-on-surface shrink-0">甄選錄取順序：</span>
+            <div class="inline-flex items-center gap-1.5 flex-wrap text-[11px] sm:text-xs">
+              <span class="font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">1. 畢業校友優先</span>
+              <span class="font-medium text-on-surface bg-surface-container-high px-2 py-0.5 rounded-md">2. 表單報名順序</span>
             </div>
           </div>
 
