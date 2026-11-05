@@ -283,23 +283,6 @@
         </div>
       </div>
 
-      <!-- GAS Database Status Pill Strip -->
-      <div class="px-gutter pt-space-xs">
-        <div class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-between text-xs">
-          <div class="flex items-center gap-1.5">
-            <span class="relative flex h-2 w-2">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span class="font-bold">GAS 雲端試算表資料庫：</span>
-            <span id="gas-status-label" class="font-medium">已連線 (即時同步儲存)</span>
-          </div>
-          <button onclick="toggleModal('modal-gas-config')" class="text-[11px] text-emerald-700 underline font-bold">
-            查看/更換後端網址
-          </button>
-        </div>
-      </div>
-
       <!-- Main Registration Form Container - 完全參照圖片欄位設計 -->
       <div class="px-gutter space-y-space-md pt-space-sm">
         <div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-space-md border border-surface-container">
@@ -909,7 +892,8 @@
       if (val) {
         currentGasUrl = val;
         localStorage.setItem(STORAGE_KEY_GAS_URL, currentGasUrl);
-        document.getElementById('gas-status-label').textContent = '已連接至自訂 GAS 試算表';
+        const statusEl = document.getElementById('gas-status-label');
+        if (statusEl) statusEl.textContent = '已連接至自訂 GAS 試算表';
         alert('GAS 試算表網址已更新儲存！');
         toggleModal('modal-gas-config');
       }
@@ -1411,7 +1395,8 @@
       updateRelayCount();
       syncLatestRelayRegistrations();
       if (currentGasUrl !== DEFAULT_GAS_URL) {
-        document.getElementById('gas-status-label').textContent = '已連接至自訂 GAS 試算表';
+        const statusEl = document.getElementById('gas-status-label');
+        if (statusEl) statusEl.textContent = '已連接至自訂 GAS 試算表';
       }
     });
   </script>
