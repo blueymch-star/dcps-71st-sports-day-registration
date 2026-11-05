@@ -22,6 +22,16 @@
       .pt-safe { padding-top: max(env(safe-area-inset-top, 0px), 12px); }
     }
     ::-webkit-scrollbar { display: none; }
+
+    /* Mobile-first optimizations: prevent iOS Safari auto-zoom on inputs */
+    @media screen and (max-width: 768px) {
+      input, select, textarea {
+        font-size: 16px !important;
+      }
+    }
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
   </style>
 
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
@@ -120,26 +130,26 @@
 
   <!-- ==================== HEADER ==================== -->
   <header class="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
-    <div class="h-16 px-gutter flex items-center justify-between max-w-4xl mx-auto">
-      <div class="flex items-center gap-space-sm cursor-pointer" onclick="location.href='index.html'">
-        <div class="flex items-center gap-space-xs">
-          <span class="flex items-center justify-center w-8 h-8 rounded-full bg-primary-container text-on-primary font-headline-sm text-headline-sm shadow-sm">71</span>
-          <div class="flex flex-col">
-            <div class="flex items-center gap-space-xs">
-              <span class="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-tight">71校慶運動會</span>
-              <span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded-full bg-secondary text-on-secondary font-bold tracking-wider">線上報名</span>
+    <div class="h-16 px-3 sm:px-gutter flex items-center justify-between max-w-4xl mx-auto gap-2">
+      <div class="flex items-center gap-space-sm cursor-pointer min-w-0" onclick="location.href='index.html'">
+        <div class="flex items-center gap-space-xs min-w-0">
+          <span class="flex items-center justify-center w-8 h-8 rounded-full bg-primary-container text-on-primary font-headline-sm text-headline-sm shadow-sm shrink-0">71</span>
+          <div class="flex flex-col min-w-0">
+            <div class="flex items-center gap-space-xs flex-wrap">
+              <span class="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-tight whitespace-nowrap">71校慶運動會</span>
+              <span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded-full bg-secondary text-on-secondary font-bold tracking-wider shrink-0">線上報名</span>
             </div>
-            <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Family Games Portal</span>
+            <span class="font-label-sm text-label-sm text-on-surface-variant font-medium truncate">Family Games Portal</span>
           </div>
         </div>
       </div>
-      <div class="flex items-center gap-space-xs">
-        <button onclick="toggleModal('modal-notifications')" aria-label="通知與廣播" class="relative w-10 h-10 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container transition-colors">
-          <span class="material-symbols-outlined text-[22px]">notifications</span>
-          <span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-secondary-container"></span>
+      <div class="flex items-center gap-1 sm:gap-space-xs shrink-0">
+        <button onclick="toggleModal('modal-notifications')" aria-label="通知與廣播" class="relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container transition-colors active:scale-95">
+          <span class="material-symbols-outlined text-[20px] sm:text-[22px]">notifications</span>
+          <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-secondary-container"></span>
         </button>
-        <a aria-label="報名查詢與數位證" class="relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high active:scale-95 transition-all border border-surface-container-highest" href="index.html#registration-inquiry">
-          <span class="material-symbols-outlined text-primary text-[20px]">badge</span>
+        <a aria-label="報名查詢與數位證" class="relative flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high active:scale-95 transition-all border border-surface-container-highest min-h-[36px]" href="index.html#registration-inquiry">
+          <span class="material-symbols-outlined text-primary text-[19px] sm:text-[20px]">badge</span>
           <span class="text-xs font-bold text-primary hidden sm:inline">報名查詢</span>
         </a>
       </div>
@@ -147,7 +157,7 @@
   </header>
 
   <!-- ==================== MAIN CONTENT ==================== -->
-  <main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface max-w-4xl mx-auto">
+  <main class="flex-1 flex flex-col relative w-full pt-16 pb-28 sm:pb-32 bg-surface max-w-4xl mx-auto">
     <div class="flex flex-col w-full">
 
       <!-- Hero & Celebration Banner Section -->
@@ -574,35 +584,35 @@
 
   <!-- ==================== BOTTOM TAB BAR NAVIGATION ==================== -->
   <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/95 backdrop-blur-xl border-t border-surface-container shadow-[0_-2px_12px_rgba(15,23,42,0.06)]">
-    <div class="max-w-4xl mx-auto flex justify-around items-center h-16 px-2">
+    <div class="max-w-4xl mx-auto flex justify-around items-center h-16 px-1 sm:px-2">
       <!-- Tab 1: 首頁 -->
-      <a href="index.html" class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-primary transition-all">
-        <span class="material-symbols-outlined text-[23px]">home</span>
-        <span class="text-[11px]">大會首頁</span>
+      <a href="index.html" class="flex-1 max-w-[80px] flex flex-col items-center justify-center gap-1 h-12 text-on-surface-variant hover:text-primary transition-all active:scale-95">
+        <span class="material-symbols-outlined text-[22px] sm:text-[24px]">home</span>
+        <span class="text-[10px] sm:text-[11px] whitespace-nowrap">大會首頁</span>
       </a>
 
       <!-- Tab 2: 薪傳接力 -->
-      <a href="relay.html" class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-primary transition-all">
-        <span class="material-symbols-outlined text-[23px]">sprint</span>
-        <span class="text-[11px]">薪傳接力</span>
+      <a href="relay.html" class="flex-1 max-w-[80px] flex flex-col items-center justify-center gap-1 h-12 text-on-surface-variant hover:text-primary transition-all active:scale-95">
+        <span class="material-symbols-outlined text-[22px] sm:text-[24px]">sprint</span>
+        <span class="text-[10px] sm:text-[11px] whitespace-nowrap">薪傳接力</span>
       </a>
 
       <!-- Tab 3: 親子趣味 (Current) -->
-      <a href="family-games.html" class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-tertiary font-bold transition-all">
-        <span class="material-symbols-outlined text-[23px]">sports_score</span>
-        <span class="text-[11px]">親子趣味</span>
+      <a href="family-games.html" class="flex-1 max-w-[80px] flex flex-col items-center justify-center gap-1 h-12 text-tertiary font-bold transition-all active:scale-95">
+        <span class="material-symbols-outlined text-[22px] sm:text-[24px]">sports_score</span>
+        <span class="text-[10px] sm:text-[11px] whitespace-nowrap">親子趣味</span>
       </a>
 
       <!-- Tab 4: 熱血志工 -->
-      <a href="volunteers.html" class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-primary transition-all">
-        <span class="material-symbols-outlined text-[23px]">volunteer_activism</span>
-        <span class="text-[11px]">熱血志工</span>
+      <a href="volunteers.html" class="flex-1 max-w-[80px] flex flex-col items-center justify-center gap-1 h-12 text-on-surface-variant hover:text-primary transition-all active:scale-95">
+        <span class="material-symbols-outlined text-[22px] sm:text-[24px]">volunteer_activism</span>
+        <span class="text-[10px] sm:text-[11px] whitespace-nowrap">熱血志工</span>
       </a>
 
       <!-- Tab 5: 71動態島 -->
-      <a href="dynamic-island.html" class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-primary transition-all">
-        <span class="material-symbols-outlined text-[23px]">campaign</span>
-        <span class="text-[11px]">71動態島</span>
+      <a href="dynamic-island.html" class="flex-1 max-w-[80px] flex flex-col items-center justify-center gap-1 h-12 text-on-surface-variant hover:text-primary transition-all active:scale-95">
+        <span class="material-symbols-outlined text-[22px] sm:text-[24px]">campaign</span>
+        <span class="text-[10px] sm:text-[11px] whitespace-nowrap">71動態島</span>
       </a>
     </div>
   </nav>
@@ -675,14 +685,14 @@
 
   <!-- Modal: 重複報名提示方塊 -->
   <div id="modal-duplicate-notice" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-amber-300 overflow-hidden flex flex-col">
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-amber-300 overflow-hidden flex flex-col max-h-[85dvh]">
       <div class="p-5 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-center flex flex-col items-center gap-1.5 shrink-0">
         <span class="material-symbols-outlined text-5xl">warning</span>
         <h3 class="text-xl font-bold font-headline">重複報名提示</h3>
         <p class="text-xs text-amber-100">姓名相同・請勿重複送出</p>
       </div>
 
-      <div class="p-5 flex flex-col gap-3.5 text-xs text-on-surface">
+      <div class="p-5 flex flex-col gap-3.5 text-xs text-on-surface overflow-y-auto">
         <div class="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-950 flex flex-col gap-2">
           <p class="font-bold text-sm flex items-center gap-2">
             <span class="material-symbols-outlined text-amber-600 text-[20px]">person_alert</span>
@@ -714,16 +724,16 @@
 
   <!-- Modal: 停止報名/報名截止提示方塊 -->
   <div id="modal-closed-notice" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-rose-300 overflow-hidden flex flex-col">
-      <div class="p-6 bg-gradient-to-r from-rose-600 to-red-700 text-white text-center flex flex-col items-center gap-1.5 shrink-0">
-        <span class="material-symbols-outlined text-5xl">event_busy</span>
-        <h3 class="text-2xl font-black font-headline tracking-wide">報名截止</h3>
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-rose-300 overflow-hidden flex flex-col max-h-[85dvh]">
+      <div class="p-5 sm:p-6 bg-gradient-to-r from-rose-600 to-red-700 text-white text-center flex flex-col items-center gap-1.5 shrink-0">
+        <span class="material-symbols-outlined text-4xl sm:text-5xl">event_busy</span>
+        <h3 class="text-xl sm:text-2xl font-black font-headline tracking-wide">報名截止</h3>
         <p class="text-xs text-rose-100">圈力衝刺親子趣味競賽</p>
       </div>
 
-      <div class="p-6 flex flex-col gap-4 text-center text-xs">
+      <div class="p-5 flex flex-col gap-4 text-center text-xs overflow-y-auto">
         <div class="p-4 rounded-xl bg-rose-50 border border-rose-200 flex flex-col items-center gap-2">
-          <p class="text-base font-extrabold text-rose-900 leading-relaxed tracking-wide">
+          <p class="text-sm sm:text-base font-extrabold text-rose-900 leading-relaxed tracking-wide">
             報名截止<br>
             若有其它問題請洽活動承辦人員
           </p>
@@ -733,6 +743,21 @@
           <div class="font-bold text-on-surface flex items-center gap-1.5">
             <span class="material-symbols-outlined text-[16px] text-tertiary">contacts</span>
             活動承辦單位洽詢窗口：
+          </div>
+          <p>承辦單位：新竹市大庄國小 學務處體育組</p>
+          <p>聯絡電話：03-5384035 分機 607</p>
+          <p>承辦信箱：stud03@ttps.hc.edu.tw</p>
+          <p>服務時間：週一至週五 08:00 - 16:30</p>
+        </div>
+      </div>
+
+      <div class="p-3.5 bg-surface-container flex gap-2 justify-end shrink-0">
+        <button onclick="toggleModal('modal-closed-notice')" class="px-5 py-2.5 rounded-xl bg-surface-container-high text-on-surface text-xs font-bold hover:bg-surface-container-highest">
+          關閉
+        </button>
+      </div>
+    </div>
+  </div>
           </div>
           <p>承辦單位：新竹市大庄國小 學務處體育組</p>
           <p>聯絡電話：03-5384035 分機 607</p>

@@ -45,6 +45,15 @@
   </script>
 
   <style>
+    /* Mobile-first optimizations: prevent iOS Safari auto-zoom on inputs */
+    @media screen and (max-width: 768px) {
+      input, select, textarea {
+        font-size: 16px !important;
+      }
+    }
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
     body {
       min-height: 100vh;
       font-family: 'Noto Sans TC', 'Plus Jakarta Sans', sans-serif;
@@ -281,7 +290,7 @@
 
     <!-- Project Tabs Switcher -->
     <div class="bg-surface-container-lowest rounded-2xl border border-surface-container shadow-sm overflow-hidden flex flex-col">
-      <div class="flex items-center border-b border-surface-container bg-surface-container-low/40 px-3 overflow-x-auto">
+      <div class="flex items-center border-b border-surface-container bg-surface-container-low/40 px-3 overflow-x-auto overscroll-x-contain">
         <button id="tab-btn-family" onclick="switchProjectTab('family')" 
                 class="px-5 py-3.5 text-xs font-bold text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-1.5 whitespace-nowrap">
           <span class="material-symbols-outlined text-[17px]">sports_score</span>
@@ -305,7 +314,7 @@
       </div>
 
       <!-- Specific Columns Table Container -->
-      <div class="overflow-x-auto min-h-[300px]">
+      <div class="overflow-x-auto overscroll-x-contain min-h-[300px]">
         <table class="w-full text-left text-xs whitespace-nowrap">
           <thead id="project-table-header" class="bg-surface-container-low text-on-surface font-bold border-b border-surface-container">
             <!-- Dynamically populated based on active tab -->

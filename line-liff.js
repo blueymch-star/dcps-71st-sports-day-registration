@@ -4,9 +4,9 @@
  */
 
 (function () {
-  // 預設 LIFF ID（可在 LINE Developers 後台建立後直接填入此處，或在後台/本機進行覆寫）
+  // 預設正式 LIFF ID（大庄校慶官方專屬）
   const STORAGE_KEY_LIFF_ID = 'dachuang_71_liff_id';
-  const DEFAULT_LIFF_ID = '2009278451-j1yK5Yp0'; // 預設 LIFF ID 預留位，可由管理員設定更新
+  const DEFAULT_LIFF_ID = '2012386503-guV8Oien'; // 正式 LIFF ID
 
   window.DACHUANG_LINE = {
     liffId: localStorage.getItem(STORAGE_KEY_LIFF_ID) || DEFAULT_LIFF_ID,
@@ -80,6 +80,17 @@
       }
     },
 
+    // 手動觸發 LINE 登入授權
+    login() {
+      if (typeof liff !== 'undefined' && this.isReady) {
+        if (!liff.isLoggedIn()) {
+          liff.login();
+        }
+      } else {
+        window.location.href = `https://liff.line.me/${this.liffId}`;
+      }
+    },
+
     // 在頁面指定容器渲染「LINE 連動狀態通知列」
     renderStatusBanner() {
       const bannerContainer = document.getElementById('line-status-banner');
@@ -127,6 +138,12 @@
                 <p class="text-[11px] text-on-surface-variant mt-0.5 leading-relaxed">
                   📱 <strong>溫馨提示</strong>：若使用手機相機或 LINE 掃描聯絡簿 QR Code 點開，系統將自動連動 LINE 官方機器人，即時傳送【報名確認單】與【錄取/賽前通知】。
                 </p>
+                <div class="mt-2">
+                  <button type="button" onclick="window.DACHUANG_LINE.login()" class="px-3 py-1 rounded-lg bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs shadow-sm active:scale-95 transition-all inline-flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M24 10.3c0-4.6-4.5-8.3-10-8.3-5.5 0-10 3.7-10 8.3 0 4.1 3.6 7.6 8.5 8.2.3.1.8.2 1 .7.1.4.1 1 0 1.4-.1.4-.4 1.5-.4 1.5s-.1.4.2.2c.3-.2 4.1-2.4 5.6-4.1 3.2-1.8 5.1-4.7 5.1-7.9z"/></svg>
+                    <span>點此登入 LINE 連動（享受即時推播）</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

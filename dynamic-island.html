@@ -12,6 +12,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet"/>
   
   <style>
+  /* Mobile-first optimizations: prevent iOS Safari auto-zoom on inputs */
+  @media screen and (max-width: 768px) {
+    input, select, textarea {
+      font-size: 16px !important;
+    }
+  }
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
     @layer base{
       html,body{width:100vw;margin:0;padding:0;background-color:#faf8ff;}
       body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent;}
@@ -123,9 +132,9 @@
 
   <!-- ==================== HEADER ==================== -->
   <header class="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
-    <div class="h-16 px-gutter flex items-center justify-between max-w-4xl mx-auto">
+    <div class="h-16 px-3 sm:px-gutter flex items-center justify-between max-w-4xl mx-auto gap-2">
       <div class="flex items-center gap-space-sm cursor-pointer" onclick="location.href='index.html'">
-        <div class="flex items-center gap-space-xs">
+        <div class="flex items-center gap-1 sm:gap-space-xs shrink-0">
           <span class="flex items-center justify-center w-8 h-8 rounded-full bg-primary-container text-on-primary font-headline-sm text-headline-sm shadow-sm">71</span>
           <div class="flex flex-col">
             <div class="flex items-center gap-space-xs">
@@ -150,7 +159,7 @@
   </header>
 
   <!-- ==================== MAIN CONTENT ==================== -->
-  <main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface max-w-4xl mx-auto">
+  <main class="flex-1 flex flex-col relative w-full pt-16 pb-28 sm:pb-32 bg-surface max-w-4xl mx-auto">
     <div class="flex flex-col w-full px-margin pb-10 space-y-6">
 
       <!-- 1. Top Hero Island Card -->
@@ -656,26 +665,38 @@
   </main>
 
   <!-- ==================== BOTTOM TAB BAR NAVIGATION ==================== -->
-  <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_-2px_12px_rgba(15,23,42,0.05)] border-t border-surface-container">
-    <div class="flex justify-around items-center h-20 px-space-xs max-w-4xl mx-auto">
-      <a class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition-all duration-200" data-path="relay" href="relay.html">
-        <span class="material-symbols-outlined text-[24px]">sprint</span>
-        <span class="font-label-md text-label-md">薪傳接力</span>
+  <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/95 backdrop-blur-xl border-t border-surface-container shadow-[0_-2px_12px_rgba(15,23,42,0.06)]">
+    <div class="max-w-4xl mx-auto flex justify-around items-center h-16 px-1 sm:px-2">
+      <!-- Tab 1: 首頁 -->
+      <a href="index.html" class="flex-1 max-w-[80px] flex flex-col items-center justify-center gap-1 h-12 text-on-surface-variant hover:text-primary transition-all active:scale-95">
+        <span class="material-symbols-outlined text-[22px] sm:text-[24px]">home</span>
+        <span class="text-[10px] sm:text-[11px] whitespace-nowrap">大會首頁</span>
       </a>
-      <a class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition-all duration-200" data-path="family-games" href="family-games.html">
-        <span class="material-symbols-outlined text-[24px]">sports_score</span>
-        <span class="font-label-md text-label-md">親子趣味</span>
+
+      <!-- Tab 2: 薪傳接力 -->
+      <a href="relay.html" class="flex-1 max-w-[80px] flex flex-col items-center justify-center gap-1 h-12 text-on-surface-variant hover:text-primary transition-all active:scale-95">
+        <span class="material-symbols-outlined text-[22px] sm:text-[24px]">sprint</span>
+        <span class="text-[10px] sm:text-[11px] whitespace-nowrap">薪傳接力</span>
       </a>
-      <a class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition-all duration-200" data-path="volunteers" href="volunteers.html">
-        <span class="material-symbols-outlined text-[24px]">volunteer_activism</span>
-        <span class="font-label-md text-label-md">熱血志工</span>
+
+      <!-- Tab 3: 親子趣味 -->
+      <a href="family-games.html" class="flex-1 max-w-[80px] flex flex-col items-center justify-center gap-1 h-12 text-on-surface-variant hover:text-primary transition-all active:scale-95">
+        <span class="material-symbols-outlined text-[22px] sm:text-[24px]">sports_score</span>
+        <span class="text-[10px] sm:text-[11px] whitespace-nowrap">親子趣味</span>
       </a>
-      <a aria-current="page" class="flex flex-col items-center justify-center gap-1 w-16 h-14 transition-all duration-200 text-primary font-bold" data-path="dynamic-island" href="dynamic-island.html">
-        <span class="material-symbols-outlined text-[24px]">campaign</span>
-        <span class="font-label-md text-label-md">71動態島</span>
+
+      <!-- Tab 4: 熱血志工 -->
+      <a href="volunteers.html" class="flex-1 max-w-[80px] flex flex-col items-center justify-center gap-1 h-12 text-on-surface-variant hover:text-primary transition-all active:scale-95">
+        <span class="material-symbols-outlined text-[22px] sm:text-[24px]">volunteer_activism</span>
+        <span class="text-[10px] sm:text-[11px] whitespace-nowrap">熱血志工</span>
       </a>
-    </div>
-  </nav>
+
+      <!-- Tab 5: 71動態島 (Current) -->
+      <a href="dynamic-island.html" class="flex-1 max-w-[80px] flex flex-col items-center justify-center gap-1 h-12 text-primary font-bold transition-all active:scale-95">
+        <span class="material-symbols-outlined text-[22px] sm:text-[24px]">campaign</span>
+        <span class="text-[10px] sm:text-[11px] whitespace-nowrap">71動態島</span>
+      </a>
+    </div></nav>
 
   <!-- Notification Modal -->
   <div id="modal-notifications" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
