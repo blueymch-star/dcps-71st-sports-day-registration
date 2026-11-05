@@ -13,7 +13,7 @@
 | **Vercel 正式站** | **`https://dcps-71st-sports-day-registration.vercel.app`** | 亞太極速 CDN，具備資安標頭防護，產製宣傳單 QR Code 首選！ |
 | **GitHub Pages** | **`https://blueymch-star.github.io/dcps-71st-sports-day-registration/`** | GitHub 官方原生靜態託管備援站 |
 | **GitHub 儲存庫** | **`https://github.com/blueymch-star/dcps-71st-sports-day-registration`** | 原始碼集中託管，推送代碼後 Vercel 會自動重新部署 |
-| **GAS 雲端後端** | `https://script.google.com/macros/s/AKfycbzl7zf48nxLH2_BPzEL0T48NNR8EI0SO_ROErJ0cDszftJphDOJ1lG-OTfrsxERv-h57A/exec` | Version 9（支援試算表分流、取消移轉、LINE/Email 推播） |
+| **GAS 雲端後端** | `https://script.google.com/macros/s/AKfycbyGQ7p0Miioq7GMv_klUgy8kFaiNHoG9L0PvnHsnRzlOC3Eijwi5Ow5jsaT-3AEU0zh/exec` | Version 9（支援試算表分流、取消移轉、LINE/Email 推播） |
 
 ---
 

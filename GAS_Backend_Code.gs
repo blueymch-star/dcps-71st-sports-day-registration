@@ -1619,3 +1619,11 @@ function testSendEmail() {
   });
   Logger.log("測試信件已成功發送至: " + target);
 }
+
+// 一次性觸發 Google 授權外部網路請求權限 (UrlFetchApp - LINE Messaging API)
+function authorizeUrlFetch() {
+  Logger.log("檢查外部連線權限...");
+  var res = UrlFetchApp.fetch("https://api.line.me", { muteHttpExceptions: true });
+  Logger.log("UrlFetchApp 權限已獲取成功！HTTP 狀態碼：" + res.getResponseCode());
+  return "授權成功！";
+}
