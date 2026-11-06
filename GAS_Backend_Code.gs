@@ -75,6 +75,13 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
+    // 公告管理操作（新增/發布即時公告）
+    if (data.action === "addAnnouncement" || data.action === "saveAnnouncement") {
+      var annAddRes = addAnnouncementToSheet(ss, data);
+      return ContentService.createTextOutput(JSON.stringify(annAddRes))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     // 取消報名並移動至「已取消報名」工作表
     if (data.action === "cancel") {
       var cancelRes = cancelAndMoveRegistration(ss, data);
@@ -621,6 +628,13 @@ function doGet(e) {
   if (action === "cancel") {
     var cancelRes = cancelAndMoveRegistration(ss, params);
     return ContentService.createTextOutput(JSON.stringify(cancelRes))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // 0.1 取得大會即時推播公告
+  if (action === "getAnnouncements" || action === "announcements") {
+    var annRes = getAnnouncementsFromSheet(ss);
+    return ContentService.createTextOutput(JSON.stringify(annRes))
       .setMimeType(ContentService.MimeType.JSON);
   }
 
@@ -1626,4 +1640,84 @@ function authorizeUrlFetch() {
   var res = UrlFetchApp.fetch("https://api.line.me", { muteHttpExceptions: true });
   Logger.log("UrlFetchApp 權限已獲取成功！HTTP 狀態碼：" + res.getResponseCode());
   return "授權成功！";
+}
+
+// ==========================================
+// 大會即時推播與通告 (雲端試算表連線核心)
+// ==========================================
+
+function getAnnouncementsFromSheet(ss) {
+  try {
+    var sheet = ss.getSheetByName("大會公告");
+    if (!sheet) {
+      sheet = ss.insertSheet("大會公告");
+      sheet.appendRow(["發布時間", "分類標籤", "公告內容", "顯示狀態"]);
+      sheet.getRange(1, 1, 1, 4).setBackground("#004f35").setFontColor("#ffffff").setFontWeight("bold");
+      
+      // 寫入預設公告示範
+      var nowStr = Utilities.formatDate(new Date(), "Asia/Taipei", "yyyy/MM/dd HH:mm");
+      sheet.appendRow([nowStr, "【緊急通知】", "薪傳大隊接力男女混合組僅剩最後 3 組名額，額滿系統將自動轉為候補名冊！", "顯示"]);
+      sheet.appendRow([nowStr, "【志工培訓】", "第一梯次裁判檢錄組志工行前說明會，將於 12/5 (五) 12:30 於活動中心二樓召開。", "顯示"]);
+      sheet.appendRow([nowStr, "【好康抽獎】", "線上應援牆累計元氣達標，校慶當日將於大會服務台抽出 100 份校慶 71 週年紀念保溫杯！", "顯示"]);
+    }
+
+    var rows = sheet.getDataRange().getValues();
+    var list = [];
+    for (var i = 1; i < rows.length; i++) {
+      var time = String(rows[i][0] || "").trim();
+      var tag = String(rows[i][1] || "").trim();
+      var content = String(rows[i][2] || "").trim();
+      var status = String(rows[i][3] || "顯示").trim();
+
+      if (status !== "隱藏" && (tag || content)) {
+        list.push({
+          id: i,
+          time: time,
+          tag: tag || "【大會通告】",
+          content: content,
+          status: status
+        });
+      }
+    }
+
+    // 倒序排列（最新發布在最上方）
+    list.reverse();
+
+    return {
+      status: "success",
+      count: list.length,
+      announcements: list,
+      serverTime: Utilities.formatDate(new Date(), "Asia/Taipei", "yyyy/MM/dd HH:mm:ss")
+    };
+  } catch (err) {
+    return {
+      status: "error",
+      message: err.toString(),
+      announcements: []
+    };
+  }
+}
+
+function addAnnouncementToSheet(ss, data) {
+  try {
+    var sheet = ss.getSheetByName("大會公告");
+    if (!sheet) {
+      getAnnouncementsFromSheet(ss); // 初始化表頭
+      sheet = ss.getSheetByName("大會公告");
+    }
+
+    var time = data.time || Utilities.formatDate(new Date(), "Asia/Taipei", "yyyy/MM/dd HH:mm");
+    var tag = data.tag || "【大會公告】";
+    var content = data.content || "";
+    var status = data.status || "顯示";
+
+    if (!content.trim()) {
+      return { status: "error", message: "公告內容不得為空" };
+    }
+
+    sheet.appendRow([time, tag, content, status]);
+    return { status: "success", message: "公告已成功發布並寫入試算表！" };
+  } catch (err) {
+    return { status: "error", message: err.toString() };
+  }
 }
