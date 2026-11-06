@@ -3,7 +3,9 @@
  * 支援雙通道讀取：
  * 通道 1: Google 試算表 GViz 即時讀取 (只要試算表設為知道連結可檢視，打字即時生效，免更新 GAS 版本)
  * 通道 2: Google Apps Script Web App API
- * 容錯機制: 移除所有測試假資料，無資料時顯示乾淨的「目前尚無大會公告」
+ * 特色:
+ * 1. 徹底移除舊測試假資料
+ * 2. 自動連動首頁跑馬燈內容，點擊跑馬燈直接開啟即時公告中心
  */
 
 (function () {
@@ -37,8 +39,25 @@
     });
   }
 
-  // 渲染公告卡片
+  // 同步首頁跑馬燈（Marquee Ticker）
+  function syncMarquee(announcements) {
+    const marqueeContent = document.getElementById('home-marquee-content');
+    if (!marqueeContent) return;
+
+    if (Array.isArray(announcements) && announcements.length > 0) {
+      const itemsHtml = announcements.map(item => {
+        return `<span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span>${escapeHtml(item.tag || '【大會公告】')} ${escapeHtml(item.content)}</span>`;
+      }).join('');
+      // 重複一次以確保滾動無縫順暢
+      marqueeContent.innerHTML = itemsHtml + itemsHtml;
+    }
+  }
+
+  // 渲染公告卡片與跑馬燈
   function renderAnnouncementsList(announcements, container) {
+    // 優先同步首頁跑馬燈
+    syncMarquee(announcements);
+
     if (!container) return;
 
     if (!announcements || announcements.length === 0) {
@@ -114,7 +133,6 @@
         }
       });
 
-      // 倒序排列（最新發布在最上面）
       return list.reverse();
     } catch (e) {
       console.warn('[Announcements] GViz 讀取失敗（可能試算表尚未開啟知道連結可檢視）:', e.message);
@@ -153,10 +171,8 @@
 
   // 雙通道整合查詢
   async function fetchAnnouncements() {
-    // 優先嘗試 GViz（最即時、打字立即可見）
     let list = await fetchFromGViz();
     
-    // 若 GViz 沒讀到，改試 GAS
     if (!list) {
       list = await fetchFromGAS();
     }
@@ -166,7 +182,6 @@
       return list;
     }
 
-    // 嘗試讀快取
     try {
       const cached = localStorage.getItem(STORAGE_KEY_CACHE);
       if (cached) {
@@ -175,7 +190,6 @@
       }
     } catch (e) {}
 
-    // 完全無資料時回傳空陣列（徹底不再出現任何測試假訊息！）
     return [];
   }
 
@@ -267,24 +281,20 @@
     setupNotificationModal();
     const container = document.getElementById('announcements-container');
 
-    // 讀取快取
     let cached = [];
     try {
       const c = localStorage.getItem(STORAGE_KEY_CACHE);
       if (c) cached = JSON.parse(c);
     } catch (e) {}
 
-    // 先顯示快取（若無快取先不顯示假資料）
     if (cached.length > 0) {
       renderAnnouncementsList(cached, container);
     }
 
-    // 背景請求最新公告
     const liveData = await fetchAnnouncements();
     renderAnnouncementsList(liveData, container);
   }
 
-  // 自動在 DOM Ready 時啟動
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initAnnouncements);
   } else {

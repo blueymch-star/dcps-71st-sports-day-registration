@@ -251,19 +251,21 @@
         </div>
       </div>
 
-      <!-- Live Marquee Ticker -->
-      <div class="w-full bg-surface-container-low border border-surface-container rounded-xl p-2.5 flex items-center gap-2.5 shadow-sm overflow-hidden">
-        <span class="flex items-center justify-center w-7 h-7 rounded-full bg-secondary text-on-secondary shrink-0 shadow-sm">
+      <!-- Live Marquee Ticker (點擊即時開啟大會推播與通告中心) -->
+      <div onclick="toggleModal('modal-notifications')" title="點擊查看所有大會即時推播與通告" class="w-full bg-surface-container-low hover:bg-surface-container border border-surface-container rounded-xl p-2.5 flex items-center gap-2.5 shadow-sm overflow-hidden cursor-pointer active:scale-[0.99] transition-all group">
+        <span class="flex items-center justify-center w-7 h-7 rounded-full bg-secondary text-on-secondary shrink-0 shadow-sm group-hover:scale-110 transition-transform">
           <span class="material-symbols-outlined text-[16px]">campaign</span>
         </span>
         <div class="relative overflow-hidden w-full h-5">
-          <div class="whitespace-nowrap animate-marquee flex items-center gap-8 text-xs font-medium text-on-surface">
-            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary-container"></span>【最新公告】庄情薪傳大隊接力報名至 11/27 中午 12:00 截止，敬請把握！</span>
-            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-tertiary"></span>【系統升級】報名系統已完成串接 Google 試算表 (GAS) 即時資料庫。</span>
-            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary"></span>【即時動態】線上應援牆集氣熱烈展開，歡迎全校師生為 71 校慶點燃熱情！</span>
-            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary-container"></span>【秩序提醒】比賽當日校園實施北側車輛通行管制，請多搭乘接駁專車。</span>
+          <div id="home-marquee-content" class="whitespace-nowrap animate-marquee flex items-center gap-8 text-xs font-medium text-on-surface">
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span>【大會快報】庄情薪傳接力與親子趣味賽報名至 11/27 中午 12:00 截止，點擊查看即時推播！</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>【即時動態】線上應援牆集氣熱烈展開，歡迎全校師生為 71 校慶點燃熱情！</span>
           </div>
         </div>
+        <span class="shrink-0 text-[11px] font-bold text-primary group-hover:underline flex items-center gap-0.5 pr-1">
+          <span>查看</span>
+          <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+        </span>
       </div>
 
       <!-- Portal Big Cards Section -->
