@@ -301,6 +301,41 @@
               </div>
               <p class="text-xs sm:text-sm text-white/90 leading-relaxed">師長組、家長會及家長組、校友組及五、六年級在校生組同心熱跑！壓軸嗨翻紫色夢幻跑道。</p>
             </div>
+
+            <!-- Video Preview Box (薪傳接力宣傳實況) -->
+            <div class="w-full rounded-xl overflow-hidden bg-black/60 border border-white/20 backdrop-blur-md shadow-lg flex flex-col group/video" data-auto-preview="relay-video">
+              <div class="px-3 py-2 bg-black/50 border-b border-white/10 flex items-center justify-between">
+                <div class="flex items-center gap-1.5 text-xs font-bold text-secondary-fixed">
+                  <span class="material-symbols-outlined text-[17px] text-[#ff8c38] animate-pulse">local_fire_department</span>
+                  <span>焦點賽事実況・熱血衝刺</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span id="preview-badge-relay" class="hidden text-[10px] text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-full font-medium border border-amber-400/30 items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span>
+                    <span>5秒靜音預覽</span>
+                  </span>
+                  <span class="text-[10px] text-white/80 bg-white/15 px-2 py-0.5 rounded-full font-mono">01:00 HD</span>
+                </div>
+              </div>
+              <div class="relative w-full bg-black/95 flex items-center justify-center max-h-[300px] sm:max-h-[360px] overflow-hidden group/screen">
+                <video 
+                  id="relay-video"
+                  src="大庄國小_薪傳接力宣傳片_v6_1080p.mp4" 
+                  controls 
+                  muted
+                  playsinline 
+                  preload="metadata"
+                  class="w-full max-h-[300px] sm:max-h-[360px] object-contain mx-auto"
+                  title="庄情薪傳大隊接力賽宣傳片">
+                  您的瀏覽器不支援影片播放。
+                </video>
+                <!-- 5秒靜音提示浮動微按鈕 (點擊開聲音) -->
+                <button type="button" onclick="enableFullAudio('relay-video')" id="unmute-btn-relay" class="hidden absolute bottom-12 right-3 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/80 hover:bg-black text-white text-xs font-bold border border-white/20 shadow-lg active:scale-95 transition-all">
+                  <span class="material-symbols-outlined text-[16px] text-[#ff8c38]">volume_up</span>
+                  <span>點擊開啟聲音</span>
+                </button>
+              </div>
+            </div>
             <div class="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-xs">
               <div class="flex flex-col">
                 <span class="text-white/75">參賽組別</span>
@@ -341,6 +376,41 @@
               </div>
               <p class="text-xs sm:text-sm text-white/90 leading-relaxed">大手拉小手接力闖關！家長擺圈、孩子躍進，10M 折返角色互換，熱血沸騰本校操場中央草皮區！</p>
             </div>
+
+            <!-- Video Preview Box (趣味競賽宣傳實況) -->
+            <div class="w-full rounded-xl overflow-hidden bg-black/60 border border-white/20 backdrop-blur-md shadow-lg flex flex-col group/video" data-auto-preview="family-game-video">
+              <div class="px-3 py-2 bg-black/50 border-b border-white/10 flex items-center justify-between">
+                <div class="flex items-center gap-1.5 text-xs font-bold text-tertiary-fixed">
+                  <span class="material-symbols-outlined text-[17px] text-[#4edea3] animate-pulse">play_circle</span>
+                  <span>精彩實況搶先看・玩法示範</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span id="preview-badge-family" class="hidden text-[10px] text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-full font-medium border border-emerald-400/30 items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>5秒靜音預覽</span>
+                  </span>
+                  <span class="text-[10px] text-white/80 bg-white/15 px-2 py-0.5 rounded-full font-mono">00:35 HD</span>
+                </div>
+              </div>
+              <div class="relative w-full bg-black/95 flex items-center justify-center max-h-[300px] sm:max-h-[360px] overflow-hidden group/screen">
+                <video 
+                  id="family-game-video"
+                  src="film_720p_phone.mp4" 
+                  controls 
+                  muted
+                  playsinline 
+                  preload="metadata"
+                  class="w-full max-h-[300px] sm:max-h-[360px] object-contain mx-auto"
+                  title="圈力衝刺 親子趣味競賽宣傳影片">
+                  您的瀏覽器不支援影片播放。
+                </video>
+                <!-- 5秒靜音提示浮動微按鈕 (點擊開聲音) -->
+                <button type="button" onclick="enableFullAudio('family-game-video')" id="unmute-btn-family" class="hidden absolute bottom-12 right-3 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/80 hover:bg-black text-white text-xs font-bold border border-white/20 shadow-lg active:scale-95 transition-all">
+                  <span class="material-symbols-outlined text-[16px] text-[#4edea3]">volume_up</span>
+                  <span>點擊開啟聲音</span>
+                </button>
+              </div>
+            </div>
             <div class="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-xs">
               <div class="flex flex-col">
                 <span class="text-white/75">活動時間與地點</span>
@@ -380,6 +450,41 @@
                 <h3 class="font-headline text-xl sm:text-2xl text-white font-bold tracking-tight">校慶熱血志工</h3>
               </div>
               <p class="text-xs sm:text-sm text-white/90 leading-relaxed">場器佈置、動線引導、秩序維護、愛護環境！成為賽道旁最耀眼的無名英雄。</p>
+            </div>
+
+            <!-- Video Preview Box (志工招募宣傳實況) -->
+            <div class="w-full rounded-xl overflow-hidden bg-black/60 border border-white/20 backdrop-blur-md shadow-lg flex flex-col group/video" data-auto-preview="volunteer-video">
+              <div class="px-3 py-2 bg-black/50 border-b border-white/10 flex items-center justify-between">
+                <div class="flex items-center gap-1.5 text-xs font-bold text-primary-fixed">
+                  <span class="material-symbols-outlined text-[17px] text-[#3b82f6] animate-pulse">play_circle</span>
+                  <span>志工實況搶先看・熱血幕後</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span id="preview-badge-volunteer" class="hidden text-[10px] text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-full font-medium border border-amber-400/30 items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span>
+                    <span>5秒靜音預覽</span>
+                  </span>
+                  <span class="text-[10px] text-white/80 bg-white/15 px-2 py-0.5 rounded-full font-mono">00:51 HD</span>
+                </div>
+              </div>
+              <div class="relative w-full bg-black/95 flex items-center justify-center max-h-[300px] sm:max-h-[360px] overflow-hidden group/screen">
+                <video 
+                  id="volunteer-video"
+                  src="校慶志工招募_16_9橫式大螢幕版_1080p.mp4" 
+                  controls 
+                  muted
+                  playsinline 
+                  preload="metadata"
+                  class="w-full max-h-[300px] sm:max-h-[360px] object-contain mx-auto"
+                  title="校慶熱血志工招募宣傳片">
+                  您的瀏覽器不支援影片播放。
+                </video>
+                <!-- 5秒靜音提示浮動微按鈕 (點擊開聲音) -->
+                <button type="button" onclick="enableFullAudio('volunteer-video')" id="unmute-btn-volunteer" class="hidden absolute bottom-12 right-3 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/80 hover:bg-black text-white text-xs font-bold border border-white/20 shadow-lg active:scale-95 transition-all">
+                  <span class="material-symbols-outlined text-[16px] text-secondary">volume_up</span>
+                  <span>點擊開啟聲音</span>
+                </button>
+              </div>
             </div>
             <div class="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-xs">
               <div class="flex flex-col">
@@ -1123,7 +1228,145 @@
     }
 
     // ---------- Initialization ----------
+    
+    // ---------- 影片滑過 5 秒自動靜音預覽機制 ----------
+    function initAutoPreviewVideos() {
+      const videoConfigs = [
+        { id: 'relay-video', key: 'relay' },
+        { id: 'family-game-video', key: 'family' },
+        { id: 'volunteer-video', key: 'volunteer' }
+      ];
+
+      videoConfigs.forEach(({ id, key }) => {
+        const video = document.getElementById(id);
+        if (!video) return;
+
+        const parentCard = video.closest('.group') || video.closest('[data-auto-preview]');
+        const previewBadge = document.getElementById(`preview-badge-${key}`);
+        const unmuteBtn = document.getElementById(`unmute-btn-${key}`);
+
+        let isPreviewing = false;
+        let hasUserInteracted = false;
+        let previewTimer = null;
+
+        video.addEventListener('play', () => {
+          if (!video.muted) {
+            hasUserInteracted = true;
+            hidePreviewUI();
+          }
+        });
+
+        video.addEventListener('volumechange', () => {
+          if (!video.muted) {
+            hasUserInteracted = true;
+            hidePreviewUI();
+          }
+        });
+
+        function showPreviewUI() {
+          if (previewBadge) {
+            previewBadge.classList.remove('hidden');
+            previewBadge.classList.add('inline-flex');
+          }
+          if (unmuteBtn) {
+            unmuteBtn.classList.remove('hidden');
+          }
+        }
+
+        function hidePreviewUI() {
+          if (previewBadge) {
+            previewBadge.classList.add('hidden');
+            previewBadge.classList.remove('inline-flex');
+          }
+          if (unmuteBtn) {
+            unmuteBtn.classList.add('hidden');
+          }
+        }
+
+        function start5sPreview() {
+          if (hasUserInteracted) return;
+          if (!video.paused && !video.muted) return;
+
+          video.muted = true;
+          isPreviewing = true;
+          showPreviewUI();
+
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.then(() => {
+              clearTimeout(previewTimer);
+              previewTimer = setTimeout(() => {
+                if (isPreviewing && !hasUserInteracted) {
+                  video.pause();
+                  isPreviewing = false;
+                  if (previewBadge) {
+                    previewBadge.innerHTML = '<span>預覽完畢・點擊看全片</span>';
+                  }
+                }
+              }, 5000);
+            }).catch(() => {
+              // Browser policy fallback
+            });
+          }
+        }
+
+        function stopPreview() {
+          if (hasUserInteracted) return;
+          clearTimeout(previewTimer);
+          if (isPreviewing) {
+            video.pause();
+            video.currentTime = 0;
+            isPreviewing = false;
+            hidePreviewUI();
+          }
+        }
+
+        // 電腦端滑鼠滑過 (Hover)
+        if (parentCard) {
+          parentCard.addEventListener('mouseenter', () => {
+            start5sPreview();
+          });
+          parentCard.addEventListener('mouseleave', () => {
+            stopPreview();
+          });
+        }
+
+        // 手機端視窗滾動進入 (Scroll Intersection)
+        if ('IntersectionObserver' in window) {
+          let hasMobileTriggered = false;
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting && !hasMobileTriggered && !hasUserInteracted) {
+                hasMobileTriggered = true;
+                start5sPreview();
+              } else if (!entry.isIntersecting && isPreviewing) {
+                stopPreview();
+              }
+            });
+          }, { threshold: 0.45 });
+
+          observer.observe(parentCard || video);
+        }
+      });
+    }
+
+    // 點擊「開啟聲音」立即切換全片有聲播放
+    function enableFullAudio(videoId) {
+      const video = document.getElementById(videoId);
+      if (!video) return;
+      video.muted = false;
+      video.currentTime = 0;
+      video.play();
+      const keyMap = { 'relay-video': 'relay', 'family-game-video': 'family', 'volunteer-video': 'volunteer' };
+      const key = keyMap[videoId] || videoId;
+      const previewBadge = document.getElementById(`preview-badge-${key}`);
+      const unmuteBtn = document.getElementById(`unmute-btn-${key}`);
+      if (previewBadge) previewBadge.classList.add('hidden');
+      if (unmuteBtn) unmuteBtn.classList.add('hidden');
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+      initAutoPreviewVideos();
       initCheerUI();
       startCountdown();
       if (window.location.hash === '#registration-inquiry') {
