@@ -288,33 +288,234 @@
           <span class="font-label-sm text-label-sm text-secondary font-bold">圖文詳解</span>
         </div>
 
-        <!-- Official Diagram Display Container -->
-        <div class="rounded-xl overflow-hidden bg-surface-container-lowest shadow-sm flex flex-col border border-surface-container">
-          <div class="p-3 bg-surface-container flex items-center justify-between">
-            <div class="flex items-center gap-2 text-on-surface font-label-md text-label-md font-bold">
-              <span class="material-symbols-outlined text-[18px] text-tertiary">schema</span>
-              草皮中央區賽程移動示意圖
-            </div>
-            <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-bold">10M 折返賽制</span>
-          </div>
+        <!-- Official Diagram & Interactive Track Animation Container -->
+        <div class="rounded-2xl overflow-hidden bg-surface-container-lowest shadow-md flex flex-col border border-surface-container">
           
-          <div class="w-full bg-surface-container-lowest p-2 flex items-center justify-center">
+          <!-- Top bar with mode switch tabs and action buttons -->
+          <div class="p-3 bg-surface-container flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-2 text-on-surface font-label-md text-label-md font-bold">
+              <span class="material-symbols-outlined text-[19px] text-tertiary">sports_score</span>
+              <span>草皮中央區賽程移動示意圖</span>
+              <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-bold hidden sm:inline">10M 折返賽制</span>
+            </div>
+
+            <!-- Tab Switcher: Animation vs Static Drawing -->
+            <div class="inline-flex p-0.5 rounded-lg bg-surface-container-high border border-surface-container-highest">
+              <button type="button" id="btn-mode-anim" onclick="switchTrackView('anim')" class="px-2.5 py-1 rounded-md text-xs font-bold transition-all bg-secondary-container text-white shadow-xs flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">play_circle</span>
+                <span>動態演練</span>
+              </button>
+              <button type="button" id="btn-mode-static" onclick="switchTrackView('static')" class="px-2.5 py-1 rounded-md text-xs font-bold transition-all text-on-surface-variant hover:text-on-surface flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">image</span>
+                <span>原始手繪圖</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- VIEW A: Interactive SVG Track Animation -->
+          <div id="track-view-anim" class="w-full flex flex-col">
+            
+            <!-- Live Status HUD -->
+            <div class="px-3.5 py-2 bg-slate-900 text-white flex items-center justify-between text-xs sm:text-sm border-b border-white/10">
+              <div class="flex items-center gap-2 min-w-0">
+                <span id="phase-dot" class="w-2.5 h-2.5 rounded-full bg-orange-400 animate-ping shrink-0"></span>
+                <span id="phase-title" class="font-bold text-orange-300 shrink-0">去程（10M）</span>
+                <span id="phase-desc" class="text-slate-200 text-xs truncate">家長向前擺圈 ➔ 孩子雙腳躍進</span>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <button type="button" id="btn-track-play" onclick="toggleTrackPlay()" class="px-2 py-1 rounded-md bg-secondary-container hover:bg-secondary-container/90 text-white text-[11px] font-bold flex items-center gap-1 transition-all">
+                  <span id="play-icon" class="material-symbols-outlined text-[14px]">pause</span>
+                  <span id="play-text">暫停</span>
+                </button>
+                <button type="button" onclick="resetTrackAnim()" class="px-2 py-1 rounded-md bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold flex items-center gap-1 transition-all">
+                  <span class="material-symbols-outlined text-[14px]">replay</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Quick Jump Phase Buttons -->
+            <div class="grid grid-cols-3 bg-surface-container-low border-b border-surface-container text-xs font-bold text-center">
+              <button type="button" onclick="jumpTrackTo(0.02)" class="py-2 px-1 hover:bg-orange-500/10 border-r border-surface-container flex items-center justify-center gap-1 transition-colors text-orange-700">
+                <span class="w-2 h-2 rounded-full bg-orange-500"></span>
+                <span>① 去程衝刺 (橘)</span>
+              </button>
+              <button type="button" onclick="jumpTrackTo(0.46)" class="py-2 px-1 hover:bg-red-500/10 border-r border-surface-container flex items-center justify-center gap-1 transition-colors text-red-600">
+                <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                <span>② 繞錐互換</span>
+              </button>
+              <button type="button" onclick="jumpTrackTo(0.60)" class="py-2 px-1 hover:bg-sky-500/10 flex items-center justify-center gap-1 transition-colors text-sky-700">
+                <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+                <span>③ 回程交棒 (藍)</span>
+              </button>
+            </div>
+
+            <!-- SVG Graphic Canvas -->
+            <div class="w-full bg-[#edf7ee] relative overflow-hidden">
+              <svg id="track-svg" viewBox="0 0 880 340" class="w-full h-auto block select-none">
+                <defs>
+                  <linearGradient id="grass-pattern" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#f2faf3" />
+                    <stop offset="50%" stop-color="#ebf7ed" />
+                    <stop offset="100%" stop-color="#e3f3e6" />
+                  </linearGradient>
+
+                  <marker id="arrow-orange" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#ea580c" />
+                  </marker>
+                  <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#0284c7" />
+                  </marker>
+                  <marker id="arrow-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#dc2626" />
+                  </marker>
+                  <marker id="arrow-black-left" viewBox="0 0 10 10" refX="4" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 10 1 L 0 5 L 10 9 z" fill="#334155" />
+                  </marker>
+                  <marker id="arrow-black-right" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#334155" />
+                  </marker>
+                </defs>
+
+                <!-- Grass Turf Background -->
+                <rect width="880" height="340" fill="url(#grass-pattern)" />
+
+                <!-- Upper Return Lane (Blue) -->
+                <rect x="220" y="60" width="530" height="74" rx="8" fill="#e0f2fe" opacity="0.6" stroke="#bae6fd" stroke-width="1" />
+                <!-- Lower Outbound Lane (Orange) -->
+                <rect x="220" y="196" width="530" height="74" rx="8" fill="#ffedd5" opacity="0.6" stroke="#fed7aa" stroke-width="1" />
+
+                <!-- Track Guideline Paths -->
+                <!-- 1. Outbound Orange Line (去程) -->
+                <line x1="230" y1="233" x2="720" y2="233" stroke="#f97316" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-orange)" />
+                <text x="475" y="253" fill="#ea580c" font-size="12" font-weight="bold" text-anchor="middle">橘色動線：去程衝刺 10 公尺 ➔</text>
+
+                <!-- 2. Turnaround Red Arc (繞錐) -->
+                <path d="M 735 233 Q 795 165 735 97" fill="none" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="6 4" marker-end="url(#arrow-red)" />
+                <text x="815" y="165" fill="#dc2626" font-size="11" font-weight="bold" text-anchor="middle">繞錐</text>
+
+                <!-- 3. Return Blue Line (回程) -->
+                <line x1="720" y1="97" x2="230" y2="97" stroke="#0284c7" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-blue)" />
+                <text x="475" y="87" fill="#0284c7" font-size="12" font-weight="bold" text-anchor="middle">⬅ 藍色動線：回程衝刺 10 公尺</text>
+
+                <!-- FIELD VERTICAL BOUNDARY LINES -->
+                <!-- Waiting Zone (待命區) -->
+                <g id="waiting-team" opacity="0.85">
+                  <text x="65" y="125" fill="#64748b" font-size="12" font-weight="bold" text-anchor="middle">蹲下</text>
+                  <text x="65" y="142" fill="#64748b" font-size="12" font-weight="bold" text-anchor="middle">待命</text>
+                  <!-- Squatting stick figure 1 (Adult) -->
+                  <circle cx="65" cy="180" r="10" fill="#475569" />
+                  <path d="M 65 190 L 65 210 M 65 210 L 52 230 M 65 210 L 78 230 M 52 198 L 78 198" stroke="#475569" stroke-width="3" stroke-linecap="round" />
+                  <!-- Squatting stick figure 2 (Child) -->
+                  <circle cx="65" cy="245" r="7.5" fill="#475569" />
+                  <path d="M 65 252.5 L 65 268 M 65 268 L 54 282 M 65 268 L 76 282 M 55 260 L 75 260" stroke="#475569" stroke-width="2.5" stroke-linecap="round" />
+                </g>
+
+                <!-- Prep Line (預備線) -->
+                <line x1="140" y1="35" x2="140" y2="285" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="6 4" />
+                <text x="140" y="25" fill="#64748b" font-size="13" font-weight="bold" text-anchor="middle">預備線</text>
+
+                <!-- Start Line (起點線) -->
+                <line x1="230" y1="35" x2="230" y2="285" stroke="#0284c7" stroke-width="4.5" stroke-linecap="round" />
+                <rect x="205" y="8" width="50" height="22" rx="4" fill="#0284c7" />
+                <text x="230" y="23" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">起點線</text>
+
+                <!-- Turnaround Line (折返線) -->
+                <line x1="750" y1="35" x2="750" y2="285" stroke="#ea580c" stroke-width="2.5" stroke-dasharray="6 4" />
+                <rect x="725" y="8" width="50" height="22" rx="4" fill="#ea580c" />
+                <text x="750" y="23" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">折返線</text>
+
+                <!-- 3D Traffic Cone (交通錐) at (750, 165) -->
+                <g id="traffic-cone" transform="translate(750, 165)">
+                  <!-- Ground Shadow -->
+                  <ellipse cx="0" cy="22" rx="20" ry="7" fill="#0f172a" opacity="0.25" />
+                  <!-- Square Base -->
+                  <path d="M -18 20 L 18 20 L 14 15 L -14 15 Z" fill="#c2410c" />
+                  <!-- Cone Body -->
+                  <path d="M -14 15 L -2 -22 Q 0 -25 2 -22 L 14 15 Z" fill="#ea580c" />
+                  <!-- White Reflective Stripes -->
+                  <path d="M -6.5 -6 L 6.5 -6 L 8.5 2 L -8.5 2 Z" fill="#ffffff" />
+                  <path d="M -3.5 -15 L 3.5 -15 L 4.5 -9 L -4.5 -9 Z" fill="#ffffff" />
+                  <!-- Cone Tip Glow -->
+                  <circle id="cone-glow" cx="0" cy="-22" r="4" fill="#facc15" opacity="0.8" />
+                </g>
+
+                <!-- 10M Measurement Arrow at Bottom -->
+                <line x1="235" y1="312" x2="745" y2="312" stroke="#334155" stroke-width="2" marker-start="url(#arrow-black-left)" marker-end="url(#arrow-black-right)" />
+                <rect x="440" y="300" width="100" height="24" rx="12" fill="#1e293b" />
+                <text x="490" y="316" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">10 公尺</text>
+
+                <!-- DYNAMIC MOVING RUNNERS GROUP -->
+                <g id="dynamic-runner" transform="translate(230, 233)">
+                  
+                  <!-- Speech / Status Bubble -->
+                  <g id="runner-bubble" transform="translate(0, -58)" opacity="0">
+                    <rect x="-55" y="-12" width="110" height="22" rx="11" fill="#1e293b" stroke="#facc15" stroke-width="1.5" />
+                    <polygon points="-4,10 4,10 0,14" fill="#1e293b" />
+                    <text id="bubble-text" x="0" y="2.5" fill="#fef08a" font-size="10.5" font-weight="bold" text-anchor="middle">★ 攻守互換！</text>
+                  </g>
+
+                  <!-- Agile Rings (敏捷圈 / 呼拉圈) -->
+                  <!-- Ring 1 (Rear) -->
+                  <ellipse id="ring-1" cx="-24" cy="18" rx="17" ry="6" fill="rgba(239, 68, 68, 0.2)" stroke="#ef4444" stroke-width="3" />
+                  <!-- Ring 2 (Front) -->
+                  <ellipse id="ring-2" cx="16" cy="18" rx="17" ry="6" fill="rgba(239, 68, 68, 0.2)" stroke="#ef4444" stroke-width="3" />
+
+                  <!-- Parent Figure (Adult) -->
+                  <g id="actor-adult" transform="translate(-18, 0)">
+                    <ellipse cx="0" cy="19" rx="8" ry="3" fill="#000000" opacity="0.2" />
+                    <!-- Head -->
+                    <circle cx="0" cy="-28" r="11" fill="#1e293b" stroke="#ffffff" stroke-width="1.5" />
+                    <!-- Face mark -->
+                    <circle cx="3" cy="-30" r="1.5" fill="#ffffff" />
+                    <!-- Body -->
+                    <path id="adult-body" d="M 0 -17 L 2 3" stroke="#1e293b" stroke-width="3.5" stroke-linecap="round" />
+                    <!-- Arms holding ring -->
+                    <path id="adult-arms" d="M 1 -10 L 14 0" stroke="#1e293b" stroke-width="3" stroke-linecap="round" />
+                    <!-- Legs -->
+                    <path id="adult-legs" d="M 2 3 L -5 18 M 2 3 L 7 18" stroke="#1e293b" stroke-width="3" stroke-linecap="round" />
+                  </g>
+
+                  <!-- Child Figure -->
+                  <g id="actor-child" transform="translate(16, 0)">
+                    <ellipse cx="0" cy="19" rx="6" ry="2.5" fill="#000000" opacity="0.2" />
+                    <!-- Head -->
+                    <circle cx="0" cy="-18" r="8" fill="#ea580c" stroke="#ffffff" stroke-width="1.5" />
+                    <!-- Face mark -->
+                    <circle cx="2" cy="-20" r="1.2" fill="#ffffff" />
+                    <!-- Body -->
+                    <path id="child-body" d="M 0 -10 L 0 5" stroke="#ea580c" stroke-width="2.8" stroke-linecap="round" />
+                    <!-- Arms -->
+                    <path id="child-arms" d="M 0 -5 L 8 -1" stroke="#ea580c" stroke-width="2.5" stroke-linecap="round" />
+                    <!-- Legs jumping -->
+                    <path id="child-legs" d="M 0 5 L -4 17 M 0 5 L 4 17" stroke="#ea580c" stroke-width="2.5" stroke-linecap="round" />
+                  </g>
+
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <!-- VIEW B: Static Original Drawing -->
+          <div id="track-view-static" class="w-full bg-surface-container-lowest p-2 hidden items-center justify-center">
             <img alt="大庄國小親子趣味競賽圈力衝刺場地示意圖，包含蹲下預備線、起點線、敏捷圈前進路徑、10公尺標示與折返線交通錐" class="w-full h-auto object-contain rounded-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAftCLfYhgO_4pZU9dyzVVTnrVUmifJLp5890tuxiFtypS6ZtohMiujcwlvpSFsrgoWHx_P_qD5M_6eqqPPzpzJKopCElaMbNSG9wynKQkyxuJ3NcDkLixc_gIUrFOAhmm5RtzrlkOTYKvv0qnaWX09Gs52WutK4W4ZbCBH6dIwaWn7X6hHzrl_NFIkN7PjWeF5qJsAgF1i1BJEqSzHOfU3lgGyRROX1k4KBTpF7u9rylk8lLzL2e8Q"/>
           </div>
 
+          <!-- Bottom Legend & Guidelines -->
           <div class="p-3.5 bg-surface-container-low flex flex-col gap-2.5 border-t border-surface-container">
-            <div class="flex flex-col gap-1.5 text-xs text-on-surface-variant font-medium">
-              <div class="flex items-center gap-2 p-2 rounded-lg bg-surface-container-lowest border border-secondary-container/20 shadow-2xs">
+            <div class="flex flex-col sm:flex-row gap-2 text-xs text-on-surface-variant font-medium">
+              <div class="flex-1 flex items-center gap-2 p-2 rounded-lg bg-surface-container-lowest border border-secondary-container/20 shadow-2xs">
                 <span class="w-3 h-3 rounded-full bg-secondary-container shrink-0 shadow-xs"></span>
                 <span class="text-on-surface font-bold text-xs sm:text-sm">橘色箭頭：去程（10 公尺）</span>
+                <span class="text-[11px] text-secondary">家長擺圈・孩子躍進</span>
               </div>
-              <div class="flex items-center gap-2 p-2 rounded-lg bg-surface-container-lowest border border-primary-container/20 shadow-2xs">
+              <div class="flex-1 flex items-center gap-2 p-2 rounded-lg bg-surface-container-lowest border border-primary-container/20 shadow-2xs">
                 <span class="w-3 h-3 rounded-full bg-primary-container shrink-0 shadow-xs"></span>
                 <span class="text-on-surface font-bold text-xs sm:text-sm">藍色箭頭：回程（10 公尺）</span>
+                <span class="text-[11px] text-primary">孩子擺圈・家長躍進</span>
               </div>
             </div>
             <p class="text-xs text-on-surface-variant leading-relaxed pt-0.5">
-              ※ 比賽於<strong>操場中央草皮區</strong>進行；接力交接須完全越過「起點線」方可交棒。
+              ※ 比賽於<strong>操場中央草皮區</strong>進行；抵達 10M 處必須<strong>「完全繞過交通錐外圍」</strong>方可踏上折返線；接力交接須完全越過「起點線」方可交棒。
             </p>
           </div>
         </div>
@@ -884,7 +1085,6 @@
           <span class="material-symbols-outlined text-3xl animate-spin text-primary">sync</span>
           <p>正在同步雲端公告中...</p>
         </div>
-      </div>
       </div>
     </div>
   </div>
@@ -1512,7 +1712,215 @@
       }
     }
 
+    
+    // ==================== 跑道 SVG 動態演練控制器 ====================
+    let isTrackAnimPlaying = true;
+    let trackProgress = 0; // 0.0 to 1.0
+    const TRACK_DURATION_SEC = 10.5;
+    let trackLastTimestamp = null;
+    let trackAnimFrameId = null;
+
+    function initTrackAnimation() {
+      const runner = document.getElementById('dynamic-runner');
+      if (!runner) return;
+      trackAnimFrameId = requestAnimationFrame(stepTrackAnimation);
+    }
+
+    function stepTrackAnimation(timestamp) {
+      if (!trackLastTimestamp) trackLastTimestamp = timestamp;
+      const deltaSec = (timestamp - trackLastTimestamp) / 1000;
+      trackLastTimestamp = timestamp;
+
+      if (isTrackAnimPlaying) {
+        trackProgress += deltaSec / TRACK_DURATION_SEC;
+        if (trackProgress > 1.0) {
+          trackProgress = 0.0;
+        }
+      }
+
+      renderTrackFrame(trackProgress);
+      trackAnimFrameId = requestAnimationFrame(stepTrackAnimation);
+    }
+
+    function renderTrackFrame(p) {
+      const runner = document.getElementById('dynamic-runner');
+      const ring1 = document.getElementById('ring-1');
+      const ring2 = document.getElementById('ring-2');
+      const actorAdult = document.getElementById('actor-adult');
+      const actorChild = document.getElementById('actor-child');
+      const bubble = document.getElementById('runner-bubble');
+      const bubbleText = document.getElementById('bubble-text');
+      const coneGlow = document.getElementById('cone-glow');
+
+      const phaseDot = document.getElementById('phase-dot');
+      const phaseTitle = document.getElementById('phase-title');
+      const phaseDesc = document.getElementById('phase-desc');
+
+      if (!runner) return;
+
+      let x = 230;
+      let y = 233;
+      let scaleX = 1;
+
+      // Phase 1: 去程 (0.0 <= p < 0.44) -> X: 230 to 735, Y: 233
+      if (p < 0.44) {
+        const subP = p / 0.44;
+        x = 230 + (735 - 230) * subP;
+        y = 233;
+        scaleX = 1;
+
+        if (phaseTitle) {
+          phaseTitle.textContent = '去程（10M）';
+          phaseTitle.className = 'font-bold text-orange-400 shrink-0';
+        }
+        if (phaseDesc) phaseDesc.textContent = '家長向前擺圈 ➔ 孩子雙腳躍進！';
+        if (phaseDot) phaseDot.className = 'w-2.5 h-2.5 rounded-full bg-orange-500 animate-ping shrink-0';
+
+        const hop = Math.abs(Math.sin(subP * Math.PI * 10)) * 9;
+        if (actorChild) actorChild.setAttribute('transform', `translate(16, ${-hop})`);
+        if (actorAdult) actorAdult.setAttribute('transform', 'translate(-18, 0)');
+
+        const ringStep = Math.sin(subP * Math.PI * 10);
+        if (ring2) ring2.setAttribute('cx', ringStep > 0 ? '16' : '36');
+        if (ring1) ring1.setAttribute('cx', ringStep > 0 ? '-14' : '16');
+
+        if (bubble) bubble.setAttribute('opacity', '0');
+        if (coneGlow) {
+          coneGlow.setAttribute('r', '4');
+          coneGlow.setAttribute('opacity', '0.7');
+        }
+      }
+      // Phase 2: 折返繞錐 (0.44 <= p < 0.56) -> Arc around cone (750, 165)
+      else if (p < 0.56) {
+        const subP = (p - 0.44) / 0.12;
+        const angle = 1.57 - subP * Math.PI;
+        x = 740 + Math.cos(angle) * 45;
+        y = 165 + Math.sin(angle) * 68;
+        scaleX = subP < 0.5 ? 1 : -1;
+
+        if (phaseTitle) {
+          phaseTitle.textContent = '折返關鍵';
+          phaseTitle.className = 'font-bold text-red-400 shrink-0';
+        }
+        if (phaseDesc) phaseDesc.textContent = '繞過交通錐外圍 ➔ 攻守互換！';
+        if (phaseDot) phaseDot.className = 'w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shrink-0';
+
+        if (actorChild) actorChild.setAttribute('transform', 'translate(12, 0)');
+        if (actorAdult) actorAdult.setAttribute('transform', 'translate(-12, 0)');
+
+        if (bubble) bubble.setAttribute('opacity', '1');
+        if (bubbleText) bubbleText.textContent = '★ 繞錐・攻守互換！';
+
+        if (coneGlow) {
+          coneGlow.setAttribute('r', '8');
+          coneGlow.setAttribute('opacity', '1');
+        }
+      }
+      // Phase 3: 回程 (0.56 <= p < 0.92) -> X: 735 down to 230, Y: 97
+      else if (p < 0.92) {
+        const subP = (p - 0.56) / 0.36;
+        x = 735 - (735 - 230) * subP;
+        y = 97;
+        scaleX = -1;
+
+        if (phaseTitle) {
+          phaseTitle.textContent = '回程（10M）';
+          phaseTitle.className = 'font-bold text-sky-400 shrink-0';
+        }
+        if (phaseDesc) phaseDesc.textContent = '攻守互換！孩子擺圈 ➔ 家長大步躍進！';
+        if (phaseDot) phaseDot.className = 'w-2.5 h-2.5 rounded-full bg-sky-400 animate-ping shrink-0';
+
+        const hop = Math.abs(Math.sin(subP * Math.PI * 10)) * 10;
+        if (actorAdult) actorAdult.setAttribute('transform', `translate(18, ${-hop})`);
+        if (actorChild) actorChild.setAttribute('transform', 'translate(-16, 0)');
+
+        const ringStep = Math.sin(subP * Math.PI * 10);
+        if (ring2) ring2.setAttribute('cx', ringStep > 0 ? '16' : '-6');
+        if (ring1) ring1.setAttribute('cx', ringStep > 0 ? '-24' : '16');
+
+        if (bubble) bubble.setAttribute('opacity', '0');
+        if (coneGlow) coneGlow.setAttribute('r', '4');
+      }
+      // Phase 4: 交棒越線 (0.92 <= p <= 1.0) -> Cross line 230 to 160
+      else {
+        const subP = (p - 0.92) / 0.08;
+        x = 230 - 70 * subP;
+        y = 97;
+        scaleX = -1;
+
+        if (phaseTitle) {
+          phaseTitle.textContent = '交棒成功！';
+          phaseTitle.className = 'font-bold text-emerald-400 shrink-0';
+        }
+        if (phaseDesc) phaseDesc.textContent = '越過起點線 ➔ 與下一棒擊掌交接！🎉';
+        if (phaseDot) phaseDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0';
+
+        if (actorAdult) actorAdult.setAttribute('transform', 'translate(14, 0)');
+        if (actorChild) actorChild.setAttribute('transform', 'translate(-14, 0)');
+
+        if (bubble) bubble.setAttribute('opacity', '1');
+        if (bubbleText) bubbleText.textContent = '🎉 越線交棒成功！';
+      }
+
+      runner.setAttribute('transform', `translate(${x}, ${y}) scale(${scaleX}, 1)`);
+    }
+
+    function toggleTrackPlay() {
+      isTrackAnimPlaying = !isTrackAnimPlaying;
+      const playIcon = document.getElementById('play-icon');
+      const playText = document.getElementById('play-text');
+      if (playIcon) playIcon.textContent = isTrackAnimPlaying ? 'pause' : 'play_arrow';
+      if (playText) playText.textContent = isTrackAnimPlaying ? '暫停' : '播放';
+    }
+
+    function resetTrackAnim() {
+      trackProgress = 0;
+      isTrackAnimPlaying = true;
+      const playIcon = document.getElementById('play-icon');
+      const playText = document.getElementById('play-text');
+      if (playIcon) playIcon.textContent = 'pause';
+      if (playText) playText.textContent = '暫停';
+    }
+
+    function jumpTrackTo(targetP) {
+      trackProgress = targetP;
+      renderTrackFrame(trackProgress);
+    }
+
+    function switchTrackView(mode) {
+      const viewAnim = document.getElementById('track-view-anim');
+      const viewStatic = document.getElementById('track-view-static');
+      const btnAnim = document.getElementById('btn-mode-anim');
+      const btnStatic = document.getElementById('btn-mode-static');
+
+      if (mode === 'anim') {
+        if (viewAnim) viewAnim.classList.remove('hidden');
+        if (viewStatic) viewStatic.classList.add('hidden');
+        if (btnAnim) {
+          btnAnim.className = 'px-2.5 py-1 rounded-md text-xs font-bold transition-all bg-secondary-container text-white shadow-xs flex items-center gap-1';
+        }
+        if (btnStatic) {
+          btnStatic.className = 'px-2.5 py-1 rounded-md text-xs font-bold transition-all text-on-surface-variant hover:text-on-surface flex items-center gap-1';
+        }
+        isTrackAnimPlaying = true;
+      } else {
+        if (viewAnim) viewAnim.classList.add('hidden');
+        if (viewStatic) {
+          viewStatic.classList.remove('hidden');
+          viewStatic.classList.add('flex');
+        }
+        if (btnStatic) {
+          btnStatic.className = 'px-2.5 py-1 rounded-md text-xs font-bold transition-all bg-secondary-container text-white shadow-xs flex items-center gap-1';
+        }
+        if (btnAnim) {
+          btnAnim.className = 'px-2.5 py-1 rounded-md text-xs font-bold transition-all text-on-surface-variant hover:text-on-surface flex items-center gap-1';
+        }
+        isTrackAnimPlaying = false;
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+      initTrackAnimation();
       updateQuotaUI();
       syncLatestFamilyRegistrations();
       if (currentGasUrl !== DEFAULT_GAS_URL) {
