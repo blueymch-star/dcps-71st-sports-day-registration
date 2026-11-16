@@ -722,8 +722,8 @@
 
   <!-- Modal: 編修報名資料 (對應 BeClass [✓編修]) -->
   <div id="modal-edit-registration" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-surface-container overflow-hidden flex flex-col">
-      <div class="p-4 bg-primary text-white flex items-center justify-between">
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-surface-container overflow-hidden flex flex-col max-h-[90dvh]">
+      <div class="p-4 bg-primary text-white flex items-center justify-between shrink-0">
         <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-[22px]">edit_note</span>
           <h3 class="font-bold text-base">編修接力賽報名資料</h3>
@@ -732,7 +732,7 @@
           <span class="material-symbols-outlined text-[20px]">close</span>
         </button>
       </div>
-      <div class="p-5 flex flex-col gap-4 text-xs">
+      <div class="p-5 flex flex-col gap-4 text-xs overflow-y-auto">
         <p class="text-on-surface-variant leading-relaxed">
           請輸入報名時填寫的<strong>「行動電話」</strong>或<strong>「Email」</strong>檢索您的報名資料進行資料修正：
         </p>
@@ -746,7 +746,7 @@
           <!-- Populated by JS -->
         </div>
       </div>
-      <div class="p-3 bg-surface-container flex justify-end">
+      <div class="p-3 bg-surface-container flex justify-end shrink-0">
         <button onclick="toggleModal('modal-edit-registration')" class="px-4 py-2 rounded-xl bg-surface-container-high text-on-surface text-xs font-bold">
           關閉視窗
         </button>
@@ -1200,42 +1200,81 @@
         allReg = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS)) || [];
       } catch(e) {}
 
-      const found = allReg.find(r => 
-        (r.phone && r.phone.toLowerCase().includes(q)) || 
+      // 優先比對薪傳大隊接力紀錄，若無再比對其他符合項目
+      const isMatch = (r) =>
+        (r.phone && r.phone.toLowerCase().includes(q)) ||
         (r.email && r.email.toLowerCase().includes(q)) ||
-        (r.id && r.id.toLowerCase().includes(q))
-      );
+        (r.id && r.id.toLowerCase().includes(q));
+
+      const found = allReg.find(r => (r.type === 'relay' || (r.id && r.id.includes('RELAY'))) && isMatch(r)) || allReg.find(isMatch);
 
       resContainer.classList.remove('hidden');
       if (!found) {
         resContainer.innerHTML = `
           <div class="text-error font-medium flex items-center gap-1.5">
             <span class="material-symbols-outlined text-[18px]">error</span>
-            未找到符合「${q}」的報名紀錄，請確認輸入之手機或信箱是否正確。
+            未找到符合「${escapeHtml(q)}」的報名紀錄，請確認輸入之手機或信箱是否正確。
           </div>
         `;
         return;
       }
 
+      const currentGender = String(found.gender || '').trim();
+      const currentBirth = String(found.birthYear || '').trim();
+      const currentGrad = String(found.gradYear !== undefined && found.gradYear !== null ? found.gradYear : '0').trim();
+
+      let birthOptions = '<option value="">請選擇出生年次</option>';
+      let birthMatched = false;
+      for (let y = 105; y >= 40; y--) {
+        const adYear = 1911 + y;
+        const val = `民國${y}年 (${adYear})`;
+        const isSelected = currentBirth === val || currentBirth.includes(`民國${y}年`) || currentBirth.includes(`民國 ${y} 年`) || currentBirth === String(y);
+        if (isSelected) birthMatched = true;
+        birthOptions += `<option value="${val}" ${isSelected ? 'selected' : ''}>民國 ${y} 年次 (${adYear})</option>`;
+      }
+      if (currentBirth && !birthMatched) {
+        birthOptions += `<option value="${escapeHtml(currentBirth)}" selected>${escapeHtml(currentBirth)}</option>`;
+      }
+
       resContainer.innerHTML = `
         <div class="flex items-center justify-between pb-2 border-b border-surface-container">
-          <span class="font-bold text-on-surface">報名代碼：${found.id}</span>
-          <span class="px-2 py-0.5 rounded bg-primary/10 text-primary font-bold">${found.category || found.typeName || '大隊接力'}</span>
+          <span class="font-bold text-on-surface">報名代碼：${escapeHtml(found.id)}</span>
+          <span class="px-2 py-0.5 rounded bg-primary/10 text-primary font-bold">${escapeHtml(found.category || found.typeName || '大隊接力')}</span>
         </div>
-        <div class="space-y-2 pt-1">
+        <div class="space-y-2.5 pt-1">
           <div>
             <label class="block font-bold text-on-surface mb-1">選手姓名：</label>
-            <input type="text" id="edit-val-name" value="${found.name || found.leaderName || ''}" class="w-full h-9 px-2.5 rounded border border-surface-container-highest bg-surface-container-lowest text-on-surface">
+            <input type="text" id="edit-val-name" value="${escapeHtml(found.name || found.leaderName || '')}" class="w-full h-9 px-2.5 rounded border border-surface-container-highest bg-surface-container-lowest text-on-surface">
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-bold text-on-surface mb-1">性別：</label>
+              <select id="edit-val-gender" class="w-full h-9 px-2 rounded border border-surface-container-highest bg-surface-container-lowest text-on-surface">
+                <option value="">請選擇</option>
+                <option value="男" ${currentGender === '男' ? 'selected' : ''}>男</option>
+                <option value="女" ${currentGender === '女' ? 'selected' : ''}>女</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-on-surface mb-1">出生年次 (民國)：</label>
+              <select id="edit-val-birth-year" class="w-full h-9 px-2 rounded border border-surface-container-highest bg-surface-container-lowest text-on-surface">
+                ${birthOptions}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block font-bold text-on-surface mb-1">校友畢業年度 (民國年，非校友填 0)：</label>
+            <input type="text" id="edit-val-grad-year" value="${escapeHtml(currentGrad)}" placeholder="例：98，非校友請填 0" class="w-full h-9 px-2.5 rounded border border-surface-container-highest bg-surface-container-lowest text-on-surface">
           </div>
           <div>
             <label class="block font-bold text-on-surface mb-1">行動電話：</label>
-            <input type="tel" id="edit-val-phone" value="${found.phone || ''}" class="w-full h-9 px-2.5 rounded border border-surface-container-highest bg-surface-container-lowest text-on-surface">
+            <input type="tel" id="edit-val-phone" value="${escapeHtml(found.phone || '')}" class="w-full h-9 px-2.5 rounded border border-surface-container-highest bg-surface-container-lowest text-on-surface">
           </div>
           <div>
             <label class="block font-bold text-on-surface mb-1">Email：</label>
-            <input type="email" id="edit-val-email" value="${found.email || ''}" class="w-full h-9 px-2.5 rounded border border-surface-container-highest bg-surface-container-lowest text-on-surface">
+            <input type="email" id="edit-val-email" value="${escapeHtml(found.email || '')}" class="w-full h-9 px-2.5 rounded border border-surface-container-highest bg-surface-container-lowest text-on-surface">
           </div>
-          <button type="button" onclick="saveEditedRegistration('${found.id}')" class="w-full py-2 mt-2 rounded-lg bg-emerald-700 text-white font-bold hover:bg-emerald-800 transition-all flex items-center justify-center gap-1">
+          <button type="button" onclick="saveEditedRegistration('${escapeHtml(found.id)}')" class="w-full py-2.5 mt-2 rounded-lg bg-emerald-700 text-white font-bold hover:bg-emerald-800 transition-all flex items-center justify-center gap-1 cursor-pointer">
             <span class="material-symbols-outlined text-[16px]">save</span>
             儲存修改資料
           </button>
@@ -1243,13 +1282,16 @@
       `;
     }
 
-    function saveEditedRegistration(id) {
+    async function saveEditedRegistration(id) {
       const newName = document.getElementById('edit-val-name').value.trim();
+      const newGender = document.getElementById('edit-val-gender').value;
+      const newBirthYear = document.getElementById('edit-val-birth-year').value;
+      const newGradYear = document.getElementById('edit-val-grad-year').value.trim() || '0';
       const newPhone = document.getElementById('edit-val-phone').value.trim();
       const newEmail = document.getElementById('edit-val-email').value.trim();
 
-      if (!newName || !newPhone) {
-        alert('姓名與電話不可為空！');
+      if (!newName || !newGender || !newBirthYear || !newPhone) {
+        alert('姓名、性別、出生年次與行動電話皆不可為空！');
         return;
       }
 
@@ -1258,11 +1300,36 @@
         allReg = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS)) || [];
         const idx = allReg.findIndex(r => r.id === id);
         if (idx !== -1) {
+          const cat = allReg[idx].category || currentSelectedDivision || '校友組';
           allReg[idx].name = newName;
           allReg[idx].leaderName = newName;
+          allReg[idx].teamName = `${cat}・${newName}`;
+          allReg[idx].gender = newGender;
+          allReg[idx].birthYear = newBirthYear;
+          allReg[idx].gradYear = newGradYear;
           allReg[idx].phone = newPhone;
           allReg[idx].email = newEmail;
           localStorage.setItem(STORAGE_KEY_REGISTRATIONS, JSON.stringify(allReg));
+
+          // 背景同步嘗試傳送更新給 GAS 雲端試算表
+          if (currentGasUrl && currentGasUrl.startsWith('http')) {
+            fetch(currentGasUrl, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+              body: JSON.stringify({
+                action: 'updateRelay',
+                regId: id,
+                name: newName,
+                gender: newGender,
+                birthYear: newBirthYear,
+                gradYear: newGradYear,
+                phone: newPhone,
+                email: newEmail
+              })
+            }).catch(() => {});
+          }
+
           alert(`報名代碼 ${id} 資料修改成功！`);
           toggleModal('modal-edit-registration');
         }

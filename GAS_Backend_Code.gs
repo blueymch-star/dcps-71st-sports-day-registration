@@ -82,6 +82,13 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
+    // 編修薪傳接力報名資料（支援性別、出生年次與畢業年度修改）
+    if (data.action === "updateRelay") {
+      var updRelayRes = updateRelayRegistrationInSheet(ss, data);
+      return ContentService.createTextOutput(JSON.stringify(updRelayRes))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     // 編修親子趣味賽報名資料（支援年級與班級修改）
     if (data.action === "updateFamily") {
       var updRes = updateFamilyRegistrationInSheet(ss, data);
@@ -1758,6 +1765,43 @@ function updateFamilyRegistrationInSheet(ss, data) {
         sheet.getRange(r, 9).setValue(combinedTitle);
 
         return { status: "success", message: "報名資料已更新至雲端試算表！" };
+      }
+    }
+    return { status: "error", message: "找不到對應報名編號之資料" };
+  } catch (err) {
+    return { status: "error", message: err.toString() };
+  }
+}
+
+
+// 編修更新薪傳大隊接力報名資料
+function updateRelayRegistrationInSheet(ss, data) {
+  try {
+    var sheet = ss.getSheetByName("大隊接力報名名冊");
+    if (!sheet) return { status: "error", message: "找不到大隊接力報名名冊工作表" };
+
+    var regId = String(data.regId || "").trim();
+    if (!regId) return { status: "error", message: "缺少報名編號" };
+
+    var rows = sheet.getDataRange().getValues();
+    for (var i = 1; i < rows.length; i++) {
+      if (String(rows[i][1] || "").trim() === regId) {
+        var r = i + 1;
+        var name = String(data.name || rows[i][3] || "").trim();
+        var gender = String(data.gender || rows[i][4] || "").trim();
+        var email = String(data.email || rows[i][5] || "").trim();
+        var birthYear = String(data.birthYear || rows[i][6] || "").trim();
+        var phone = String(data.phone || rows[i][7] || "").trim();
+        var gradYear = String(data.gradYear !== undefined ? data.gradYear : (rows[i][8] || "0")).trim();
+
+        sheet.getRange(r, 4).setValue(name);
+        sheet.getRange(r, 5).setValue(gender);
+        sheet.getRange(r, 6).setValue(email);
+        sheet.getRange(r, 7).setValue(birthYear);
+        sheet.getRange(r, 8).setValue("'" + phone.replace(/^'/, ""));
+        sheet.getRange(r, 9).setValue(gradYear);
+
+        return { status: "success", message: "接力賽報名資料已更新至雲端試算表！" };
       }
     }
     return { status: "error", message: "找不到對應報名編號之資料" };
