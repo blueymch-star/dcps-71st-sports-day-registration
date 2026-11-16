@@ -415,7 +415,7 @@
           <!-- Current Count & Footer Link (完全參照 BeClass 原貌與動作設計) -->
           <div class="pt-3 border-t border-surface-container flex flex-col gap-2 text-xs">
             <div class="flex items-center justify-between text-on-surface-variant flex-wrap gap-2">
-              <span class="text-primary font-bold text-sm" id="current-registered-text">※目前報名數：36</span>
+              <span class="text-primary font-bold text-sm" id="current-registered-text">※【校友組】目前報名數：0</span>
               <div class="flex items-center gap-1.5 text-primary font-bold text-sm">
                 <a href="index.html#registration-inquiry" class="hover:underline flex items-center gap-0.5">
                   <span class="text-emerald-700">[✓查詢]</span>
@@ -818,14 +818,31 @@
     const DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbyGQ7p0Miioq7GMv_klUgy8kFaiNHoG9L0PvnHsnRzlOC3Eijwi5Ow5jsaT-3AEU0zh/exec';
     let currentGasUrl = localStorage.getItem(STORAGE_KEY_GAS_URL) || DEFAULT_GAS_URL;
 
-    // Live Registered Count Helper (精確統計接力賽報名數)
+    // 當前選定組別 (預設校友組)
+    let currentSelectedDivision = '校友組';
+
+    function isSameDivision(itemCategory, targetDivision) {
+      const cat = String(itemCategory || '').trim();
+      if (!cat || !targetDivision) return false;
+      if (cat === targetDivision) return true;
+      if (targetDivision.includes('家長') && cat.includes('家長')) return true;
+      if (targetDivision.includes('校友') && cat.includes('校友')) return true;
+      if (targetDivision.includes('師長') && cat.includes('師長')) return true;
+      return false;
+    }
+
+    // Live Registered Count Helper (依照目前選定的組別精確統計接力賽報名數)
     function updateRelayCount() {
       try {
         const all = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS) || '[]');
-        const relayItems = all.filter(r => r.type === 'relay' || (r.id && r.id.includes('RELAY')));
+        const div = currentSelectedDivision || '校友組';
+        const relayItems = all.filter(r =>
+          (r.type === 'relay' || (r.id && r.id.includes('RELAY'))) &&
+          isSameDivision(r.category, div)
+        );
         const total = relayItems.length;
         const countText = document.getElementById('current-registered-text');
-        if (countText) countText.textContent = `※目前報名數：${total}`;
+        if (countText) countText.textContent = `※【${div}】目前報名數：${total}`;
       } catch (e) {}
     }
 
@@ -845,7 +862,6 @@
     }
 
     // Tab switcher: 點選上方組別卡片，即直接選定參賽組別
-    let currentSelectedDivision = '校友組';
 
     function selectDivision(categoryName) {
       currentSelectedDivision = categoryName;
@@ -880,6 +896,7 @@
           tag.textContent = '校友組（總量 24、外加候補6）';
         }
       }
+      updateRelayCount();
     }
 
     function escapeHtml(str) {
