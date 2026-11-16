@@ -82,6 +82,13 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
+    // 編修親子趣味賽報名資料（支援年級與班級修改）
+    if (data.action === "updateFamily") {
+      var updRes = updateFamilyRegistrationInSheet(ss, data);
+      return ContentService.createTextOutput(JSON.stringify(updRes))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     // 取消報名並移動至「已取消報名」工作表
     if (data.action === "cancel") {
       var cancelRes = cancelAndMoveRegistration(ss, data);
@@ -1717,6 +1724,43 @@ function addAnnouncementToSheet(ss, data) {
 
     sheet.appendRow([time, tag, content, status]);
     return { status: "success", message: "公告已成功發布並寫入試算表！" };
+  } catch (err) {
+    return { status: "error", message: err.toString() };
+  }
+}
+
+
+// 編修更新親子趣味賽報名資料
+function updateFamilyRegistrationInSheet(ss, data) {
+  try {
+    var sheet = ss.getSheetByName("親子趣味競賽名冊");
+    if (!sheet) return { status: "error", message: "找不到親子趣味競賽名冊工作表" };
+
+    var regId = String(data.regId || "").trim();
+    if (!regId) return { status: "error", message: "缺少報名編號" };
+
+    var rows = sheet.getDataRange().getValues();
+    for (var i = 1; i < rows.length; i++) {
+      if (String(rows[i][1] || "").trim() === regId) {
+        var r = i + 1;
+        var parentName = String(data.parentName || rows[i][2] || "").trim();
+        var phone = String(data.phone || rows[i][4] || "").trim();
+        var studentName = String(data.studentName || rows[i][5] || "").trim();
+        var studentGrade = String(data.studentGrade || rows[i][6] || "").trim();
+        var studentClass = String(data.studentClass || rows[i][7] || "").trim();
+        var combinedTitle = studentGrade + studentClass + " " + studentName + " ＆ " + parentName + " (家長)";
+
+        sheet.getRange(r, 3).setValue(parentName);
+        sheet.getRange(r, 5).setValue("'" + phone.replace(/^'/, ""));
+        sheet.getRange(r, 6).setValue(studentName);
+        sheet.getRange(r, 7).setValue(studentGrade);
+        sheet.getRange(r, 8).setValue(studentClass);
+        sheet.getRange(r, 9).setValue(combinedTitle);
+
+        return { status: "success", message: "報名資料已更新至雲端試算表！" };
+      }
+    }
+    return { status: "error", message: "找不到對應報名編號之資料" };
   } catch (err) {
     return { status: "error", message: err.toString() };
   }
