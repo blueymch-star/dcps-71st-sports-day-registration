@@ -975,14 +975,14 @@
     <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-rose-300 overflow-hidden flex flex-col max-h-[85dvh]">
       <div class="p-5 sm:p-6 bg-gradient-to-r from-rose-600 to-red-700 text-white text-center flex flex-col items-center gap-1.5 shrink-0">
         <span class="material-symbols-outlined text-4xl sm:text-5xl">event_busy</span>
-        <h3 class="text-xl sm:text-2xl font-black font-headline tracking-wide">報名截止</h3>
+        <h3 id="closed-notice-title" class="text-xl sm:text-2xl font-black font-headline tracking-wide">報名額滿</h3>
         <p class="text-xs text-rose-100">圈力衝刺親子趣味競賽</p>
       </div>
 
       <div class="p-5 flex flex-col gap-4 text-center text-xs overflow-y-auto">
         <div class="p-4 rounded-xl bg-rose-50 border border-rose-200 flex flex-col items-center gap-2">
-          <p class="text-sm sm:text-base font-extrabold text-rose-900 leading-relaxed tracking-wide">
-            報名截止<br>
+          <p id="closed-notice-body" class="text-sm sm:text-base font-extrabold text-rose-900 leading-relaxed tracking-wide">
+            報名額滿<br>
             若有其它問題請洽活動承辦人員
           </p>
         </div>
@@ -1172,7 +1172,12 @@
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.className = 'w-full h-12 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-label-lg text-label-lg font-bold flex items-center justify-center gap-2 mt-4 cursor-pointer shadow-lg shadow-rose-600/30';
-          submitBtnText.textContent = count >= MAX_TOTAL_QUOTA ? '報名額滿 (若有其它問題請洽活動承辦人員)' : '報名截止 (若有其它問題請洽活動承辦人員)';
+          const isFull = count >= MAX_TOTAL_QUOTA;
+          submitBtnText.textContent = isFull ? '報名額滿 (若有其它問題請洽活動承辦人員)' : '報名截止 (若有其它問題請洽活動承辦人員)';
+          const modalTitleEl = document.getElementById('closed-notice-title');
+          const modalBodyEl = document.getElementById('closed-notice-body');
+          if (modalTitleEl) modalTitleEl.textContent = isFull ? '報名額滿' : '報名截止';
+          if (modalBodyEl) modalBodyEl.innerHTML = (isFull ? '報名額滿' : '報名截止') + '<br>若有其它問題請洽活動承辦人員';
         }
       } else if (count < 20) {
         if (dot) dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse';
