@@ -684,10 +684,16 @@
             </td>
             <td class="py-3.5 px-4">
               ${item.lineUserId ? `
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold" title="${escapeHtml(item.lineStatus || '已連動')}">
-                  <span class="w-1.5 h-1.5 rounded-full bg-[#06C755]"></span>
-                  <span>${escapeHtml(item.lineDisplayName || '已連動')}</span>
-                </span>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold" title="${escapeHtml(item.lineStatus || '已連動')}">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#06C755]"></span>
+                    <span>${escapeHtml(item.lineDisplayName || '已連動')}</span>
+                  </span>
+                  <button onclick="openQuickSinglePush('${item.id}')" class="px-2 py-0.5 rounded-lg bg-sky-50 hover:bg-sky-600 text-sky-700 hover:text-white border border-sky-200 text-[11px] font-bold transition-all inline-flex items-center gap-0.5 active:scale-95" title="單筆快捷推播給此帳號">
+                    <span class="material-symbols-outlined text-[13px]">send</span>
+                    <span>推播</span>
+                  </button>
+                </div>
               ` : `
                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant text-[11px]">
                   <span>⚪ 未連動</span>
@@ -780,10 +786,16 @@
             </td>
             <td class="py-3.5 px-4">
               ${item.lineUserId ? `
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold" title="${escapeHtml(item.lineStatus || '已連動')}">
-                  <span class="w-1.5 h-1.5 rounded-full bg-[#06C755]"></span>
-                  <span>${escapeHtml(item.lineDisplayName || '已連動')}</span>
-                </span>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold" title="${escapeHtml(item.lineStatus || '已連動')}">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#06C755]"></span>
+                    <span>${escapeHtml(item.lineDisplayName || '已連動')}</span>
+                  </span>
+                  <button onclick="openQuickSinglePush('${item.id}')" class="px-2 py-0.5 rounded-lg bg-sky-50 hover:bg-sky-600 text-sky-700 hover:text-white border border-sky-200 text-[11px] font-bold transition-all inline-flex items-center gap-0.5 active:scale-95" title="單筆快捷推播給此帳號">
+                    <span class="material-symbols-outlined text-[13px]">send</span>
+                    <span>推播</span>
+                  </button>
+                </div>
               ` : `
                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant text-[11px]">
                   <span>⚪ 未連動</span>
@@ -878,10 +890,16 @@
             </td>
             <td class="py-3.5 px-4">
               ${item.lineUserId ? `
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold" title="${escapeHtml(item.lineStatus || '已連動')}">
-                  <span class="w-1.5 h-1.5 rounded-full bg-[#06C755]"></span>
-                  <span>${escapeHtml(item.lineDisplayName || '已連動')}</span>
-                </span>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold" title="${escapeHtml(item.lineStatus || '已連動')}">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#06C755]"></span>
+                    <span>${escapeHtml(item.lineDisplayName || '已連動')}</span>
+                  </span>
+                  <button onclick="openQuickSinglePush('${item.id}')" class="px-2 py-0.5 rounded-lg bg-sky-50 hover:bg-sky-600 text-sky-700 hover:text-white border border-sky-200 text-[11px] font-bold transition-all inline-flex items-center gap-0.5 active:scale-95" title="單筆快捷推播給此帳號">
+                    <span class="material-symbols-outlined text-[13px]">send</span>
+                    <span>推播</span>
+                  </button>
+                </div>
               ` : `
                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant text-[11px]">
                   <span>⚪ 未連動</span>
@@ -1026,13 +1044,161 @@
     }
 
     // ==========================================
-    // LINE 智慧推播管理邏輯 (錄取通知、賽前提醒、連線設定)
+    // LINE 智慧推播管理邏輯 (組別篩選、帳號勾選、單筆快捷推播)
     // ==========================================
 
-    function openAdmissionModal() {
+    function getSubGroupLabel(item) {
+      if (item.type === 'relay') {
+        return item.category || '未分類組別';
+      }
+      if (item.type === 'family') {
+        return item.studentGrade || '親子組';
+      }
+      if (item.type === 'volunteer') {
+        return String(item.isAlumni || '').includes('是') ? '校友志工' : '一般/學生志工';
+      }
+      return '其他';
+    }
+
+    function getPersonDisplayName(item) {
+      if (item.type === 'family') {
+        const s = item.studentName || item.childName || '';
+        const p = item.parentName || item.leaderName || '';
+        return p && s ? `${p} (學生:${s})` : (s || p || '-');
+      }
+      return item.name || item.studentName || item.leaderName || '-';
+    }
+
+    function isAcceptedStatus(status) {
+      const s = String(status || '');
+      return (s.includes('正選') || s.includes('錄取') || s.includes('優先')) && !s.includes('候補');
+    }
+
+    function refreshLinePickerSubgroups(prefix) {
+      const cat = document.getElementById(`${prefix}-select-category`).value;
+      const subSelect = document.getElementById(`${prefix}-select-subgroup`);
       const list = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS) || '[]');
-      const boundCount = list.filter(i => i.lineUserId && (String(i.status).includes('正選') || String(i.status).includes('錄取') || String(i.status).includes('優先'))).length;
-      document.getElementById('adm-target-stats').textContent = `目前符合資格且已連動 LINE 之正選選手共 ${boundCount} 人`;
+
+      const scoped = list.filter(i => cat === 'all' || i.type === cat);
+      const uniqueSubs = Array.from(new Set(scoped.map(getSubGroupLabel))).filter(Boolean);
+
+      const prevVal = subSelect.value;
+      subSelect.innerHTML = `<option value="all">全部組別 (${scoped.length} 筆)</option>` +
+        uniqueSubs.map(sub => `<option value="${escapeHtml(sub)}">${escapeHtml(sub)}</option>`).join('');
+      if (uniqueSubs.includes(prevVal)) {
+        subSelect.value = prevVal;
+      }
+    }
+
+    function renderLinePickerList(prefix, preselectedRegIds = null) {
+      const cat = document.getElementById(`${prefix}-select-category`).value;
+      const sub = document.getElementById(`${prefix}-select-subgroup`).value;
+      const statusFilter = document.getElementById(`${prefix}-select-status`).value;
+      const keyword = (document.getElementById(`${prefix}-search-input`).value || '').trim().toLowerCase();
+
+      const list = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS) || '[]');
+
+      const matched = list.filter(item => {
+        if (cat !== 'all' && item.type !== cat) return false;
+        if (sub !== 'all' && getSubGroupLabel(item) !== sub) return false;
+        if (statusFilter === 'accepted' && !isAcceptedStatus(item.status)) return false;
+        if (statusFilter === 'waitlist' && !String(item.status || '').includes('候補')) return false;
+        if (keyword) {
+          const hay = `${item.id || ''} ${getPersonDisplayName(item)} ${item.lineDisplayName || ''} ${getSubGroupLabel(item)}`.toLowerCase();
+          if (!hay.includes(keyword)) return false;
+        }
+        return true;
+      });
+
+      const linkedList = matched.filter(i => i.lineUserId && String(i.lineUserId).startsWith('U'));
+      const unlinkedCount = matched.length - linkedList.length;
+
+      const container = document.getElementById(`${prefix}-recipient-list`);
+      if (linkedList.length === 0) {
+        container.innerHTML = `
+          <div class="py-6 text-center text-on-surface-variant text-xs">
+            目前篩選條件下，沒有已連動 LINE 的報名帳號。<br/>
+            <span class="opacity-70 text-[11px]">${unlinkedCount > 0 ? `(另有 ${unlinkedCount} 筆未連動 LINE)` : '請調整上方項目、組別或狀態篩選。'}</span>
+          </div>
+        `;
+      } else {
+        container.innerHTML = linkedList.map(item => {
+          const checked = preselectedRegIds
+            ? (preselectedRegIds.includes(item.id) ? 'checked' : '')
+            : 'checked';
+          const statusCls = String(item.status || '').includes('候補')
+            ? 'bg-amber-100 text-amber-800'
+            : 'bg-emerald-100 text-emerald-800';
+          return `
+            <label class="flex items-center justify-between gap-2 p-2.5 rounded-xl border border-surface-container hover:bg-surface-container-low cursor-pointer transition-colors">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <input type="checkbox" name="${prefix}-recipient-cb" value="${escapeHtml(item.id)}" ${checked}
+                       onchange="updateLinePickerCount('${prefix}')"
+                       class="w-4 h-4 rounded accent-emerald-600 shrink-0 cursor-pointer"/>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="font-bold text-on-surface truncate">${escapeHtml(getPersonDisplayName(item))}</span>
+                    <span class="text-[10px] font-mono text-on-surface-variant">${escapeHtml(item.id)}</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 flex-wrap mt-0.5 text-[10px]">
+                    <span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-semibold">${escapeHtml(getSubGroupLabel(item))}</span>
+                    <span class="px-1.5 py-0.5 rounded ${statusCls} font-bold">${escapeHtml(item.status || '正選')}</span>
+                    ${item.lineStatus ? `<span class="text-on-surface-variant opacity-80">· ${escapeHtml(item.lineStatus)}</span>` : ''}
+                  </div>
+                </div>
+              </div>
+              <span class="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#06C755]/10 text-emerald-800 border border-[#06C755]/30 text-[10px] font-bold">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#06C755]"></span>
+                ${escapeHtml(item.lineDisplayName || '已連動')}
+              </span>
+            </label>
+          `;
+        }).join('');
+      }
+
+      container.dataset.unlinkedCount = String(unlinkedCount);
+      container.dataset.totalLinked = String(linkedList.length);
+      updateLinePickerCount(prefix);
+    }
+
+    function updateLinePickerCount(prefix) {
+      const container = document.getElementById(`${prefix}-recipient-list`);
+      const unlinkedCount = Number(container.dataset.unlinkedCount || 0);
+      const totalLinked = Number(container.dataset.totalLinked || 0);
+      const checkedCount = document.querySelectorAll(`input[name="${prefix}-recipient-cb"]:checked`).length;
+
+      const statsEl = document.getElementById(`${prefix}-target-stats`);
+      if (statsEl) {
+        statsEl.textContent = `已勾選 ${checkedCount} / ${totalLinked} 位已連動帳號` + (unlinkedCount > 0 ? `（另有 ${unlinkedCount} 筆未連動 LINE 已略過）` : '');
+      }
+    }
+
+    function toggleAllLinePicker(prefix, checked) {
+      document.querySelectorAll(`input[name="${prefix}-recipient-cb"]`).forEach(cb => {
+        cb.checked = checked;
+      });
+      updateLinePickerCount(prefix);
+    }
+
+    function getSelectedLinePickerIds(prefix) {
+      return Array.from(document.querySelectorAll(`input[name="${prefix}-recipient-cb"]:checked`)).map(cb => cb.value);
+    }
+
+    function onLinePickerCategoryChange(prefix) {
+      refreshLinePickerSubgroups(prefix);
+      renderLinePickerList(prefix);
+    }
+
+    function openAdmissionModal(preselectedRegIds = null) {
+      if (preselectedRegIds) {
+        document.getElementById('adm-select-category').value = 'all';
+        document.getElementById('adm-select-status').value = 'all';
+      } else {
+        document.getElementById('adm-select-status').value = 'accepted';
+      }
+      document.getElementById('adm-search-input').value = '';
+      refreshLinePickerSubgroups('adm');
+      renderLinePickerList('adm', preselectedRegIds);
       document.getElementById('modal-line-admission').classList.remove('hidden');
     }
 
@@ -1042,7 +1208,11 @@
 
     async function submitAdmissionPush() {
       const category = document.getElementById('adm-select-category').value;
-      if (!confirm(`確定要向【${category === 'all' ? '全部已錄取名單' : category}】發送【LINE 錄取通知書】嗎？`)) {
+      const regIds = getSelectedLinePickerIds('adm');
+      if (regIds.length === 0) {
+        return alert('請至少勾選 1 位已連動 LINE 的對象！');
+      }
+      if (!confirm(`確定要向已勾選的 ${regIds.length} 位對象發送【LINE 錄取通知書】嗎？`)) {
         return;
       }
 
@@ -1056,7 +1226,8 @@
           headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify({
             action: 'sendAdmissionNotices',
-            category: category
+            category: category,
+            regIds: regIds
           })
         });
         const res = await resp.json();
@@ -1076,10 +1247,14 @@
       }
     }
 
-    function openPreGameModal() {
-      const list = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS) || '[]');
-      const boundCount = list.filter(i => i.lineUserId).length;
-      document.getElementById('pre-target-stats').textContent = `目前已連動 LINE 總人數共 ${boundCount} 人`;
+    function openPreGameModal(preselectedRegIds = null) {
+      if (preselectedRegIds) {
+        document.getElementById('pre-select-category').value = 'all';
+        document.getElementById('pre-select-status').value = 'all';
+      }
+      document.getElementById('pre-search-input').value = '';
+      refreshLinePickerSubgroups('pre');
+      renderLinePickerList('pre', preselectedRegIds);
       document.getElementById('modal-line-pregame').classList.remove('hidden');
     }
 
@@ -1089,14 +1264,18 @@
 
     async function submitPreGamePush() {
       const category = document.getElementById('pre-select-category').value;
+      const regIds = getSelectedLinePickerIds('pre');
       const title = document.getElementById('pre-input-title').value.trim();
       const content = document.getElementById('pre-input-content').value.trim();
 
+      if (regIds.length === 0) {
+        return alert('請至少勾選 1 位已連動 LINE 的對象！');
+      }
       if (!title || !content) {
         return alert('請填寫通知標題與詳細公告內容！');
       }
 
-      if (!confirm(`確定要向【${category === 'all' ? '全體已連動選手' : category}】群發【賽前行前通知】嗎？`)) {
+      if (!confirm(`確定要向已勾選的 ${regIds.length} 位對象發送【賽前行前通知】嗎？`)) {
         return;
       }
 
@@ -1111,6 +1290,7 @@
           body: JSON.stringify({
             action: 'sendPreGameNotice',
             category: category,
+            regIds: regIds,
             noticeTitle: title,
             noticeContent: content
           })
@@ -1130,6 +1310,73 @@
         btn.disabled = false;
         btn.textContent = '立即群發賽前通知';
       }
+    }
+
+    // 單筆快捷推播控制
+    let currentQuickSingleItem = null;
+
+    function openQuickSinglePush(regId) {
+      const list = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS) || '[]');
+      const item = list.find(i => i.id === regId);
+      if (!item) return alert('找不到該筆報名資料，請重新整理後再試！');
+      if (!item.lineUserId || !String(item.lineUserId).startsWith('U')) {
+        return alert('此帳號尚未連動 LINE，無法推播！');
+      }
+
+      currentQuickSingleItem = item;
+      document.getElementById('qs-name').textContent = getPersonDisplayName(item);
+      document.getElementById('qs-meta').textContent = `${item.id} · ${getSubGroupLabel(item)} · ${item.status || '正選'}`;
+      document.getElementById('qs-line-name').textContent = item.lineDisplayName || '已連動帳號';
+      document.getElementById('modal-line-quick-single').classList.remove('hidden');
+    }
+
+    function closeQuickSinglePush() {
+      document.getElementById('modal-line-quick-single').classList.add('hidden');
+      currentQuickSingleItem = null;
+    }
+
+    async function sendQuickSingleAdmission() {
+      if (!currentQuickSingleItem) return;
+      const item = currentQuickSingleItem;
+      if (!confirm(`確定要立即發送【LINE 錄取通知書】給「${getPersonDisplayName(item)}」（LINE: ${item.lineDisplayName || '已連動'}）嗎？`)) {
+        return;
+      }
+
+      const btn = document.getElementById('btn-qs-admission');
+      btn.disabled = true;
+      btn.textContent = '發送中...';
+
+      try {
+        const resp = await fetch(GAS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({
+            action: 'sendAdmissionNotices',
+            category: item.type,
+            regId: item.id
+          })
+        });
+        const res = await resp.json();
+        if (res.result === 'success') {
+          alert(`🎉 ${res.message}`);
+          closeQuickSinglePush();
+          fetchFromGoogleSheet();
+        } else {
+          alert(`推播失敗：${res.message || res.error}`);
+        }
+      } catch (err) {
+        alert('發送失敗：' + err.toString());
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🏆 一鍵發送「錄取通知書」';
+      }
+    }
+
+    function openQuickSinglePreGame() {
+      if (!currentQuickSingleItem) return;
+      const targetId = currentQuickSingleItem.id;
+      closeQuickSinglePush();
+      openPreGameModal([targetId]);
     }
 
     function updateLineTokenBadge(isSet) {
@@ -1260,15 +1507,15 @@
 
   <!-- ==================== LINE BROADCAST MODALS ==================== -->
 
-  <!-- Modal 1: 批次推播錄取通知 -->
+  <!-- Modal 1: 批次推播錄取通知 (支援依組別篩選 + 勾選特定帳號) -->
   <div id="modal-line-admission" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-    <div class="bg-surface-container-lowest w-full max-w-lg rounded-3xl shadow-2xl border border-surface-container overflow-hidden flex flex-col">
-      <div class="p-5 bg-gradient-to-r from-sky-600 to-blue-700 text-white flex items-center justify-between">
+    <div class="bg-surface-container-lowest w-full max-w-2xl max-h-[92vh] rounded-3xl shadow-2xl border border-surface-container overflow-hidden flex flex-col">
+      <div class="p-5 bg-gradient-to-r from-sky-600 to-blue-700 text-white flex items-center justify-between shrink-0">
         <div class="flex items-center gap-2.5">
           <span class="material-symbols-outlined text-[24px]">campaign</span>
           <div>
             <h3 class="font-headline font-bold text-base">發送【LINE 錄取通知書】</h3>
-            <p class="text-xs text-sky-100 opacity-90">以官方 Flex 卡片形式精準推播至正選選手手機</p>
+            <p class="text-xs text-sky-100 opacity-90">支援依項目、細分組別、狀態篩選，並可自由勾選特定 LINE 帳號</p>
           </div>
         </div>
         <button onclick="closeAdmissionModal()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/20 text-white">
@@ -1276,48 +1523,67 @@
         </button>
       </div>
 
-      <div class="p-6 space-y-4 text-xs">
-        <div>
-          <label class="font-bold text-on-surface block mb-1.5">發送對象項目：</label>
-          <select id="adm-select-category" class="w-full px-3.5 py-2.5 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-semibold focus:ring-2 focus:ring-sky-500 outline-none">
-            <option value="all">全體項目已錄取選手 (親子趣味賽 + 大隊接力 + 熱血志工)</option>
-            <option value="family">僅限【圈力衝刺 親子趣味競賽】正選組別</option>
-            <option value="relay">僅限【庄情薪傳 大隊接力賽】正選選手</option>
-            <option value="volunteer">僅限【校慶服務志工】審核錄取志工</option>
-          </select>
-        </div>
-
-        <div class="p-3.5 rounded-2xl bg-sky-50 border border-sky-200 text-sky-950 space-y-1.5">
-          <div class="flex items-center gap-1.5 font-bold text-sky-900">
-            <span class="material-symbols-outlined text-[17px]">info</span>
-            <span>發送前檢核提示</span>
+      <div class="p-5 space-y-3.5 text-xs overflow-y-auto flex-1">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          <div>
+            <label class="font-bold text-on-surface block mb-1">1. 競賽項目：</label>
+            <select id="adm-select-category" onchange="onLinePickerCategoryChange('adm')" class="w-full px-3 py-2 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-semibold focus:ring-2 focus:ring-sky-500 outline-none">
+              <option value="all">全部項目</option>
+              <option value="family">親子趣味競賽</option>
+              <option value="relay">大隊接力賽</option>
+              <option value="volunteer">校慶服務志工</option>
+            </select>
           </div>
-          <p id="adm-target-stats" class="text-sky-800 font-medium">正在統計名單...</p>
-          <p class="text-[11px] text-sky-700 leading-relaxed">
-            ※ 系統將自動排除候補名單，僅發送給審核狀態為「正選」或「錄取」且具備 LINE 識別碼之選手。
-          </p>
+          <div>
+            <label class="font-bold text-on-surface block mb-1">2. 細分組別：</label>
+            <select id="adm-select-subgroup" onchange="renderLinePickerList('adm')" class="w-full px-3 py-2 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-semibold focus:ring-2 focus:ring-sky-500 outline-none">
+              <option value="all">全部組別</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-bold text-on-surface block mb-1">3. 錄取狀態：</label>
+            <select id="adm-select-status" onchange="renderLinePickerList('adm')" class="w-full px-3 py-2 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-semibold focus:ring-2 focus:ring-sky-500 outline-none">
+              <option value="accepted" selected>僅正選 / 錄取 / 優先</option>
+              <option value="all">全部狀態 (含候補)</option>
+              <option value="waitlist">僅候補名單</option>
+            </select>
+          </div>
         </div>
 
-        <!-- Preview Card Mockup -->
-        <div class="p-3.5 rounded-2xl bg-surface-container-low border border-surface-container">
-          <span class="font-bold text-on-surface-variant block mb-2">📱 LINE 聊天室卡片樣式預覽：</span>
-          <div class="rounded-xl overflow-hidden border border-sky-300 bg-white shadow-sm max-w-xs mx-auto text-left">
-            <div class="bg-sky-600 text-white p-3">
-              <span class="text-[10px] block opacity-80">第 71 屆大庄國小校慶運動會</span>
-              <strong class="text-sm">🏆 正式錄取出賽通知</strong>
+        <!-- 勾選特定帳號區塊 -->
+        <div class="p-3.5 rounded-2xl bg-sky-50/70 border border-sky-200 space-y-2.5">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <span id="adm-target-stats" class="font-bold text-sky-900">正在統計名單...</span>
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="toggleAllLinePicker('adm', true)" class="px-2.5 py-1 rounded-lg bg-white hover:bg-sky-100 text-sky-800 border border-sky-200 font-bold text-[11px]">全選</button>
+              <button type="button" onclick="toggleAllLinePicker('adm', false)" class="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 font-bold text-[11px]">取消全選</button>
             </div>
-            <div class="p-3 space-y-1 text-[11px] text-slate-700">
+          </div>
+
+          <input type="text" id="adm-search-input" oninput="renderLinePickerList('adm')" placeholder="🔍 搜尋姓名、報名編號、LINE 暱稱或組別..." class="w-full px-3 py-2 rounded-xl border border-sky-200 bg-white text-on-surface text-xs focus:ring-2 focus:ring-sky-500 outline-none"/>
+
+          <div id="adm-recipient-list" class="max-h-52 overflow-y-auto space-y-1.5 pr-1">
+            <!-- JS 動態載入可勾選之已連動 LINE 帳號 -->
+          </div>
+        </div>
+
+        <!-- Preview Card Mockup (Compact) -->
+        <div class="p-3 rounded-2xl bg-surface-container-low border border-surface-container">
+          <span class="font-bold text-on-surface-variant block mb-1.5">📱 LINE 聊天室卡片樣式預覽：</span>
+          <div class="rounded-xl overflow-hidden border border-sky-300 bg-white shadow-sm max-w-xs mx-auto text-left">
+            <div class="bg-sky-600 text-white px-3 py-2">
+              <span class="text-[10px] block opacity-80">第 71 屆大庄國小校慶運動會</span>
+              <strong class="text-xs">🏆 正式錄取出賽通知</strong>
+            </div>
+            <div class="p-2.5 space-y-0.5 text-[11px] text-slate-700">
               <p class="font-bold text-sky-800">恭喜 王小明 選手正式錄取！</p>
-              <p>■ 報名項目：圈力衝刺親子趣味競賽</p>
-              <p>■ 競賽日期：115年12月12日 (六)</p>
-              <p>■ 檢錄地點：本校操場中央草皮區</p>
-              <p class="text-red-600 font-bold">■ 檢錄時間：10:20 ～ 10:30</p>
+              <p>■ 報名項目 / 檢錄地點 / 檢錄時間將依各組自動帶入</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="p-4 bg-surface-container-low border-t border-surface-container flex items-center justify-end gap-2">
+      <div class="p-4 bg-surface-container-low border-t border-surface-container flex items-center justify-end gap-2 shrink-0">
         <button onclick="closeAdmissionModal()" class="px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container font-bold text-xs">
           取消
         </button>
@@ -1328,15 +1594,15 @@
     </div>
   </div>
 
-  <!-- Modal 2: 批次推播賽前行前提醒 -->
+  <!-- Modal 2: 批次推播賽前行前提醒 (支援依組別篩選 + 勾選特定帳號) -->
   <div id="modal-line-pregame" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-    <div class="bg-surface-container-lowest w-full max-w-lg rounded-3xl shadow-2xl border border-surface-container overflow-hidden flex flex-col">
-      <div class="p-5 bg-gradient-to-r from-purple-700 to-indigo-800 text-white flex items-center justify-between">
+    <div class="bg-surface-container-lowest w-full max-w-2xl max-h-[92vh] rounded-3xl shadow-2xl border border-surface-container overflow-hidden flex flex-col">
+      <div class="p-5 bg-gradient-to-r from-purple-700 to-indigo-800 text-white flex items-center justify-between shrink-0">
         <div class="flex items-center gap-2.5">
           <span class="material-symbols-outlined text-[24px]">forward_to_inbox</span>
           <div>
             <h3 class="font-headline font-bold text-base">發布【賽前行前提醒與廣播】</h3>
-            <p class="text-xs text-purple-100 opacity-90">向參賽選手推播檢錄集合、穿著叮嚀與天候公告</p>
+            <p class="text-xs text-purple-100 opacity-90">支援依組別篩選、勾選特定帳號發送檢錄集合與天候公告</p>
           </div>
         </div>
         <button onclick="closePreGameModal()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/20 text-white">
@@ -1344,39 +1610,110 @@
         </button>
       </div>
 
-      <div class="p-6 space-y-4 text-xs">
-        <div>
-          <label class="font-bold text-on-surface block mb-1.5">推播對象群組：</label>
-          <select id="pre-select-category" class="w-full px-3.5 py-2.5 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-semibold focus:ring-2 focus:ring-purple-500 outline-none">
-            <option value="all">全體已連動 LINE 之報名選手與志工</option>
-            <option value="family">僅限【圈力衝刺 親子趣味競賽】報名組別</option>
-            <option value="relay">僅限【庄情薪傳 大隊接力賽】選手</option>
-            <option value="volunteer">僅限【校慶服務志工】成員</option>
-          </select>
+      <div class="p-5 space-y-3.5 text-xs overflow-y-auto flex-1">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          <div>
+            <label class="font-bold text-on-surface block mb-1">1. 競賽項目：</label>
+            <select id="pre-select-category" onchange="onLinePickerCategoryChange('pre')" class="w-full px-3 py-2 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-semibold focus:ring-2 focus:ring-purple-500 outline-none">
+              <option value="all">全部項目</option>
+              <option value="family">親子趣味競賽</option>
+              <option value="relay">大隊接力賽</option>
+              <option value="volunteer">校慶服務志工</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-bold text-on-surface block mb-1">2. 細分組別：</label>
+            <select id="pre-select-subgroup" onchange="renderLinePickerList('pre')" class="w-full px-3 py-2 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-semibold focus:ring-2 focus:ring-purple-500 outline-none">
+              <option value="all">全部組別</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-bold text-on-surface block mb-1">3. 錄取狀態：</label>
+            <select id="pre-select-status" onchange="renderLinePickerList('pre')" class="w-full px-3 py-2 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-semibold focus:ring-2 focus:ring-purple-500 outline-none">
+              <option value="all" selected>全部狀態 (含候補)</option>
+              <option value="accepted">僅正選 / 錄取 / 優先</option>
+              <option value="waitlist">僅候補名單</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 勾選特定帳號區塊 -->
+        <div class="p-3.5 rounded-2xl bg-purple-50/70 border border-purple-200 space-y-2.5">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <span id="pre-target-stats" class="font-bold text-purple-900">正在統計名單...</span>
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="toggleAllLinePicker('pre', true)" class="px-2.5 py-1 rounded-lg bg-white hover:bg-purple-100 text-purple-800 border border-purple-200 font-bold text-[11px]">全選</button>
+              <button type="button" onclick="toggleAllLinePicker('pre', false)" class="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 font-bold text-[11px]">取消全選</button>
+            </div>
+          </div>
+
+          <input type="text" id="pre-search-input" oninput="renderLinePickerList('pre')" placeholder="🔍 搜尋姓名、報名編號、LINE 暱稱或組別..." class="w-full px-3 py-2 rounded-xl border border-purple-200 bg-white text-on-surface text-xs focus:ring-2 focus:ring-purple-500 outline-none"/>
+
+          <div id="pre-recipient-list" class="max-h-44 overflow-y-auto space-y-1.5 pr-1">
+            <!-- JS 動態載入可勾選之已連動 LINE 帳號 -->
+          </div>
         </div>
 
         <div>
-          <label class="font-bold text-on-surface block mb-1.5">通知標題：</label>
-          <input type="text" id="pre-input-title" value="【大庄71校慶】明日盛大登場！賽前出賽重要提醒" class="w-full px-3.5 py-2.5 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-semibold focus:ring-2 focus:ring-purple-500 outline-none"/>
+          <label class="font-bold text-on-surface block mb-1">通知標題：</label>
+          <input type="text" id="pre-input-title" value="【大庄71校慶】明日盛大登場！賽前出賽重要提醒" class="w-full px-3.5 py-2 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-semibold focus:ring-2 focus:ring-purple-500 outline-none"/>
         </div>
 
         <div>
-          <label class="font-bold text-on-surface block mb-1.5">公告內文說明：</label>
-          <textarea id="pre-input-content" rows="4" class="w-full p-3 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-normal focus:ring-2 focus:ring-purple-500 outline-none leading-relaxed">親愛的選手您好！明天就是大庄國小 71 週年校慶運動會，請穿著舒適運動服裝與抓地力良好之運動球鞋，並自備水壺、健保卡及毛巾。競賽前 20 分鐘請至檢錄區集合，期待明日與您在操場同樂！</textarea>
-        </div>
-
-        <div class="p-3.5 rounded-2xl bg-purple-50 border border-purple-200 text-purple-950 flex items-center justify-between">
-          <span id="pre-target-stats" class="font-medium text-purple-900">正在統計名單...</span>
-          <span class="text-[11px] text-purple-700 font-bold">100% 精準抵達手機</span>
+          <label class="font-bold text-on-surface block mb-1">公告內文說明：</label>
+          <textarea id="pre-input-content" rows="3" class="w-full p-3 rounded-xl border border-surface-container-highest bg-surface-container-low text-on-surface font-normal focus:ring-2 focus:ring-purple-500 outline-none leading-relaxed">親愛的選手您好！明天就是大庄國小 71 週年校慶運動會，請穿著舒適運動服裝與抓地力良好之運動球鞋，並自備水壺、健保卡及毛巾。競賽前 20 分鐘請至檢錄區集合，期待明日與您在操場同樂！</textarea>
         </div>
       </div>
 
-      <div class="p-4 bg-surface-container-low border-t border-surface-container flex items-center justify-end gap-2">
+      <div class="p-4 bg-surface-container-low border-t border-surface-container flex items-center justify-end gap-2 shrink-0">
         <button onclick="closePreGameModal()" class="px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container font-bold text-xs">
           取消
         </button>
         <button id="btn-submit-pregame" onclick="submitPreGamePush()" class="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-md active:scale-95 transition-all">
           立即群發賽前通知
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2.5: 名冊單筆快捷推播 -->
+  <div id="modal-line-quick-single" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-3xl shadow-2xl border border-surface-container overflow-hidden flex flex-col">
+      <div class="p-4 bg-gradient-to-r from-sky-700 to-emerald-700 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[22px]">send</span>
+          <h3 class="font-headline font-bold text-base">單筆快捷 LINE 推播</h3>
+        </div>
+        <button onclick="closeQuickSinglePush()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/20 text-white">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-4 text-xs">
+        <div class="p-3.5 rounded-2xl bg-surface-container-low border border-surface-container space-y-1">
+          <div class="font-bold text-sm text-on-surface" id="qs-name">-</div>
+          <div class="text-[11px] font-mono text-on-surface-variant" id="qs-meta">-</div>
+          <div class="pt-1">
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#06C755]"></span>
+              目標 LINE 帳號：<span id="qs-line-name">-</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="space-y-2.5">
+          <button id="btn-qs-admission" onclick="sendQuickSingleAdmission()" class="w-full py-3 px-4 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-md active:scale-95 transition-all flex items-center justify-center gap-2">
+            🏆 一鍵發送「錄取通知書」
+          </button>
+          <button onclick="openQuickSinglePreGame()" class="w-full py-3 px-4 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-md active:scale-95 transition-all flex items-center justify-center gap-2">
+            📢 撰寫並發送「賽前行前 / 自訂通知」
+          </button>
+        </div>
+      </div>
+
+      <div class="p-3.5 bg-surface-container-low border-t border-surface-container flex justify-end">
+        <button onclick="closeQuickSinglePush()" class="px-4 py-2 rounded-xl text-on-surface-variant hover:bg-surface-container font-bold text-xs">
+          關閉
         </button>
       </div>
     </div>

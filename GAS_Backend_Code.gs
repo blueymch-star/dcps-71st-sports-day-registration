@@ -117,6 +117,14 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
+    // 防護：若帶有未知的 action，直接攔截回傳錯誤，絕不誤入新增報名流程
+    if (data.action) {
+      return ContentService.createTextOutput(JSON.stringify({
+        result: "error",
+        message: "未知的系統操作指令：" + data.action
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
     var formType = data.type || (data.parentName ? "family" : "relay");
     var timestamp = Utilities.formatDate(new Date(), "Asia/Taipei", "yyyy/MM/dd HH:mm:ss");
 
@@ -163,30 +171,44 @@ function doPost(e) {
       var studentClass = data.studentClass || "";
       var combinedTitle = studentGrade + studentClass + " " + studentName + " ＆ " + parentName + " (家長)";
 
-      // 1. 重複報名審查機制 (學生姓名或家長姓名相同檢查)
+      // 1. 重複報名審查機制 (編號、學生姓名或家長姓名正規化檢查，含異體字防護)
+      var normFamStudent = normalizeNameForCheck(studentName);
+      var normFamParent = normalizeNameForCheck(parentName);
       var allFamRows = sheetFamily.getDataRange().getValues();
       for (var f = 1; f < allFamRows.length; f++) {
+        var existingFamId = String(allFamRows[f][1] || "").trim();
         var existingParent = String(allFamRows[f][2] || "").trim();
         var existingStudent = String(allFamRows[f][5] || "").trim();
 
-        if (studentName && existingStudent && existingStudent.toLowerCase() === studentName.toLowerCase()) {
+        if (regId && existingFamId && existingFamId === regId) {
+          return ContentService.createTextOutput(JSON.stringify({
+            result: "duplicate",
+            type: "family",
+            duplicateField: "regId",
+            name: studentName || parentName,
+            existingId: existingFamId,
+            message: "報名編號「" + regId + "」已存在，請勿重複送出！"
+          })).setMimeType(ContentService.MimeType.JSON);
+        }
+
+        if (normFamStudent && existingStudent && normalizeNameForCheck(existingStudent) === normFamStudent) {
           return ContentService.createTextOutput(JSON.stringify({
             result: "duplicate",
             type: "family",
             duplicateField: "student",
             name: studentName,
-            existingId: String(allFamRows[f][1] || ""),
+            existingId: existingFamId,
             message: "學生姓名「" + studentName + "」已重複報名！"
           })).setMimeType(ContentService.MimeType.JSON);
         }
 
-        if (parentName && existingParent && existingParent.toLowerCase() === parentName.toLowerCase()) {
+        if (normFamParent && existingParent && normalizeNameForCheck(existingParent) === normFamParent) {
           return ContentService.createTextOutput(JSON.stringify({
             result: "duplicate",
             type: "family",
             duplicateField: "parent",
             name: parentName,
-            existingId: String(allFamRows[f][1] || ""),
+            existingId: existingFamId,
             message: "家長姓名「" + parentName + "」已重複報名！"
           })).setMimeType(ContentService.MimeType.JSON);
         }
@@ -363,6 +385,49 @@ function doPost(e) {
       }
 
       var volRegId = data.regId || ("DC71-VOL-" + Math.floor(1000 + Math.random() * 9000));
+      var volStudentName = (data.studentName || "").trim();
+      var volPhoneSelf = (data.phoneSelf || data.phone || "").trim();
+      var normVolName = normalizeNameForCheck(volStudentName);
+      var normVolPhone = normalizePhoneForCheck(volPhoneSelf);
+
+      // 1. 重複報名審查機制：編號、姓名(含異體字)或學生手機相同阻擋
+      var allVolRows = sheetVol.getDataRange().getValues();
+      for (var vIdx = 1; vIdx < allVolRows.length; vIdx++) {
+        var existingVolId = String(allVolRows[vIdx][1] || "").trim();
+        var existingVolName = String(allVolRows[vIdx][2] || "").trim();
+        var existingVolPhone = String(allVolRows[vIdx][4] || "").trim();
+
+        if (volRegId && existingVolId && existingVolId === volRegId) {
+          return ContentService.createTextOutput(JSON.stringify({
+            result: "duplicate",
+            type: "volunteer",
+            name: volStudentName,
+            existingId: existingVolId,
+            message: "報名編號「" + volRegId + "」已存在，請勿重複送出！"
+          })).setMimeType(ContentService.MimeType.JSON);
+        }
+
+        if (normVolName && existingVolName && normalizeNameForCheck(existingVolName) === normVolName) {
+          return ContentService.createTextOutput(JSON.stringify({
+            result: "duplicate",
+            type: "volunteer",
+            name: volStudentName,
+            existingId: existingVolId,
+            message: "志工姓名「" + volStudentName + "」已重複報名！"
+          })).setMimeType(ContentService.MimeType.JSON);
+        }
+
+        if (normVolPhone && existingVolPhone && normalizePhoneForCheck(existingVolPhone) === normVolPhone) {
+          return ContentService.createTextOutput(JSON.stringify({
+            result: "duplicate",
+            type: "volunteer",
+            name: volStudentName,
+            existingId: existingVolId,
+            message: "手機號碼「" + volPhoneSelf + "」已重複報名志工！"
+          })).setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+
       var isAlumni = data.isAlumni || "否";
       var currentVolRows = Math.max(0, sheetVol.getLastRow() - 1);
       var volStatus = isAlumni.indexOf("是") !== -1 ? "優先錄取 (校友)" : "審核中";
@@ -460,17 +525,45 @@ function doPost(e) {
     var phoneRelay = (data.phone || "").trim();
     var gradYear = data.gradYear || "0";
 
-    // 1. 重複報名審查機制：名字相同阻擋報名
+    // 1. 重複報名審查機制：報名編號、姓名(含異體字正規化)或行動電話相同阻擋報名
+    var normRelayName = normalizeNameForCheck(name);
+    var normRelayPhone = normalizePhoneForCheck(phoneRelay);
     var allRows = sheetRelay.getDataRange().getValues();
     for (var i = 1; i < allRows.length; i++) {
+      var rowRegId = String(allRows[i][1] || "").trim();
       var rowName = String(allRows[i][3] || "").trim();
-      if (rowName && rowName.toLowerCase() === name.toLowerCase()) {
+      var rowPhone = String(allRows[i][7] || "").trim();
+
+      if (relayRegId && rowRegId && rowRegId === relayRegId) {
         return ContentService.createTextOutput(JSON.stringify({
           result: "duplicate",
           type: "relay",
+          duplicateField: "regId",
           name: name,
-          existingId: String(allRows[i][1] || ""),
+          existingId: rowRegId,
+          message: "報名編號「" + relayRegId + "」已存在，請勿重複送出！"
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+
+      if (normRelayName && rowName && normalizeNameForCheck(rowName) === normRelayName) {
+        return ContentService.createTextOutput(JSON.stringify({
+          result: "duplicate",
+          type: "relay",
+          duplicateField: "name",
+          name: name,
+          existingId: rowRegId,
           message: "選手姓名「" + name + "」已重複報名！"
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+
+      if (normRelayPhone && rowPhone && normalizePhoneForCheck(rowPhone) === normRelayPhone) {
+        return ContentService.createTextOutput(JSON.stringify({
+          result: "duplicate",
+          type: "relay",
+          duplicateField: "phone",
+          name: name,
+          existingId: rowRegId,
+          message: "行動電話「" + phoneRelay + "」已重複報名！"
         })).setMimeType(ContentService.MimeType.JSON);
       }
     }
@@ -1013,6 +1106,18 @@ function createPreGameFlex(data) {
 function sendAdmissionNotices(ss, params) {
   var targetCategory = params.category || "all";
   var regId = params.regId || "";
+  var regIds = Array.isArray(params.regIds) ? params.regIds : null;
+  if (regIds && regIds.length === 0) {
+    return { result: "error", message: "請至少勾選 1 位已連動 LINE 的對象！" };
+  }
+  var regIdSet = null;
+  if (regIds) {
+    regIdSet = {};
+    for (var i = 0; i < regIds.length; i++) {
+      regIdSet[String(regIds[i]).trim()] = true;
+    }
+  }
+
   var token = getLineToken();
   if (!token || token === DEFAULT_LINE_ACCESS_TOKEN) {
     return { result: "error", message: "尚未設定 LINE_CHANNEL_ACCESS_TOKEN，請先至後台或 Script Properties 填入！" };
@@ -1044,7 +1149,8 @@ function sendAdmissionNotices(ss, params) {
       var lineUserId = String(row[conf.lineIdCol] || "").trim();
 
       if (regId && rowId !== regId) continue;
-      if (!regId) {
+      if (regIdSet && !regIdSet[rowId]) continue;
+      if (!regId && !regIdSet) {
         var isAccepted = (status.indexOf("正選") !== -1 || status.indexOf("錄取") !== -1 || status.indexOf("優先") !== -1) && status.indexOf("候補") === -1;
         if (!isAccepted) continue;
       }
@@ -1081,13 +1187,26 @@ function sendAdmissionNotices(ss, params) {
     sentCount: results.sent,
     skippedCount: results.skippedNoLine,
     failedCount: results.failed,
-    message: "錄取通知推播完成！成功發送 " + results.sent + " 則，略過未連動 LINE 者 " + results.skippedNoLine + " 名。"
+    message: "錄取通知推播完成！成功發送 " + results.sent + " 則，略過未連動 LINE 者 " + results.skippedNoLine + " 名。" + (results.failed > 0 ? "（失敗 " + results.failed + " 則）" : "")
   };
 }
 
 // 批次推播「賽前行前通知」
 function sendPreGameNotices(ss, params) {
   var targetCategory = params.category || "all";
+  var regId = params.regId || "";
+  var regIds = Array.isArray(params.regIds) ? params.regIds : null;
+  if (regIds && regIds.length === 0) {
+    return { result: "error", message: "請至少勾選 1 位已連動 LINE 的對象！" };
+  }
+  var regIdSet = null;
+  if (regIds) {
+    regIdSet = {};
+    for (var i = 0; i < regIds.length; i++) {
+      regIdSet[String(regIds[i]).trim()] = true;
+    }
+  }
+
   var title = params.noticeTitle || "第 71 屆大庄校慶運動會賽前行前提醒";
   var content = params.noticeContent || "校慶運動會即將展開，敬請各位選手提早到場進行熱身，並穿著抓地力良好之運動鞋！";
   var token = getLineToken();
@@ -1096,15 +1215,16 @@ function sendPreGameNotices(ss, params) {
   }
 
   var results = { sent: 0, skippedNoLine: 0, failed: 0 };
+  var sentLineIds = {};
   var sheets = [];
   if (targetCategory === "all" || targetCategory === "relay") {
-    sheets.push({ name: "大隊接力報名名冊", lineIdCol: 10, noticeCol: 12 });
+    sheets.push({ name: "大隊接力報名名冊", idCol: 1, lineIdCol: 10, noticeCol: 12 });
   }
   if (targetCategory === "all" || targetCategory === "family") {
-    sheets.push({ name: "親子趣味競賽名冊", lineIdCol: 10, noticeCol: 12 });
+    sheets.push({ name: "親子趣味競賽名冊", idCol: 1, lineIdCol: 10, noticeCol: 12 });
   }
   if (targetCategory === "all" || targetCategory === "volunteer") {
-    sheets.push({ name: "校慶服務志工名冊", lineIdCol: 11, noticeCol: 13 });
+    sheets.push({ name: "校慶服務志工名冊", idCol: 1, lineIdCol: 11, noticeCol: 13 });
   }
 
   for (var s = 0; s < sheets.length; s++) {
@@ -1115,10 +1235,20 @@ function sendPreGameNotices(ss, params) {
     var rows = sheet.getDataRange().getValues();
     for (var r = 1; r < rows.length; r++) {
       var row = rows[r];
+      var rowId = String(row[conf.idCol] || "").trim();
       var lineUserId = String(row[conf.lineIdCol] || "").trim();
+
+      if (regId && rowId !== regId) continue;
+      if (regIdSet && !regIdSet[rowId]) continue;
 
       if (!lineUserId || !lineUserId.startsWith("U")) {
         results.skippedNoLine++;
+        continue;
+      }
+
+      var updateTime = Utilities.formatDate(new Date(), "Asia/Taipei", "MM/dd HH:mm");
+      if (sentLineIds[lineUserId]) {
+        sheet.getRange(r + 1, conf.noticeCol + 1).setValue("已推播賽前通知 (" + updateTime + ")");
         continue;
       }
 
@@ -1129,8 +1259,8 @@ function sendPreGameNotices(ss, params) {
 
       var pushRes = sendLinePush(lineUserId, flex);
       if (pushRes.success) {
+        sentLineIds[lineUserId] = true;
         results.sent++;
-        var updateTime = Utilities.formatDate(new Date(), "Asia/Taipei", "MM/dd HH:mm");
         sheet.getRange(r + 1, conf.noticeCol + 1).setValue("已推播賽前通知 (" + updateTime + ")");
       } else {
         results.failed++;
@@ -1143,7 +1273,7 @@ function sendPreGameNotices(ss, params) {
     sentCount: results.sent,
     skippedCount: results.skippedNoLine,
     failedCount: results.failed,
-    message: "賽前通知推播完成！成功發送 " + results.sent + " 則，略過未連動 LINE 者 " + results.skippedNoLine + " 名。"
+    message: "賽前通知推播完成！成功發送 " + results.sent + " 則，略過未連動 LINE 者 " + results.skippedNoLine + " 名。" + (results.failed > 0 ? "（失敗 " + results.failed + " 則）" : "")
   };
 }
 
@@ -1808,4 +1938,32 @@ function updateRelayRegistrationInSheet(ss, data) {
   } catch (err) {
     return { status: "error", message: err.toString() };
   }
+}
+
+// 輔助函式：姓名去空白、小寫並轉換常見異體字（防止「彥/彦」、「臺/台」等繞過重複檢查）
+function normalizeNameForCheck(str) {
+  if (!str) return "";
+  var s = String(str).replace(/\s+/g, "").toLowerCase();
+  var variants = {
+    "彦": "彥", "臺": "台", "黄": "黃", "温": "溫", "峯": "峰",
+    "羣": "群", "眞": "真", "強": "強", "强": "強", "瑶": "瑤",
+    "啓": "啟", "喆": "哲", "双": "雙", "裏": "裡", "爲": "為",
+    "説": "說", "閲": "閱", "髙": "高", "濵": "濱", "沢": "澤"
+  };
+  var out = "";
+  for (var i = 0; i < s.length; i++) {
+    var ch = s.charAt(i);
+    out += variants[ch] || ch;
+  }
+  return out;
+}
+
+// 輔助函式：電話去符號與開頭單引號並補齊開頭 0（用於重複比對）
+function normalizePhoneForCheck(val) {
+  if (val === null || val === undefined) return "";
+  var s = String(val).replace(/^'+/, "").replace(/[\s\-()]/g, "").trim();
+  if (/^9\d{8}$/.test(s)) {
+    s = "0" + s;
+  }
+  return s;
 }
