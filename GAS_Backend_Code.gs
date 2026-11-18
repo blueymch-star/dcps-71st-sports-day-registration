@@ -477,6 +477,119 @@ function doPost(e) {
       sheetVol.getRange(lastRowVol, 5).setNumberFormat('@');
       sheetVol.getRange(lastRowVol, 6).setNumberFormat('@');
 
+      // ==========================================
+      // 發送志工報名確認信 & 管理者副本通知
+      // ==========================================
+      var volEmailNoticeSent = false;
+      try {
+        var volAdminEmail = "stud03@ttps.hc.edu.tw";
+        var volEmailAddr = String(data.email || "").trim();
+        var volName = String(data.studentName || "").trim();
+        var volClass = String(data.schoolClass || "").trim();
+        var volRoles = String(data.serviceRoles || "綜合支援組").trim();
+        var volPhone = String(data.phoneSelf || data.phone || "").trim();
+        var volParentPhone = String(data.phoneParent || "").trim();
+        var volParentRel = String(data.parentRel || "").trim();
+
+        var volSubject = "【大庄國小71校慶】熱血服務志工報名確認信 (" + volRegId + ")";
+        var volEmailBody = volName + " 同學 / 校友 您好：
+
+" +
+          "感謝您熱情報名參加「新竹市大庄國小 115 學年度暨 71 週年校慶運動會 - 校慶熱血服務志工」！
+" +
+          "大會系統已收到您的報名登記，明細如下：
+
+" +
+          "========================================
+" +
+          "報名編號：" + volRegId + "
+" +
+          "志工姓名：" + volName + " (" + volClass + ")
+" +
+          "是否校友：" + isAlumni + "
+" +
+          "支援組別：" + volRoles + "
+" +
+          "聯絡電話：" + volPhone + "
+" +
+          "錄取狀態：" + volStatus + "
+" +
+          "登記時間：" + timestamp + "
+" +
+          "========================================
+
+" +
+          "【志工服務重要須知】
+" +
+          "1. 服務日期：115 年 12 月 12 日 (六) 08:30 - 12:30 (核發 4 小時學習時數)
+" +
+          "2. 報到地點：大庄國小學務處 (請於服務前 15 分鐘完成報到)
+" +
+          "3. 錄取原則：以本校畢業校友優先錄取，並依報名順序審核，錄取名單將於校慶前一週公告並以 Email 通知。
+
+" +
+          "若有其它問題請洽活動承辦人員 (大庄國小學務處 03-5384035 分機 607 / Email: " + volAdminEmail + ")
+
+" +
+          "新竹市大庄國小 71 週年校慶運動會籌備委員會 敬啟";
+
+        // 寄給志工報名者
+        if (volEmailAddr && volEmailAddr.indexOf("@") !== -1) {
+          MailApp.sendEmail({
+            to: volEmailAddr,
+            name: "大庄國小71校慶籌備委員會 (學務處)",
+            replyTo: volAdminEmail,
+            subject: volSubject,
+            body: volEmailBody
+          });
+        }
+
+        // 寄給管理者副本通知
+        MailApp.sendEmail({
+          to: volAdminEmail,
+          name: "大庄國小71校慶報名系統",
+          replyTo: volAdminEmail,
+          subject: "[管理者副本通知] 校慶志工新報名：" + volName + " (" + volRegId + ")",
+          body: "【大庄國小 71 週年校慶 - 熱血服務志工新報名通知】
+
+" +
+                "有新志工完成線上登記，摘要如下：
+" +
+                "----------------------------------------
+" +
+                "報名編號：" + volRegId + "
+" +
+                "志工姓名：" + volName + " (" + volClass + ")
+" +
+                "是否校友：" + isAlumni + "
+" +
+                "支援組別：" + volRoles + "
+" +
+                "聯絡電話：" + volPhone + "
+" +
+                "緊急聯絡：" + volParentPhone + " (" + volParentRel + ")
+" +
+                "電子郵件：" + volEmailAddr + "
+" +
+                "錄取狀態：" + volStatus + "
+" +
+                "LINE 狀態：" + lineNoticeStatus + "
+" +
+                "登記時間：" + timestamp + "
+" +
+                "----------------------------------------
+
+" +
+                "系統已自動寄發志工報名確認信至該志工信箱。
+" +
+                "若有其它問題請洽活動承辦人員。"
+        });
+
+        volEmailNoticeSent = true;
+      } catch (volMailErr) {
+        Logger.log("志工報名發送 Email 失敗: " + volMailErr);
+      }
+
       return ContentService.createTextOutput(JSON.stringify({
         result: "success",
         type: "volunteer",
@@ -485,6 +598,7 @@ function doPost(e) {
         currentCount: currentVolRows + 1,
         lineUserId: lineUserId,
         lineNoticeStatus: lineNoticeStatus,
+        emailNoticeSent: volEmailNoticeSent,
         message: "志工報名已成功寫入 Google 試算表！" + (lineUserId ? "（LINE 報名卡片已即時推播）" : "")
       })).setMimeType(ContentService.MimeType.JSON);
     }
