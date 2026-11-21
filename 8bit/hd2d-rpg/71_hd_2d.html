@@ -763,50 +763,60 @@
     filter: brightness(3) blur(6px);
   }
 
-  /* Minions spawned by Boss */
+  /* Minions spawned by Boss (calibrated to map & hero proportions) */
   #minion-layer {
     position: absolute;
-    left: 14%;
-    top: 48%;
-    width: 40%;
-    height: 18%;
+    left: 10%;
+    top: 44%;
+    width: 46%;
+    height: 24%;
     z-index: 15;
     pointer-events: none;
   }
 
   .minion-item {
     position: absolute;
+    height: 64%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-end;
     transition: transform 0.3s ease, opacity 0.4s ease;
     animation: minionHover 1.6s ease-in-out infinite alternate;
   }
 
-  .minion-badge {
-    font-size: 24px;
-    filter: drop-shadow(0 0 8px #a855f7) drop-shadow(0 4px 4px rgba(0, 0, 0, 0.8));
+  .minion-item.minion-attacking {
+    animation: none;
+    z-index: 21;
+  }
+
+  .minion-sprite {
+    height: 100%;
+    width: auto;
+    display: block;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 5px 7px rgba(0, 0, 0, 0.82)) drop-shadow(0 0 8px rgba(168, 85, 247, 0.45));
   }
 
   .minion-lbl {
     font-size: 9px;
     font-weight: 800;
-    background: rgba(30, 10, 52, 0.88);
+    background: rgba(30, 10, 52, 0.9);
     border: 1px solid #c084fc;
     color: #f3e8ff;
     padding: 1px 5px;
     border-radius: 4px;
-    margin-top: 1px;
+    margin-top: -4px;
     white-space: nowrap;
   }
 
   @keyframes minionHover {
     0% { transform: translateY(0); }
-    100% { transform: translateY(-7px); }
+    100% { transform: translateY(-6px); }
   }
 
   .minion-item.minion-dash {
-    transform: translateX(72px) scale(1.15) !important;
+    transform: translateX(52px) scale(1.06) !important;
   }
 
   /* Scan Markers (Turn 1) */
@@ -2548,10 +2558,17 @@
     fireball: 'sprites/boss_fireball.gif'
   };
 
+  const MINION_SPRITES = [
+    { name: '亂丟石頭怪', idle: 'sprites/minion0_idle.png', atk: 'sprites/minion0_atk.gif' },
+    { name: '闖道違規怪', idle: 'sprites/minion1_idle.png', atk: 'sprites/minion1_atk.gif' },
+    { name: '垃圾亂丟獸', idle: 'sprites/minion2_idle.png', atk: 'sprites/minion2_atk.gif' }
+  ];
+
   // Preload all transparent character & battle sprites so transitions have zero flicker
   [
     ...Object.values(MAP_SPRITES),
     ...BATTLE_SPRITES.flatMap(b => [b.idle, b.atk]),
+    ...MINION_SPRITES.flatMap(m => [m.idle, m.atk]),
     BOSS_SPRITES.fireball
   ].forEach(src => {
     const img = new Image();
@@ -3599,9 +3616,9 @@
       Sound.sfx('summon');
       state.minionsActive = true;
       el.minionLayer.innerHTML = `
-        <div class="minion-item" style="left:6%; top:10%;"><div class="minion-badge">🪨</div><div class="minion-lbl">亂丟石頭怪</div></div>
-        <div class="minion-item" style="left:48%; top:28%; animation-delay:0.3s;"><div class="minion-badge">🚧</div><div class="minion-lbl">闖道違規怪</div></div>
-        <div class="minion-item" style="left:22%; top:58%; animation-delay:0.6s;"><div class="minion-badge">🗑️</div><div class="minion-lbl">垃圾亂丟獸</div></div>
+        <div class="minion-item" style="left:2%; top:2%;"><img class="minion-sprite" id="minion-sprite-0" src="${MINION_SPRITES[0].idle}" alt="${MINION_SPRITES[0].name}"><div class="minion-lbl">${MINION_SPRITES[0].name}</div></div>
+        <div class="minion-item" style="left:42%; top:14%; animation-delay:0.3s;"><img class="minion-sprite" id="minion-sprite-1" src="${MINION_SPRITES[1].idle}" alt="${MINION_SPRITES[1].name}"><div class="minion-lbl">${MINION_SPRITES[1].name}</div></div>
+        <div class="minion-item" style="left:16%; top:36%; animation-delay:0.6s;"><img class="minion-sprite" id="minion-sprite-2" src="${MINION_SPRITES[2].idle}" alt="${MINION_SPRITES[2].name}"><div class="minion-lbl">${MINION_SPRITES[2].name}</div></div>
       `;
       spawnBurst(0.32, 0.56, '#a855f7', 32);
       updateUI();
@@ -3616,9 +3633,14 @@
     }
 
     if (step.afterBossAction === 'minions_miss') {
-      // Minions rush in, but Safety Shield blocks all attacks → MISS! MISS! MISS!
+      // Minions rush in with attack GIFs, but Safety Shield blocks all attacks → MISS! MISS! MISS!
       const items = el.minionLayer.querySelectorAll('.minion-item');
-      items.forEach(it => it.classList.add('minion-dash'));
+      const ts = Date.now();
+      items.forEach((it, idx) => {
+        it.classList.add('minion-dash', 'minion-attacking');
+        const sp = document.getElementById(`minion-sprite-${idx}`);
+        if (sp && MINION_SPRITES[idx]) sp.src = `${MINION_SPRITES[idx].atk}?t=${ts}`;
+      });
       schedule(() => {
         Sound.sfx('miss');
         showFloat('MISS', 0.72, 0.36, 'miss-cyan');
@@ -3626,10 +3648,14 @@
         showFloat('MISS', 0.74, 0.54, 'miss-cyan');
         spawnBurst(0.76, 0.46, '#bae6fd', 24);
         showBanner('', '違規亂源的攻擊全被安全線護盾擋下來了！');
-      }, 360);
+      }, 480);
       schedule(() => {
-        items.forEach(it => it.classList.remove('minion-dash'));
-      }, 900);
+        items.forEach((it, idx) => {
+          it.classList.remove('minion-dash', 'minion-attacking');
+          const sp = document.getElementById(`minion-sprite-${idx}`);
+          if (sp && MINION_SPRITES[idx]) sp.src = MINION_SPRITES[idx].idle;
+        });
+      }, 1150);
       schedule(() => {
         state.stepIdx++;
         beginStep();
