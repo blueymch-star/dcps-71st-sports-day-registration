@@ -763,20 +763,20 @@
     filter: brightness(3) blur(6px);
   }
 
-  /* Minions spawned by Boss (calibrated to map & hero proportions) */
+  /* Minions spawned by Boss (compact non-overlapping triangle formation) */
   #minion-layer {
     position: absolute;
-    left: 10%;
-    top: 44%;
-    width: 46%;
-    height: 24%;
+    left: 4%;
+    top: 45%;
+    width: 52%;
+    height: 25%;
     z-index: 15;
     pointer-events: none;
   }
 
   .minion-item {
     position: absolute;
-    height: 64%;
+    height: 42%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -795,28 +795,28 @@
     width: auto;
     display: block;
     image-rendering: pixelated;
-    filter: drop-shadow(0 5px 7px rgba(0, 0, 0, 0.82)) drop-shadow(0 0 8px rgba(168, 85, 247, 0.45));
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.82)) drop-shadow(0 0 7px rgba(168, 85, 247, 0.45));
   }
 
   .minion-lbl {
-    font-size: 9px;
+    font-size: 8.5px;
     font-weight: 800;
     background: rgba(30, 10, 52, 0.9);
     border: 1px solid #c084fc;
     color: #f3e8ff;
     padding: 1px 5px;
     border-radius: 4px;
-    margin-top: -4px;
+    margin-top: -2px;
     white-space: nowrap;
   }
 
   @keyframes minionHover {
     0% { transform: translateY(0); }
-    100% { transform: translateY(-6px); }
+    100% { transform: translateY(-5px); }
   }
 
   .minion-item.minion-dash {
-    transform: translateX(52px) scale(1.06) !important;
+    transform: translateX(48px) scale(1.06) !important;
   }
 
   /* Scan Markers (Turn 1) */
@@ -2660,6 +2660,7 @@
     lastFrameTs: 0,
     facing: 'back',
     talkingIdx: -1,
+    dialogSeq: 0,
     turningTimer: null,
     typeTimer: null,
     defaultPortrait: document.getElementById('map-portrait-img')?.src || '',
@@ -2988,6 +2989,7 @@
 
   function moveMapPlayerTo(tx, ty, _unused, onArrive) {
     if (!mapState.active) return;
+    mapState.dialogSeq++;
     mapState.tx = Math.max(10, Math.min(90, tx));
     mapState.ty = Math.max(14, Math.min(92, ty));
     mapState.onArrive = onArrive || null;
@@ -3009,8 +3011,8 @@
     Sound.sfx('cursor');
     moveMapPlayerTo(h.standX, h.standY, null, () => {
       if (!mapState.active || mapState.encounterTriggered) return;
+      const seq = ++mapState.dialogSeq;
       Sound.sfx('scan');
-      mapState.visited[idx] = true;
       clearTalkingNpcVisual();
       mapState.talkingIdx = idx;
       const hsEl = document.getElementById(`hs-${idx}`);
@@ -3019,23 +3021,24 @@
       el.mapExcl.classList.add('show');
       el.mapTopBanner.classList.remove('danger-alert');
       el.mapTopBanner.textContent = h.problemBanner;
-      updateMapProgress();
 
       // Step 1: 主角先發現問題（保持站立面向問題點）
       setMapPlayerSprite(MAP_SPRITES.back);
       setMapDialog('大庄健將', h.problemDialog, null, () => {
-        if (!mapState.active || mapState.encounterTriggered) return;
+        if (!mapState.active || mapState.encounterTriggered || seq !== mapState.dialogSeq) return;
         // Step 2: 發現問題後，轉向旁邊的對話人物並獲得正確觀念
         schedule(() => {
-          if (!mapState.active || mapState.encounterTriggered) return;
+          if (!mapState.active || mapState.encounterTriggered || seq !== mapState.dialogSeq) return;
           el.mapExcl.classList.remove('show');
+          mapState.visited[idx] = true;
+          updateMapProgress();
           hsEl.classList.add('visited', 'talking');
           Sound.sfx('confirm');
           el.mapTopBanner.textContent = h.conceptBanner;
           turnMapPlayerAndTalk(h.faceDir, h.speaker, h.conceptDialog, h.portrait, () => {
-            if (!mapState.active || mapState.encounterTriggered) return;
+            if (!mapState.active || mapState.encounterTriggered || seq !== mapState.dialogSeq) return;
             schedule(() => {
-              if (!mapState.active || mapState.encounterTriggered) return;
+              if (!mapState.active || mapState.encounterTriggered || seq !== mapState.dialogSeq) return;
               if (excl) excl.textContent = '✓';
               hsEl.classList.remove('talking');
               if (mapState.visited.every(Boolean)) {
@@ -3269,34 +3272,37 @@
   }
 
   /* Auto-Play Choreography (Mirrors the video cursor moving through main menu, testing red-cross traps, then firing!) */
+  let autoSeqId = 0;
   function runAutoSequence(step) {
     if (!state.autoMode || state.over) return;
+    const seq = ++autoSeqId;
+    const alive = () => state.autoMode && !state.over && seq === autoSeqId;
 
     const targetMainBtn = el.mainCmdMenu.querySelector(`.main-cmd-item[data-cmd="${step.targetMainCmd}"]`);
     const openAndPickSub = () => {
-      if (!state.autoMode || state.over) return;
+      if (!alive()) return;
       Sound.sfx('confirm');
       openSubMenu(step);
 
-      // On Turn 3 (道具), mirror video 00:36-00:39: test BOTH wrong items so both get red-crossed out!
+      // On Turn 3 (道具), test BOTH wrong items so both get red-crossed out!
       if (step.turn === 3) {
         const subBtns = Array.from(el.subCmdList.querySelectorAll('.sub-cmd-item'));
         schedule(() => {
-          if (!state.autoMode || state.over) return;
+          if (!alive()) return;
           handleSubChoice(step, step.subOptions[0], subBtns[0]);
         }, 650);
         schedule(() => {
-          if (!state.autoMode || state.over) return;
+          if (!alive()) return;
           handleSubChoice(step, step.subOptions[1], subBtns[1]);
         }, 1850);
         schedule(() => {
-          if (!state.autoMode || state.over) return;
+          if (!alive()) return;
           el.subCmdList.querySelectorAll('.sub-cmd-item').forEach(b => b.classList.remove('selected'));
           subBtns[2].classList.add('selected');
           Sound.sfx('cursor');
         }, 2950);
         schedule(() => {
-          if (!state.autoMode || state.over) return;
+          if (!alive()) return;
           handleSubChoice(step, step.subOptions[2], subBtns[2]);
         }, 3550);
       } else {
@@ -3304,13 +3310,13 @@
         const correctIdx = step.subOptions.findIndex(o => o.correct);
         const subBtns = Array.from(el.subCmdList.querySelectorAll('.sub-cmd-item'));
         schedule(() => {
-          if (!state.autoMode || state.over) return;
+          if (!alive()) return;
           el.subCmdList.querySelectorAll('.sub-cmd-item').forEach(b => b.classList.remove('selected'));
           if (subBtns[correctIdx]) subBtns[correctIdx].classList.add('selected');
           Sound.sfx('cursor');
         }, 550);
         schedule(() => {
-          if (!state.autoMode || state.over) return;
+          if (!alive()) return;
           handleSubChoice(step, step.subOptions[correctIdx], subBtns[correctIdx]);
         }, 1150);
       }
@@ -3320,11 +3326,11 @@
     if (step.turn === 1) {
       const atkBtn = el.mainCmdMenu.querySelector('.main-cmd-item[data-cmd="attack"]');
       schedule(() => {
-        if (!state.autoMode || state.over) return;
+        if (!alive()) return;
         selectMainCmd(step, 'attack', atkBtn);
       }, 550);
       schedule(() => {
-        if (!state.autoMode || state.over) return;
+        if (!alive()) return;
         Sound.sfx('cursor');
         el.mainCmdMenu.querySelectorAll('.main-cmd-item').forEach(b => b.classList.remove('selected'));
         if (targetMainBtn) targetMainBtn.classList.add('selected');
@@ -3335,7 +3341,7 @@
 
     // 1. Move cursor to target main command
     schedule(() => {
-      if (!state.autoMode || state.over) return;
+      if (!alive()) return;
       Sound.sfx('cursor');
       el.mainCmdMenu.querySelectorAll('.main-cmd-item').forEach(b => b.classList.remove('selected'));
       if (targetMainBtn) targetMainBtn.classList.add('selected');
@@ -3616,9 +3622,9 @@
       Sound.sfx('summon');
       state.minionsActive = true;
       el.minionLayer.innerHTML = `
-        <div class="minion-item" style="left:2%; top:2%;"><img class="minion-sprite" id="minion-sprite-0" src="${MINION_SPRITES[0].idle}" alt="${MINION_SPRITES[0].name}"><div class="minion-lbl">${MINION_SPRITES[0].name}</div></div>
-        <div class="minion-item" style="left:42%; top:14%; animation-delay:0.3s;"><img class="minion-sprite" id="minion-sprite-1" src="${MINION_SPRITES[1].idle}" alt="${MINION_SPRITES[1].name}"><div class="minion-lbl">${MINION_SPRITES[1].name}</div></div>
-        <div class="minion-item" style="left:16%; top:36%; animation-delay:0.6s;"><img class="minion-sprite" id="minion-sprite-2" src="${MINION_SPRITES[2].idle}" alt="${MINION_SPRITES[2].name}"><div class="minion-lbl">${MINION_SPRITES[2].name}</div></div>
+        <div class="minion-item" style="left:0%; top:0%;"><img class="minion-sprite" id="minion-sprite-0" src="${MINION_SPRITES[0].idle}" alt="${MINION_SPRITES[0].name}"><div class="minion-lbl">${MINION_SPRITES[0].name}</div></div>
+        <div class="minion-item" style="left:46%; top:22%; animation-delay:0.3s;"><img class="minion-sprite" id="minion-sprite-1" src="${MINION_SPRITES[1].idle}" alt="${MINION_SPRITES[1].name}"><div class="minion-lbl">${MINION_SPRITES[1].name}</div></div>
+        <div class="minion-item" style="left:4%; top:52%; animation-delay:0.6s;"><img class="minion-sprite" id="minion-sprite-2" src="${MINION_SPRITES[2].idle}" alt="${MINION_SPRITES[2].name}"><div class="minion-lbl">${MINION_SPRITES[2].name}</div></div>
       `;
       spawnBurst(0.32, 0.56, '#a855f7', 32);
       updateUI();
@@ -3726,7 +3732,10 @@
       return;
     }
     if (state.autoMode && state.started && !state.over && !state.busy) {
+      el.subCmdMenu.classList.remove('show');
       runAutoSequence(BATTLE_STEPS[state.stepIdx]);
+    } else if (!state.autoMode) {
+      autoSeqId++;
     }
   });
 
