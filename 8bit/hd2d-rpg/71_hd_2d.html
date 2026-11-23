@@ -1466,20 +1466,24 @@
   }
 
   .title-rpg-menu {
-    position: absolute;
-    left: 50%;
-    top: 63.5%;
-    transform: translate(-50%, -50%);
     width: 76%;
     padding: 5px;
     display: flex;
     flex-direction: column;
     gap: 4px;
     background: linear-gradient(180deg, rgba(16, 34, 102, 0.86), rgba(8, 16, 52, 0.92));
-    margin: 0;
+    margin: 0 auto;
   }
 
-  #title-screen .title-menu-btn {
+  #title-screen .title-rpg-menu {
+    position: absolute;
+    left: 50%;
+    top: 63.5%;
+    transform: translate(-50%, -50%);
+  }
+
+  #title-screen .title-menu-btn,
+  #summary-screen .title-menu-btn {
     padding: 6px 10px;
     font-size: 12.5px;
   }
@@ -1824,12 +1828,12 @@
     </div>
 
     <div class="title-rpg-menu rpg-box">
-      <button id="btn-start-auto" class="title-menu-btn" type="button">👉 影片同款自動播放（宣傳錄影）</button>
-      <button id="btn-start-manual" class="title-menu-btn" type="button">⚔️ 手動指令挑戰模式</button>
+      <button id="btn-start-auto" class="title-menu-btn" type="button">👉 AUTO PLAY</button>
+      <button id="btn-start-manual" class="title-menu-btn" type="button">⚔️ START PLAY</button>
     </div>
 
     <div style="font-size:11px; color:#fef08a; font-weight:800; text-shadow: 0 2px 6px #000;">
-      2026 年 12 月 12 日（六）08:00｜新竹市大庄國小 71 週年校慶運動會
+      2026/12/12｜大庄國小 71 校慶運動會 COPYRIGHT©學務處體育組
     </div>
   </div>
 
@@ -1850,16 +1854,16 @@
       </div>
     </div>
 
-    <div class="title-cast" style="height:108px; gap:6px;">
-      <img style="height:92px;" src="sprites/hero0_cast.png" alt="大庄健將">
-      <img style="height:104px;" src="sprites/hero1_cast.png" alt="體育老師">
-      <img style="height:88px;" src="sprites/hero2_cast.png" alt="神隊友家長">
-      <img style="height:92px;" src="sprites/hero3_cast.png" alt="環保小尖兵">
+    <div class="title-cast" style="height:140px; gap:0; margin:2px 0;">
+      <img style="height:100%; width:auto; margin:0 -8px;" src="sprites/hero0_win.gif" alt="大庄健將">
+      <img style="height:100%; width:auto; margin:0 -8px;" src="sprites/hero1_win.gif" alt="體育老師">
+      <img style="height:100%; width:auto; margin:0 -8px;" src="sprites/hero2_win.gif" alt="神隊友家長">
+      <img style="height:100%; width:auto; margin:0 -8px;" src="sprites/hero3_win.gif" alt="環保小尖兵">
     </div>
 
     <div class="title-rpg-menu rpg-box">
-      <button id="btn-replay-auto" class="title-menu-btn" type="button">🎬 再看一次自動錄影版</button>
-      <button id="btn-replay-manual" class="title-menu-btn" type="button">⚔️ 切換手動指令挑戰</button>
+      <button id="btn-replay-auto" class="title-menu-btn" type="button">🎬 REPLAY AUTO</button>
+      <button id="btn-replay-manual" class="title-menu-btn" type="button">⚔️ START PLAY</button>
     </div>
   </div>
 </div>
@@ -2569,6 +2573,7 @@
     ...Object.values(MAP_SPRITES),
     ...BATTLE_SPRITES.flatMap(b => [b.idle, b.atk]),
     ...MINION_SPRITES.flatMap(m => [m.idle, m.atk]),
+    'sprites/hero0_win.gif', 'sprites/hero1_win.gif', 'sprites/hero2_win.gif', 'sprites/hero3_win.gif',
     BOSS_SPRITES.fireball
   ].forEach(src => {
     const img = new Image();
