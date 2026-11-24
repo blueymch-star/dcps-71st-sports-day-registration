@@ -831,18 +831,74 @@
       return false;
     }
 
-    // Live Registered Count Helper (依照目前選定的組別精確統計接力賽報名數)
-    function updateRelayCount() {
+    function getDivisionQuotaInfo(divName) {
+      const d = divName || currentSelectedDivision || '校友組';
+      if (d.includes('校友')) {
+        return { regular: 24, waitlist: 6, total: 30 };
+      }
+      return { regular: 8, waitlist: 2, total: 10 };
+    }
+
+    function getDivisionCount(divName) {
       try {
         const all = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTRATIONS) || '[]');
-        const div = currentSelectedDivision || '校友組';
-        const relayItems = all.filter(r =>
+        const d = divName || currentSelectedDivision || '校友組';
+        return all.filter(r =>
           (r.type === 'relay' || (r.id && r.id.includes('RELAY'))) &&
-          isSameDivision(r.category, div)
-        );
-        const total = relayItems.length;
+          isSameDivision(r.category, d)
+        ).length;
+      } catch (e) {
+        return 0;
+      }
+    }
+
+    function isDivisionFull(divName) {
+      const d = divName || currentSelectedDivision || '校友組';
+      const quota = getDivisionQuotaInfo(d);
+      return getDivisionCount(d) >= quota.total;
+    }
+
+    // Live Registered Count Helper (依照目前選定的組別精確統計接力賽報名數與額滿鎖定狀態)
+    function updateRelayCount() {
+      try {
+        const div = currentSelectedDivision || '校友組';
+        const quota = getDivisionQuotaInfo(div);
+        const total = getDivisionCount(div);
+        const isFull = total >= quota.total;
+        const closedByTime = isRelayClosed();
+
         const countText = document.getElementById('current-registered-text');
-        if (countText) countText.textContent = `※【${div}】目前報名數：${total}`;
+        if (countText) {
+          if (isFull) {
+            countText.textContent = `※【${div}】目前報名數：${total} / ${quota.total}（正選與候補皆已額滿）`;
+            countText.className = 'text-error font-bold text-sm';
+          } else if (total >= quota.regular) {
+            const wlRemain = quota.total - total;
+            countText.textContent = `※【${div}】目前報名數：${total} / ${quota.total}（正選已滿，候補剩 ${wlRemain} 名）`;
+            countText.className = 'text-amber-700 font-bold text-sm';
+          } else {
+            countText.textContent = `※【${div}】目前報名數：${total} / ${quota.total}`;
+            countText.className = 'text-primary font-bold text-sm';
+          }
+        }
+
+        const submitBtn = document.getElementById('submit-btn');
+        const submitText = document.getElementById('submit-btn-text');
+        if (submitBtn && submitText) {
+          if (closedByTime) {
+            submitBtn.classList.remove('bg-primary', 'hover:bg-primary/95', 'shadow-primary/30');
+            submitBtn.classList.add('bg-surface-container-highest', 'text-on-surface-variant', 'cursor-not-allowed', 'shadow-none');
+            submitText.textContent = '報名已截止';
+          } else if (isFull) {
+            submitBtn.classList.remove('bg-primary', 'hover:bg-primary/95', 'shadow-primary/30');
+            submitBtn.classList.add('bg-error/15', 'text-error', 'border', 'border-error/30', 'cursor-not-allowed', 'shadow-none');
+            submitText.textContent = `【${div}】已額滿・停止受理報名`;
+          } else {
+            submitBtn.classList.remove('bg-surface-container-highest', 'text-on-surface-variant', 'bg-error/15', 'text-error', 'border', 'border-error/30', 'cursor-not-allowed', 'shadow-none');
+            submitBtn.classList.add('bg-primary', 'text-white', 'hover:bg-primary/95', 'shadow-primary/30', 'cursor-pointer');
+            submitText.textContent = total >= quota.regular ? '確認送出候補登記' : '確認送出報名表';
+          }
+        }
       } catch (e) {}
     }
 
@@ -948,9 +1004,20 @@
     async function handleOfficialRelaySubmit(e) {
       e.preventDefault();
 
-      // 1. 審查：是否已停止報名 (時間截止或額滿)
+      // 1. 審查：是否已停止報名 (時間截止)
       if (isRelayClosed()) {
         toggleModal('modal-closed-notice');
+        return;
+      }
+
+      const category = currentSelectedDivision || document.getElementById('field-selected-division')?.value || '校友組';
+
+      // 1.5 送出前即時向雲端同步一次最新名冊，並檢查該組別是否已達總上限 (正選+候補)
+      await syncLatestRelayRegistrations();
+      if (isDivisionFull(category)) {
+        const q = getDivisionQuotaInfo(category);
+        alert(`抱歉！【${category}】名額已全數額滿（正選 ${q.regular} 名 + 候補 ${q.waitlist} 名，共 ${q.total} 名），系統已停止受理該組別報名！`);
+        updateRelayCount();
         return;
       }
 
@@ -963,7 +1030,6 @@
         phone = '0' + phone;
       }
       const gradYear = document.getElementById('field-grad-year').value.trim() || '0';
-      const category = currentSelectedDivision || document.getElementById('field-selected-division')?.value || '校友組';
 
       // 2. 審查：重複報名審查機制 (名字相同請跳出重複報名的字樣)
       let allExisting = [];

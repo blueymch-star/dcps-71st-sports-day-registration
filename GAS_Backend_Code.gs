@@ -653,9 +653,25 @@ function doPost(e) {
 
     var status = "正選";
     var maxQuota = 8;
+    var maxWaitlist = 2;
     if (category.indexOf("校友") !== -1) {
       maxQuota = 24;
+      maxWaitlist = 6;
     }
+    var totalGroupLimit = maxQuota + maxWaitlist;
+
+    // 額滿停止報名檢查（正選 + 候補皆已滿）
+    if (currentGroupCount >= totalGroupLimit) {
+      return ContentService.createTextOutput(JSON.stringify({
+        result: "full",
+        type: "relay",
+        category: category,
+        currentCount: currentGroupCount,
+        totalLimit: totalGroupLimit,
+        message: category + "已額滿（正選 " + maxQuota + " 名 + 候補 " + maxWaitlist + " 名已全數登記額滿），停止受理報名！"
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
     if (currentGroupCount >= maxQuota) {
       status = "候補 (第 " + (currentGroupCount - maxQuota + 1) + " 順位)";
     }
@@ -854,11 +870,23 @@ function doGet(e) {
   var familyCount = sheetFamily ? Math.max(0, sheetFamily.getLastRow() - 1) : 0;
   var relayCount = sheetRelay ? Math.max(0, sheetRelay.getLastRow() - 1) : 0;
   var volunteerCount = sheetVol ? Math.max(0, sheetVol.getLastRow() - 1) : 0;
+
+  var relayDivisionCounts = { "師長組": 0, "家長會及家長組": 0, "校友組": 0 };
+  if (sheetRelay && sheetRelay.getLastRow() > 1) {
+    var relayCats = sheetRelay.getRange(2, 3, sheetRelay.getLastRow() - 1, 1).getValues();
+    for (var rc = 0; rc < relayCats.length; rc++) {
+      var catStr = String(relayCats[rc][0] || "");
+      if (catStr.indexOf("師長") !== -1) relayDivisionCounts["師長組"]++;
+      else if (catStr.indexOf("家長") !== -1) relayDivisionCounts["家長會及家長組"]++;
+      else relayDivisionCounts["校友組"]++;
+    }
+  }
   
   return ContentService.createTextOutput(JSON.stringify({
     status: "online",
     familyCount: familyCount,
     relayCount: relayCount,
+    relayDivisionCounts: relayDivisionCounts,
     volunteerCount: volunteerCount,
     lineTokenSet: (getLineToken() !== DEFAULT_LINE_ACCESS_TOKEN),
     serverTime: new Date()
