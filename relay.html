@@ -188,7 +188,7 @@
             </div>
             <button type="button" onclick="toggleModal('modal-closed-notice')" title="查看截止與承辦資訊" class="flex items-center gap-1 text-secondary-fixed bg-black/30 hover:bg-black/50 backdrop-blur-md px-2.5 py-1 rounded-full font-label-sm text-label-sm font-bold border border-secondary-fixed/30 cursor-pointer transition-colors" id="top-deadline-badge">
               <span class="material-symbols-outlined text-[14px]">alarm</span>
-              <span id="top-deadline-text">11/27 (五) 中午 12:00 截止報名</span>
+              <span id="top-deadline-text">12/4 (五) 中午 12:00 截止報名</span>
             </button>
           </div>
 
@@ -206,7 +206,7 @@
             <p class="text-xs sm:text-sm text-on-primary-container opacity-95 leading-relaxed">師長・家長・校友同心熱跑・傳承榮耀心跳</p>
           </div>
 
-          <!-- Split Countdown Grid (Target: 2026-11-27 12:00:00) -->
+          <!-- Split Countdown Grid (Target: 2026-12-04 12:00:00) -->
           <div class="grid grid-cols-4 gap-1.5 sm:gap-2 p-2.5 sm:p-space-sm bg-surface-container-lowest/15 backdrop-blur-md rounded-lg mb-space-md text-center">
             <div class="flex flex-col">
               <span class="font-headline text-lg sm:text-headline-lg font-bold text-on-primary leading-tight" id="countdown-days">22</span>
@@ -306,7 +306,7 @@
                 大庄國小 115 學年度暨 71 週年校慶運動會庄情薪傳大隊接力競賽報名表
               </h3>
             </div>
-            <p class="text-xs text-error font-medium">※ 標註紅星為必填欄位，報名截止日為 11/27 中午 12:00 止</p>
+            <p class="text-xs text-error font-medium">※ 標註紅星為必填欄位，報名截止日為 12/4 中午 12:00 止</p>
             <!-- LINE LIFF 智慧連動狀態條 -->
             <div id="line-status-banner" class="mt-3"></div>
           </div>
@@ -993,8 +993,8 @@
       selectDivision('校友組');
     }
 
-    // 報名截止時間：2026-11-27 12:00:00 (中午)
-    const RELAY_DEADLINE = new Date('2026-11-27T12:00:00+08:00').getTime();
+    // 報名截止時間：2026-12-04 12:00:00 (中午)
+    const RELAY_DEADLINE = new Date('2026-12-04T12:00:00+08:00').getTime();
 
     function isRelayClosed() {
       return Date.now() >= RELAY_DEADLINE;
@@ -1463,9 +1463,9 @@
       }
     }
 
-    // ---------- Accurate Countdown to 2026-11-27 12:00:00 ----------
+    // ---------- Accurate Countdown to 2026-12-04 12:00:00 ----------
     function startRelayCountdown() {
-      // Deadline: 2026-11-27 at 12:00:00 (Noon)
+      // Deadline: 2026-12-04 at 12:00:00 (Noon)
       const targetTime = RELAY_DEADLINE;
 
       function update() {

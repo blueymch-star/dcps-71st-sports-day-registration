@@ -216,7 +216,7 @@
           </div>
         </div>
 
-        <!-- Registration Countdown Alert Card (11/27 中午 12:00) -->
+        <!-- Registration Countdown Alert Card (12/4 中午 12:00) -->
         <div class="flex items-center justify-between p-3.5 rounded-xl bg-secondary-fixed text-on-secondary-fixed shadow-sm border border-secondary/20 gap-2">
           <div class="flex items-center gap-2.5 min-w-0 cursor-pointer flex-1" onclick="toggleModal('modal-closed-notice')" title="查看截止與承辦資訊">
             <div class="flex items-center justify-center w-9 h-9 rounded-full bg-secondary text-on-secondary shrink-0 shadow-sm">
@@ -224,7 +224,7 @@
             </div>
             <div class="flex flex-col min-w-0">
               <span class="font-label-sm text-[11px] text-on-secondary-fixed-variant font-bold">報名截止倒數</span>
-              <span class="text-xs sm:text-sm font-bold leading-tight">11/27 (五) 中午 12:00 截止 (額滿即止)</span>
+              <span class="text-xs sm:text-sm font-bold leading-tight">12/4 (五) 中午 12:00 截止 (額滿即止)</span>
             </div>
           </div>
           <button onclick="scrollToForm()" class="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-secondary text-on-secondary text-xs shadow-sm active:scale-95 transition-transform font-bold">
@@ -602,7 +602,7 @@
                 大庄國小 115 學年度暨 71 週年校慶活動親子趣味競賽 - 圈力衝刺報名表
               </h3>
             </div>
-            <p class="text-xs text-error font-medium">※ 標註紅星為必填欄位，報名截止時間：11/27 中午 12:00 止</p>
+            <p class="text-xs text-error font-medium">※ 標註紅星為必填欄位，報名截止時間：12/4 中午 12:00 止</p>
 
             <!-- Real-time Quota HUD Bar (真實報名組數與候補名額監控) -->
             <div class="mt-3 p-3 rounded-xl bg-surface-container-low border border-surface-container flex flex-col gap-2">
@@ -1115,8 +1115,8 @@
     const MAX_WAITLIST_QUOTA = 2;  // 候補 2 組
     const MAX_TOTAL_QUOTA = 22;    // 總上限 22 組
 
-    // 截止時間：2026-11-27 12:00:00 (中午)
-    const FAMILY_DEADLINE = new Date('2026-11-27T12:00:00+08:00').getTime();
+    // 截止時間：2026-12-04 12:00:00 (中午)
+    const FAMILY_DEADLINE = new Date('2026-12-04T12:00:00+08:00').getTime();
 
     // 判斷是否停止報名 (時間截止或額滿)
     function isFamilyClosed() {
