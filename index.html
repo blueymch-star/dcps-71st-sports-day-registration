@@ -108,6 +108,8 @@
     .pb-safe { padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px); }
     .pt-safe { padding-top: max(env(safe-area-inset-top, 0px), 12px); }
     ::-webkit-scrollbar { display: none; }
+    .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
     
     /* Mobile-first optimizations: prevent iOS Safari auto-zoom on inputs */
     @media screen and (max-width: 768px) {
@@ -274,6 +276,39 @@
           <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
         </span>
       </div>
+
+      <!-- 71 校慶短影音精選 (構思 A：Reels / Shorts 橫向滑動直式輪播牆) -->
+      <section id="shorts-section" class="flex flex-col gap-3">
+        <div class="flex items-center justify-between px-1 gap-2">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="w-1.5 h-5 rounded-full bg-secondary-container shrink-0"></span>
+            <h2 class="font-headline text-lg sm:text-xl text-on-surface font-bold truncate">71 校慶短影音精選</h2>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#FF0000]/10 text-[#FF0000] text-[10px] font-bold border border-[#FF0000]/20 shrink-0">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#FF0000] animate-pulse"></span>
+              Shorts
+            </span>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <span class="text-[11px] text-on-surface-variant font-medium sm:hidden mr-1">左右滑動 ➔</span>
+            <button type="button" onclick="scrollShortsCarousel(-1)" aria-label="上一支短影音" class="w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high border border-surface-container-highest flex items-center justify-center text-on-surface active:scale-90 transition-all shadow-2xs cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+            </button>
+            <button type="button" onclick="scrollShortsCarousel(1)" aria-label="下一支短影音" class="w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high border border-surface-container-highest flex items-center justify-center text-on-surface active:scale-90 transition-all shadow-2xs cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Horizontal Snap Carousel Track -->
+        <div id="shorts-carousel" class="flex gap-3 sm:gap-3.5 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar py-1 px-0.5">
+          <!-- Populated dynamically by initShortsCarousel() -->
+        </div>
+
+        <!-- Pagination Dots -->
+        <div id="shorts-dots" class="flex items-center justify-center gap-1.5 pt-0.5">
+          <!-- Populated dynamically -->
+        </div>
+      </section>
 
       <!-- Portal Big Cards Section -->
       <div class="flex flex-col gap-4">
@@ -759,6 +794,53 @@
         </button>
         <button onclick="submitAdminPassword()" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-bold shadow-md active:scale-95 transition-all flex items-center justify-center gap-1">
           <span>解鎖進入</span>
+          <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: 9:16 直式短影音劇院光箱 (Shorts Theater Lightbox) -->
+  <div id="modal-shorts-player" onclick="if(event.target === this) closeShortsModal()" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md">
+    <div class="relative flex flex-col items-center gap-3 w-full max-w-[400px]">
+      <!-- Modal Header Bar -->
+      <div class="w-full flex items-center justify-between gap-2 px-1 text-white">
+        <div class="flex items-center gap-2 min-w-0">
+          <span id="shorts-modal-counter" class="px-2 py-0.5 rounded-full bg-secondary-container text-white text-[11px] font-bold shrink-0">1 / 4</span>
+          <h3 id="shorts-modal-title" class="font-headline font-bold text-sm sm:text-base truncate">50 公尺搞笑迷航賽</h3>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+          <a id="shorts-modal-yt-link" href="https://www.youtube.com/shorts/H-TS5rWX88I" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/15 hover:bg-white/25 text-white text-[11px] font-bold transition-all border border-white/15">
+            <span>YouTube 觀看</span>
+            <span class="material-symbols-outlined text-[13px]">open_in_new</span>
+          </a>
+          <button type="button" onclick="closeShortsModal()" aria-label="關閉播放器" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center text-white active:scale-90 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 9:16 Player Frame -->
+      <div class="relative w-full aspect-[9/16] max-h-[76vh] rounded-2xl overflow-hidden bg-black shadow-2xl border border-white/15">
+        <iframe id="shorts-modal-iframe"
+                class="w-full h-full"
+                src=""
+                title="71校慶短影音播放器"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+                referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      </div>
+
+      <!-- Bottom Navigation Bar -->
+      <div class="w-full flex items-center justify-between gap-3 px-1">
+        <button type="button" onclick="navigateShortsModal(-1)" class="inline-flex items-center gap-1 px-3.5 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-bold border border-white/15 active:scale-95 transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+          <span>上一支</span>
+        </button>
+        <div id="shorts-modal-dots" class="flex items-center gap-1.5"></div>
+        <button type="button" onclick="navigateShortsModal(1)" class="inline-flex items-center gap-1 px-3.5 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-bold border border-white/15 active:scale-95 transition-all cursor-pointer">
+          <span>下一支</span>
           <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
         </button>
       </div>
@@ -1372,7 +1454,229 @@
       if (unmuteBtn) unmuteBtn.classList.add('hidden');
     }
 
+    // ---------- 71 校慶直式短影音輪播牆 (Shorts Carousel & Theater Modal) ----------
+    const SHORTS_VIDEOS = [
+      { id: 'H-TS5rWX88I', title: '50 公尺搞笑迷航賽', tag: '歡樂花絮' },
+      { id: '6L_5hdpkFy4', title: '精采絕倫大會舞', tag: '活力開場' },
+      { id: 'J20mnE537lA', title: '熱血期待大隊接力', tag: '熱血預告' },
+      { id: 'QiUE1ij7OM4', title: '庄情薪傳接力賽', tag: '焦點主賽' }
+    ];
+
+    let currentShortsIndex = 0;
+    let shortsAutoScrollTimer = null;
+    let isShortsHoverOrTouch = false;
+
+    function updateShortsDots(activeIdx) {
+      const dotsWrap = document.getElementById('shorts-dots');
+      if (!dotsWrap) return;
+      Array.from(dotsWrap.children).forEach((dot, idx) => {
+        if (idx === activeIdx) {
+          dot.className = 'h-2 w-6 rounded-full bg-secondary-container transition-all duration-300 cursor-pointer';
+        } else {
+          dot.className = 'h-2 w-2 rounded-full bg-surface-container-highest hover:bg-on-surface-variant/40 transition-all duration-300 cursor-pointer';
+        }
+      });
+    }
+
+    function updateShortsModalDots(activeIdx) {
+      const wrap = document.getElementById('shorts-modal-dots');
+      if (!wrap) return;
+      Array.from(wrap.children).forEach((dot, idx) => {
+        if (idx === activeIdx) {
+          dot.className = 'h-1.5 w-5 rounded-full bg-secondary-container transition-all duration-300 cursor-pointer';
+        } else {
+          dot.className = 'h-1.5 w-1.5 rounded-full bg-white/40 hover:bg-white/70 transition-all duration-300 cursor-pointer';
+        }
+      });
+    }
+
+    function getCarouselCardStep(carousel) {
+      const firstCard = carousel.firstElementChild;
+      if (!firstCard) return 210;
+      return firstCard.getBoundingClientRect().width + 14;
+    }
+
+    function scrollToShortsCard(index) {
+      const carousel = document.getElementById('shorts-carousel');
+      if (!carousel) return;
+      const card = carousel.children[index];
+      if (!card) return;
+      const targetLeft = card.offsetLeft - carousel.offsetLeft;
+      carousel.scrollTo({ left: targetLeft, behavior: 'smooth' });
+      updateShortsDots(index);
+    }
+
+    function scrollShortsCarousel(dir) {
+      const carousel = document.getElementById('shorts-carousel');
+      if (!carousel) return;
+      const step = getCarouselCardStep(carousel);
+      const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+
+      if (dir > 0) {
+        if (carousel.scrollLeft >= maxScroll - 8) {
+          carousel.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          carousel.scrollBy({ left: step, behavior: 'smooth' });
+        }
+      } else {
+        if (carousel.scrollLeft <= 8) {
+          carousel.scrollTo({ left: maxScroll, behavior: 'smooth' });
+        } else {
+          carousel.scrollBy({ left: -step, behavior: 'smooth' });
+        }
+      }
+    }
+
+    function startShortsAutoScroll() {
+      stopShortsAutoScroll();
+      shortsAutoScrollTimer = setInterval(() => {
+        const modal = document.getElementById('modal-shorts-player');
+        const isModalOpen = modal && !modal.classList.contains('hidden');
+        if (!isShortsHoverOrTouch && !isModalOpen) {
+          scrollShortsCarousel(1);
+        }
+      }, 4500);
+    }
+
+    function stopShortsAutoScroll() {
+      if (shortsAutoScrollTimer) {
+        clearInterval(shortsAutoScrollTimer);
+        shortsAutoScrollTimer = null;
+      }
+    }
+
+    function initShortsCarousel() {
+      const carousel = document.getElementById('shorts-carousel');
+      const dotsWrap = document.getElementById('shorts-dots');
+      const modalDotsWrap = document.getElementById('shorts-modal-dots');
+      if (!carousel || !dotsWrap) return;
+
+      carousel.innerHTML = SHORTS_VIDEOS.map((v, idx) => `
+        <div onclick="openShortsModal(${idx})"
+             class="shrink-0 snap-start w-[56vw] max-w-[205px] sm:w-[198px] aspect-[9/16] rounded-2xl overflow-hidden shadow-lg border border-surface-container-highest bg-slate-950 relative group cursor-pointer active:scale-[0.98] transition-transform">
+          <img src="https://i.ytimg.com/vi/${v.id}/oar2.jpg"
+               onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/${v.id}/hqdefault.jpg';"
+               loading="lazy"
+               alt="${v.title}"
+               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/35 pointer-events-none"></div>
+
+          <!-- Top Badges -->
+          <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1 pointer-events-none">
+            <span class="px-2 py-0.5 rounded-full bg-black/55 backdrop-blur-md text-white text-[10px] font-bold border border-white/15 truncate">
+              0${idx + 1}・${v.tag}
+            </span>
+            <span class="px-1.5 py-0.5 rounded-md bg-[#FF0000]/90 text-white text-[9px] font-bold tracking-wide shadow-sm shrink-0">
+              Shorts
+            </span>
+          </div>
+
+          <!-- Center Play Button -->
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <span class="w-12 h-12 rounded-full bg-white/25 backdrop-blur-md border border-white/40 text-white flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:bg-secondary-container/90 transition-all">
+              <span class="material-symbols-outlined text-[28px] ml-0.5" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+            </span>
+          </div>
+
+          <!-- Bottom Title & CTA -->
+          <div class="absolute bottom-0 inset-x-0 p-3 flex flex-col gap-1 pointer-events-none">
+            <h3 class="font-headline text-sm font-bold text-white leading-snug line-clamp-2 drop-shadow">${v.title}</h3>
+            <span class="text-[11px] font-semibold text-secondary-fixed flex items-center gap-0.5">
+              <span>點擊觀看</span>
+              <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+            </span>
+          </div>
+        </div>
+      `).join('');
+
+      dotsWrap.innerHTML = SHORTS_VIDEOS.map((v, idx) => `
+        <button type="button" onclick="scrollToShortsCard(${idx})" aria-label="切換至第 ${idx + 1} 支影片：${v.title}"
+                class="${idx === 0 ? 'h-2 w-6 rounded-full bg-secondary-container' : 'h-2 w-2 rounded-full bg-surface-container-highest'} transition-all duration-300 cursor-pointer"></button>
+      `).join('');
+
+      if (modalDotsWrap) {
+        modalDotsWrap.innerHTML = SHORTS_VIDEOS.map((v, idx) => `
+          <button type="button" onclick="openShortsModal(${idx})" aria-label="播放第 ${idx + 1} 支：${v.title}"
+                  class="${idx === 0 ? 'h-1.5 w-5 rounded-full bg-secondary-container' : 'h-1.5 w-1.5 rounded-full bg-white/40'} transition-all duration-300 cursor-pointer"></button>
+        `).join('');
+      }
+
+      // Sync active dot on scroll
+      let scrollSyncTimeout = null;
+      carousel.addEventListener('scroll', () => {
+        if (scrollSyncTimeout) clearTimeout(scrollSyncTimeout);
+        scrollSyncTimeout = setTimeout(() => {
+          const step = getCarouselCardStep(carousel);
+          const idx = Math.max(0, Math.min(SHORTS_VIDEOS.length - 1, Math.round(carousel.scrollLeft / step)));
+          updateShortsDots(idx);
+        }, 60);
+      }, { passive: true });
+
+      // Pause auto-scroll on hover or touch
+      carousel.addEventListener('mouseenter', () => { isShortsHoverOrTouch = true; });
+      carousel.addEventListener('mouseleave', () => { isShortsHoverOrTouch = false; });
+      carousel.addEventListener('touchstart', () => { isShortsHoverOrTouch = true; }, { passive: true });
+      carousel.addEventListener('touchend', () => {
+        setTimeout(() => { isShortsHoverOrTouch = false; }, 2000);
+      }, { passive: true });
+
+      startShortsAutoScroll();
+    }
+
+    function openShortsModal(index) {
+      const len = SHORTS_VIDEOS.length;
+      currentShortsIndex = ((index % len) + len) % len;
+      const v = SHORTS_VIDEOS[currentShortsIndex];
+      const modal = document.getElementById('modal-shorts-player');
+      const iframe = document.getElementById('shorts-modal-iframe');
+      const titleEl = document.getElementById('shorts-modal-title');
+      const counterEl = document.getElementById('shorts-modal-counter');
+      const ytLinkEl = document.getElementById('shorts-modal-yt-link');
+
+      if (!modal || !iframe) return;
+
+      if (titleEl) titleEl.textContent = v.title;
+      if (counterEl) counterEl.textContent = `${currentShortsIndex + 1} / ${len}`;
+      if (ytLinkEl) ytLinkEl.href = `https://www.youtube.com/shorts/${v.id}`;
+      iframe.src = `https://www.youtube.com/embed/${v.id}?autoplay=1&rel=0&playsinline=1&modestbranding=1`;
+      updateShortsModalDots(currentShortsIndex);
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      stopShortsAutoScroll();
+    }
+
+    function navigateShortsModal(delta) {
+      openShortsModal(currentShortsIndex + delta);
+    }
+
+    function closeShortsModal() {
+      const modal = document.getElementById('modal-shorts-player');
+      const iframe = document.getElementById('shorts-modal-iframe');
+      if (iframe) iframe.src = '';
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+      document.body.style.overflow = '';
+      startShortsAutoScroll();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      const modal = document.getElementById('modal-shorts-player');
+      if (!modal || modal.classList.contains('hidden')) return;
+      if (e.key === 'Escape') {
+        closeShortsModal();
+      } else if (e.key === 'ArrowLeft') {
+        navigateShortsModal(-1);
+      } else if (e.key === 'ArrowRight') {
+        navigateShortsModal(1);
+      }
+    });
+
     document.addEventListener('DOMContentLoaded', () => {
+      initShortsCarousel();
       initAutoPreviewVideos();
       initCheerUI();
       startCountdown();
